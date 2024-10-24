@@ -11,12 +11,16 @@
     "server": "nodemon"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^3.5.0",
     "@types/mongoose": "^5.11.97",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "express-openid-connect": "^2.17.1",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.9.0",
     "mongoose": "^8.7.1",
@@ -25,6 +29,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.3.0",
+    "react-toastify": "^10.0.6",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

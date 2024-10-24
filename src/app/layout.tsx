@@ -1,14 +1,15 @@
 import Footer from './components/Footer'
-import Navbar from './components/Navbar'
+import NavbarWrapper from './components/NavbarWrapper' // Import the new NavbarWrapper
 import './styles/globals.css'
 import { ReactNode } from 'react'
-import { Inter, Inconsolata } from 'next/font/google'
+import { Inconsolata } from 'next/font/google'
+import { UserProvider } from '@auth0/nextjs-auth0/client'
+import { ToastContainer } from 'react-toastify' // Import ToastContainer
 
 interface LayoutProps {
   children: ReactNode
 }
 
-const inter = Inter({ subsets: ['latin'] })
 const inconsolata = Inconsolata({ subsets: ['latin'] })
 
 // Metadata export
@@ -29,17 +30,26 @@ export const generateViewport = () => ({
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <html lang='en'>
-      <body className={`${inconsolata.className} flex flex-col min-h-screen`}>
-        <nav className='bg-blue-600 text-white p-4'>
-          <Navbar />
-        </nav>
-        <main className='w-full mx-auto flex-grow flex items-center justify-center'>
-          {children}
-        </main>
-        <footer className='bg-blue-600 text-white p-4'>
-          <Footer />
-        </footer>
-      </body>
+      <UserProvider>
+        <body className={`${inconsolata.className} flex flex-col min-h-screen`}>
+          <NavbarWrapper /> {/* Use the NavbarWrapper component here */}
+          <main className='w-full mx-auto flex-grow flex items-center justify-center'>
+            {children}
+          </main>
+          <footer className='bg-blue-600 text-white p-4'>
+            <Footer />
+          </footer>
+          <ToastContainer
+            position='top-center'
+            autoClose={5000} // 5 secs before autoclose
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick
+            pauseOnHover
+            pauseOnFocusLoss
+          />
+        </body>
+      </UserProvider>
     </html>
   )
 }

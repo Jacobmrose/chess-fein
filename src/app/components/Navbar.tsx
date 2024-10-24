@@ -1,14 +1,13 @@
 'use client'
-
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import UserInfo from './UserInfo' // Import UserInfo component
 
 function Navbar() {
   const pathname = usePathname()
   const [isNavOpen, setIsNavOpen] = useState(false)
 
-  // Function to determine if a link is active
   const isActive = (path: string) => pathname === path
 
   const toggleNav = () => {
@@ -17,7 +16,6 @@ function Navbar() {
 
   return (
     <nav className='text-xl max-w-5xl mx-auto py-4 flex flex-col md:flex-row items-center justify-evenly'>
-      {/* Home Logo */}
       <Link
         href='/'
         aria-label='Home'
@@ -25,21 +23,15 @@ function Navbar() {
           isActive('/') ? 'text-blue-500 font-bold' : ''
         } hover:underline`}
       >
-        <img
-          src='/chess-fein.png' // Correct path to your image in the public directory
-          alt='Chess Fein Logo'
-          className='h-8' // Adjust height to be more visible
-        />
+        <img src='/chess-fein.png' alt='Chess Fein Logo' className='h-8' />
       </Link>
 
-      {/* Arrow Button for mobile menu */}
       <button
         className='md:hidden flex items-center justify-center p-2 text-white'
         onClick={toggleNav}
         aria-label='Toggle navigation'
         aria-expanded={isNavOpen}
       >
-        {/* Down Arrow when collapsed */}
         <svg
           className={`h-6 w-6 ${isNavOpen ? 'hidden' : 'block'}`}
           xmlns='http://www.w3.org/2000/svg'
@@ -54,8 +46,6 @@ function Navbar() {
             d='M6 9l6 6 6-6'
           />
         </svg>
-
-        {/* Up Arrow when expanded */}
         <svg
           className={`h-6 w-6 ${isNavOpen ? 'block' : 'hidden'}`}
           xmlns='http://www.w3.org/2000/svg'
@@ -72,7 +62,6 @@ function Navbar() {
         </svg>
       </button>
 
-      {/* Navbar Links */}
       <div
         className={`flex-col md:flex-row items-center gap-6 md:gap-10 ${
           isNavOpen ? 'flex' : 'hidden'
@@ -106,13 +95,13 @@ function Navbar() {
           History
         </Link>
         <Link
-          href='/profile'
-          aria-label='Profile'
+          href='/puzzles'
+          aria-label='Puzzles'
           className={`${
-            isActive('/profile') ? 'text-blue-500 font-bold' : ''
+            isActive('/puzzles') ? 'text-blue-500 font-bold' : ''
           } hover:underline`}
         >
-          Profile
+          Puzzles
         </Link>
         <Link
           href='/settings'
@@ -123,6 +112,9 @@ function Navbar() {
         >
           Settings
         </Link>
+
+        {/* Add UserInfo component here */}
+        <UserInfo />
       </div>
     </nav>
   )
