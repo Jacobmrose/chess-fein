@@ -10,7 +10,7 @@ const NavbarWrapper: React.FC = () => {
   return (
     <>
       {user && !isLoading && (
-        <nav className='bg-blue-600 text-white p-4'>
+        <nav className='bg-gray-900 text-white p-4'>
           <Navbar />
         </nav>
       )}

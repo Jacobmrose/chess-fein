@@ -1,9 +1,8 @@
 import express, { Request, Response } from 'express'
-import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { v4 as uuidv4 } from 'uuid'
-import User, { IUser } from '../models/User'
+import GuestUser, { IGuestUser } from '@/server/models/Guest'
 
 dotenv.config() // Load environment variables
 
@@ -19,62 +18,6 @@ const asyncHandler = (fn: (req: Request, res: Response) => Promise<any>) => {
   }
 }
 
-// // Registration route
-// router.post(
-//   '/register',
-//   asyncHandler(async (req: Request, res: Response) => {
-//     const { username, email, password } = req.body
-//     const existingUser = await User.findOne({ email })
-
-//     if (existingUser) {
-//       return res.status(400).json({ message: 'User already exists' })
-//     }
-
-//     const hashedPassword = await bcrypt.hash(password, 10)
-//     const newUser: IUser = new User({
-//       _id: uuidv4(),
-//       username,
-//       email,
-//       password: hashedPassword,
-//       role: 'user', // Set role for registered user
-//     })
-
-//     await newUser.save()
-//     res.status(201).json({ message: 'User registered successfully' })
-//   })
-// )
-
-// // Login route
-// router.post(
-//   '/login',
-//   asyncHandler(async (req: Request, res: Response) => {
-//     const { email, password } = req.body
-//     const user = await User.findOne({ email })
-
-//     if (!user) {
-//       return res.status(400).json({ message: 'Invalid email or password' })
-//     }
-
-//     const isMatch = await bcrypt.compare(password, user.password)
-//     if (!isMatch) {
-//       return res.status(400).json({ message: 'Invalid email or password' })
-//     }
-
-//     const jwtSecret = process.env.JWT_SECRET
-//     if (!jwtSecret) {
-//       return res.status(500).json({ message: 'JWT secret not configured' })
-//     }
-
-//     const token = jwt.sign(
-//       { id: user._id, role: user.role }, // Include role in token payload
-//       jwtSecret,
-//       { expiresIn: '1h' }
-//     )
-
-//     res.json({ token, message: 'Login successful!' })
-//   })
-// )
-
 // Guest login route
 router.post(
   '/guest',
@@ -83,15 +26,14 @@ router.post(
     const timestamp = Date.now().toString()
     const guestUsername = `Guest_${timestamp}`
 
-    const newGuest: IUser = new User({
+    // Create new guest user
+    const newGuest: IGuestUser = new GuestUser({
       _id: guestUserId,
       username: guestUsername,
-      email: `${guestUserId}@guest.com`, // Dummy email for guests
       role: 'guest',
     })
 
-    await newGuest.save() // Save guest to database
-
+    // Generate JWT token
     const jwtSecret = process.env.JWT_SECRET
     if (!jwtSecret) {
       return res.status(500).json({ message: 'JWT secret not configured' })
@@ -102,6 +44,10 @@ router.post(
       jwtSecret,
       { expiresIn: '1h' }
     )
+
+    // Save guest user along with the generated token
+    newGuest.token = guestToken // Store the token in the guest user document
+    await newGuest.save() // Save guest user with the token to the database
 
     res.json({
       token: guestToken,

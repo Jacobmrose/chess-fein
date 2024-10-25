@@ -1,4 +1,3 @@
-'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
@@ -20,10 +19,14 @@ function Navbar() {
         href='/'
         aria-label='Home'
         className={`flex items-center ${
-          isActive('/') ? 'text-blue-500 font-bold' : ''
-        } hover:underline`}
+          isActive('/') ? 'text-purple-700 font-bold' : 'text-white'
+        } hover:text-purple-500`} // Updated color classes
       >
-        <img src='/chess-fein.png' alt='Chess Fein Logo' className='h-8' />
+        <img
+          src='/chess-fein.png'
+          alt='Chess Fein Logo'
+          className='h-8 filter invert'
+        />
       </Link>
 
       <button
@@ -71,8 +74,8 @@ function Navbar() {
           href='/play'
           aria-label='Play'
           className={`${
-            isActive('/play') ? 'text-blue-500 font-bold' : ''
-          } hover:underline`}
+            isActive('/play') ? 'text-purple-700 font-bold' : 'text-white'
+          } hover:text-purple-500`} // Updated color classes
         >
           Play
         </Link>
@@ -80,8 +83,8 @@ function Navbar() {
           href='/about'
           aria-label='About'
           className={`${
-            isActive('/about') ? 'text-blue-500 font-bold' : ''
-          } hover:underline`}
+            isActive('/about') ? 'text-purple-700 font-bold' : 'text-white'
+          } hover:text-purple-500`} // Updated color classes
         >
           About
         </Link>
@@ -89,8 +92,8 @@ function Navbar() {
           href='/history'
           aria-label='History'
           className={`${
-            isActive('/history') ? 'text-blue-500 font-bold' : ''
-          } hover:underline`}
+            isActive('/history') ? 'text-purple-700 font-bold' : 'text-white'
+          } hover:text-purple-500`} // Updated color classes
         >
           History
         </Link>
@@ -98,8 +101,8 @@ function Navbar() {
           href='/puzzles'
           aria-label='Puzzles'
           className={`${
-            isActive('/puzzles') ? 'text-blue-500 font-bold' : ''
-          } hover:underline`}
+            isActive('/puzzles') ? 'text-purple-700 font-bold' : 'text-white'
+          } hover:text-purple-500`} // Updated color classes
         >
           Puzzles
         </Link>
@@ -107,8 +110,8 @@ function Navbar() {
           href='/settings'
           aria-label='Settings'
           className={`${
-            isActive('/settings') ? 'text-blue-500 font-bold' : ''
-          } hover:underline`}
+            isActive('/settings') ? 'text-purple-700 font-bold' : 'text-white'
+          } hover:text-purple-500`} // Updated color classes
         >
           Settings
         </Link>

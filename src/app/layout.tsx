@@ -31,12 +31,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <html lang='en'>
       <UserProvider>
-        <body className={`${inconsolata.className} flex flex-col min-h-screen`}>
+        <body
+          className={`${inconsolata.className} flex flex-col min-h-screen bg-gradient-to-br from-purple-900 to-black text-white`}
+        >
           <NavbarWrapper /> {/* Use the NavbarWrapper component here */}
-          <main className='w-full mx-auto flex-grow flex items-center justify-center'>
+          <main className='w-full mx-auto flex-grow flex items-center justify-center p-8'>
             {children}
           </main>
-          <footer className='bg-blue-600 text-white p-4'>
+          <footer>
             <Footer />
           </footer>
           <ToastContainer
