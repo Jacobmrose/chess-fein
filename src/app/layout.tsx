@@ -49,6 +49,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             closeOnClick
             pauseOnHover
             pauseOnFocusLoss
+            toastClassName='toast-centered'
           />
         </body>
       </UserProvider>

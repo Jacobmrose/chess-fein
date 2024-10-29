@@ -1,7 +1,12 @@
 function Footer() {
   return (
-    <footer className='bg-gray-900 text-white p-4 text-center w-full fixed bottom-0 left-0'>
-      <div className='mb-2'>© 2024 Chess Fein</div>
+    <footer className='bg-gray-900 text-white p-4 text-center w-full'>
+      <div className='mb-2'>
+        © 2024{' '}
+        <a href='/' className='underline hover:text-purple-300'>
+          Chess Fein
+        </a>
+      </div>
       <div>
         <p>
           Feedback?{' '}
