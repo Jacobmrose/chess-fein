@@ -1,25 +1,30 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FaUserCircle } from 'react-icons/fa'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import Link from 'next/link'
 import { toast } from 'react-toastify'
+import { usePathname } from 'next/navigation'
 
 const UserInfo: React.FC = () => {
   const { user, isLoading } = useUser()
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const pathname = usePathname()
 
   const toggleDropdown = () => setDropdownOpen((prev) => !prev)
 
   const handleLogout = () => {
-    // Redirect to logout endpoint and show toast after a short delay
     setTimeout(() => {
       window.location.href = '/api/auth/logout'
       toast.success('Successfully logged out!')
-    }, 100) // Delay the navigation slightly to show the toast
+    }, 100)
     setDropdownOpen(false)
   }
+
+  useEffect(() => {
+    setDropdownOpen(false)
+  }, [pathname])
 
   return (
     <div className='relative'>

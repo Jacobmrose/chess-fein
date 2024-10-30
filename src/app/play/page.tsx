@@ -1,28 +1,25 @@
 'use client'
 
-import { Chessboard } from 'react-chessboard'
+import { useState } from 'react'
+import ChessGame from '@/app/components/ChessGame'
+import GameInitializer from '@/app/components/GameInitializer'
 
 export default function Play() {
+  const [color, setColor] = useState<'white' | 'black' | null>(null)
+
+  const handleStartGame = (selectedColor: 'white' | 'black') => {
+    setColor(selectedColor)
+    localStorage.setItem('playerColor', selectedColor)
+  }
+
   return (
-    <div className='flex justify-center items-center w-full h-screen p-4'>
+    <div className='flex justify-center items-center w-full h-screen p-4 mt-16'>
       <div className='relative w-full max-w-4xl flex justify-center h-full'>
-        <div
-          className='flex justify-center items-center w-full h-full'
-          style={{ maxWidth: '75vmin', maxHeight: '75vmin' }}
-        >
-          <Chessboard
-            customBoardStyle={{
-              borderRadius: '4px',
-              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.5)',
-            }}
-            customDarkSquareStyle={{
-              backgroundColor: '#6A0DAD',
-            }}
-            customLightSquareStyle={{
-              backgroundColor: '#D3D3D3',
-            }}
-          />
-        </div>
+        {!color ? (
+          <GameInitializer onStartGame={handleStartGame} />
+        ) : (
+          <ChessGame color={color} />
+        )}
       </div>
     </div>
   )
