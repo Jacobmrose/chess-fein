@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Chessboard } from 'react-chessboard'
 import { Chess, Square } from 'chess.js'
 
@@ -9,133 +9,135 @@ interface ChessGameProps {
   isGameOver: boolean
 }
 
+type PieceType = 'P' | 'N' | 'B' | 'R' | 'Q' | 'K'
+
+const pieceNames: { [key in PieceType]: string } = {
+  P: 'Pawn',
+  N: 'Knight',
+  B: 'Bishop',
+  R: 'Rook',
+  Q: 'Queen',
+  K: 'King',
+}
+
+const squareSize = 12.5 // Each square occupies 12.5% of the board size
+
 const ChessGame: React.FC<ChessGameProps> = ({
   color,
   onMove,
   onGameOver,
   isGameOver,
 }) => {
-  const chessGame = useRef(new Chess())
-  const [position, setPosition] = useState(chessGame.current.fen())
+  const chessGame = useRef(new Chess()) // Initialize the chess game instance
+  const [position, setPosition] = useState(chessGame.current.fen()) // Current position as FEN string
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null)
-  const [possibleMoves, setPossibleMoves] = useState<Square[]>([])
+  const [possibleMoves, setPossibleMoves] = useState<
+    { square: Square; isCapture: boolean }[]
+  >([])
+
+  // Helper function to determine game-over condition and provide appropriate description
+  const getGameOverDescription = (game: Chess): string => {
+    if (game.isCheckmate()) {
+      onGameOver()
+      return ' (Checkmate)'
+    } else if (game.isStalemate()) {
+      onGameOver()
+      return ' (Stalemate)'
+    } else if (game.isThreefoldRepetition()) {
+      onGameOver()
+      return ' (Threefold Repetition)'
+    } else if (game.isInsufficientMaterial()) {
+      onGameOver()
+      return ' (Insufficient Material)'
+    } else if (game.isDraw()) {
+      onGameOver()
+      return ' (Draw)'
+    }
+    return ''
+  }
 
   useEffect(() => {
-    const game = chessGame.current
-    if (game.isGameOver()) {
-      onGameOver()
+    if (chessGame.current.isGameOver()) {
+      onGameOver() // Trigger game over if chess.js detects end of game
     }
   }, [onGameOver])
 
+  // Checks if the given square string is valid, e.g., "a1", "e5"
   const isValidSquare = (square: string) => /^[a-h][1-8]$/.test(square)
 
-  const handlePieceDrop = (fromSquare: Square, toSquare: Square) => {
-    return makeMove(fromSquare, toSquare)
-  }
+  const clearSelection = useCallback(() => {
+    setSelectedSquare(null) // Clear any selected square
+    setPossibleMoves([]) // Reset possible moves
+  }, [])
 
-  const handleSquareClick = (square: Square) => {
-    const game = chessGame.current
+  const getPieceName = (pieceType: PieceType) => pieceNames[pieceType]
 
-    if (selectedSquare) {
-      const moveMade = makeMove(selectedSquare, square)
-      if (!moveMade) {
-        if (game.get(square)) {
-          selectSquare(square)
-        } else {
-          clearSelection()
+  // Main function to execute a move if it is valid
+  const makeMove = useCallback(
+    (fromSquare: Square, toSquare: Square) => {
+      const game = chessGame.current
+      if (isGameOver) return false // Block moves if the game is already over
+      if (!isValidSquare(fromSquare) || !isValidSquare(toSquare)) return false
+
+      try {
+        const move = game.move({ from: fromSquare, to: toSquare }) // Attempt the move
+        if (move) {
+          setPosition(game.fen()) // Update board position to reflect the move
+          clearSelection() // Clear selected square and possible moves
+
+          // Get the name of the piece and build a move description
+          const pieceType = move.piece.toUpperCase() as PieceType
+          let moveDescription = `${getPieceName(pieceType)} to ${toSquare}`
+          if (move.captured) {
+            // If capture, update description to show which piece was captured
+            const capturedPieceName = getPieceName(
+              move.captured.toUpperCase() as PieceType
+            )
+            moveDescription = `${getPieceName(
+              pieceType
+            )} takes ${capturedPieceName} on ${toSquare}`
+          }
+
+          // Use helper function to add game-over description, if applicable
+          moveDescription += getGameOverDescription(game)
+          if (!game.isGameOver() && game.inCheck()) {
+            moveDescription += ' (Check)' // Indicate check if applicable
+          }
+
+          onMove(moveDescription) // Notify parent component of the move
+          return true
         }
+      } catch {
+        // Ignore invalid moves without logging errors
       }
-    } else {
-      if (game.get(square)) {
-        selectSquare(square)
-      }
-    }
-  }
-
-  const selectSquare = (square: Square) => {
-    setSelectedSquare(square)
-    highlightMoves(square)
-  }
-
-  const makeMove = (fromSquare: Square, toSquare: Square) => {
-    const game = chessGame.current
-
-    if (isGameOver) return false
-
-    if (!isValidSquare(fromSquare) || !isValidSquare(toSquare)) {
       return false
-    }
+    },
+    [clearSelection, isGameOver, onMove, onGameOver]
+  )
 
-    try {
-      const move = game.move({ from: fromSquare, to: toSquare })
-      if (move) {
-        setPosition(game.fen())
-        clearSelection()
+  const handlePieceDrop = useCallback(
+    (fromSquare: Square, toSquare: Square) => {
+      return makeMove(fromSquare, toSquare) // Make move on drop
+    },
+    [makeMove]
+  )
 
-        const pieceType = move.piece.toUpperCase()
-        let moveDescription = `${getPieceName(pieceType)} to ${toSquare}`
-
-        if (move.captured) {
-          const capturedPieceType = move.captured.toUpperCase()
-          const capturedPieceName = getPieceName(capturedPieceType)
-          moveDescription = `${getPieceName(
-            pieceType
-          )} takes ${capturedPieceName} on ${toSquare}`
-        }
-
-        if (game.isGameOver()) {
-          moveDescription += ' (Game Over)'
-          onGameOver()
-        } else if (game.inCheck()) {
-          moveDescription += ' (Check)'
-        }
-
-        onMove(moveDescription)
-        return true
-      }
-    } catch (error) {
-      console.error(error) // Log the error for debugging
-    }
-
-    return false
-  }
-
-  const highlightMoves = (square: Square) => {
+  // Get possible moves for the selected piece and set them in state
+  const getPossibleMoves = (square: Square) => {
     const game = chessGame.current
-    const moves = game.moves({ square, verbose: true })
-    const moveSquares = moves.map((move) => move.to as Square)
-    setPossibleMoves(moveSquares)
+    const moves = game.moves({ square, verbose: true }) // Fetch possible moves for the selected square
+    const moveSquares = moves.map((move) => ({
+      square: move.to as Square, // Destination square
+      isCapture: !!move.captured, // Whether the move is a capture
+    }))
+    setPossibleMoves(moveSquares) // Store possible moves in state
   }
 
-  const clearSelection = () => {
-    setSelectedSquare(null)
-    setPossibleMoves([])
-  }
+  const handleDragEnd = useCallback(() => {
+    clearSelection() // Clear selection when dragging ends
+  }, [clearSelection])
 
-  const handleDragEnd = () => {
-    clearSelection()
-  }
-
-  const getPieceName = (pieceType: string) => {
-    switch (pieceType) {
-      case 'P':
-        return 'Pawn'
-      case 'N':
-        return 'Knight'
-      case 'B':
-        return 'Bishop'
-      case 'R':
-        return 'Rook'
-      case 'Q':
-        return 'Queen'
-      case 'K':
-        return 'King'
-      default:
-        return ''
-    }
-  }
-
-  // Function to check if a move results in a promotion
+  // Check if a pawn has reached the last rank and requires promotion
   const onPromotionCheck = (
     sourceSquare: Square,
     targetSquare: Square,
@@ -147,19 +149,15 @@ const ChessGame: React.FC<ChessGameProps> = ({
     )
   }
 
-  // Function to handle the promotion piece selection
+  // Handle the actual promotion process once the promotion piece is selected
   const onPromotionPieceSelect = (
     piece: string | undefined,
     promoteFromSquare?: Square,
     promoteToSquare?: Square
   ): boolean => {
     const game = chessGame.current
-
-    // Ensure valid parameters
     if (promoteFromSquare && promoteToSquare && piece) {
-      // Get the piece type as a lowercase string for chess.js
-      const promotionPiece = piece.charAt(1).toLowerCase() // Get the piece type ('Q', 'R', 'N', 'B' and convert to lower case)
-
+      const promotionPiece = piece.charAt(1).toLowerCase() // Get piece type in lowercase (e.g., 'q' for queen)
       const promotionMove = game.move({
         from: promoteFromSquare,
         to: promoteToSquare,
@@ -167,70 +165,85 @@ const ChessGame: React.FC<ChessGameProps> = ({
       })
 
       if (promotionMove) {
-        setPosition(game.fen())
-        const pieceName = getPieceName(promotionPiece.toUpperCase())
-        const moveDescription = `${pieceName} promoted on ${promoteToSquare}`
+        setPosition(game.fen()) // Update board position for promotion
+        const pieceName = getPieceName(
+          promotionPiece.toUpperCase() as PieceType
+        )
+        let moveDescription = `${pieceName} promoted on ${promoteToSquare}`
+
+        // Append game-over description if applicable
+        moveDescription += getGameOverDescription(game)
+        if (!game.isGameOver() && game.inCheck()) {
+          moveDescription += ' (Check)'
+        }
+
         onMove(moveDescription)
         return true
       }
     }
-
     return false
   }
+
+  // Styling for the move highlights based on board orientation and capture status
+  const getMoveHighlightStyle = (
+    square: string,
+    isCapture: boolean
+  ): React.CSSProperties => {
+    const column = square[0] // Get column (letter)
+    const row = square[1] // Get row (number)
+
+    // Calculate position based on color; for white, row 8 is at the top, and for black, row 1 is at the top
+    const top =
+      color === 'white'
+        ? `${100 - parseInt(row) * squareSize}%`
+        : `${(parseInt(row) - 1) * squareSize}%`
+    const left =
+      color === 'white'
+        ? `${(column.charCodeAt(0) - 'a'.charCodeAt(0)) * squareSize}%`
+        : `${(7 - (column.charCodeAt(0) - 'a'.charCodeAt(0))) * squareSize}%`
+
+    return {
+      position: 'absolute',
+      top,
+      left,
+      width: `${squareSize}%`,
+      height: `${squareSize}%`,
+      background: isCapture
+        ? 'radial-gradient(transparent 0%, transparent 80%, rgba(0, 0, 0, 0.7) 80%)'
+        : 'rgba(0, 0, 0, 0.7)',
+      clipPath: isCapture ? 'none' : 'circle(13% at 50% 50%)', // Capture highlight uses full square; non-capture uses a circle
+      pointerEvents: 'none',
+      zIndex: 10,
+    }
+  }
+
+  // Begin dragging a piece; set the selected square and calculate possible moves
+  const handleDragBegin = useCallback((piece: string, square: Square) => {
+    setSelectedSquare(square)
+    getPossibleMoves(square)
+  }, [])
 
   return (
     <div className='flex justify-center items-center w-full h-full max-w-[75vmin] max-h-[75vmin] rounded-lg shadow-lg relative'>
       <Chessboard
         position={position}
         onPieceDrop={handlePieceDrop}
-        onSquareClick={(_, square) => handleSquareClick(square as Square)}
-        onPieceDragBegin={(_, square) => selectSquare(square as Square)}
+        onPieceDragBegin={handleDragBegin}
         onPieceDragEnd={handleDragEnd}
-        boardOrientation={color}
-        customBoardStyle={{
-          borderRadius: '8px',
-          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.6)',
+        areArrowsAllowed={false}
+        arePiecesDraggable={!isGameOver}
+        customDropSquareStyle={{
+          boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.3)',
         }}
-        customDarkSquareStyle={{
-          backgroundColor: '#6A0DAD',
-        }}
-        customLightSquareStyle={{
-          backgroundColor: '#E0E0E0',
-        }}
-        onPromotionCheck={onPromotionCheck}
-        onPromotionPieceSelect={onPromotionPieceSelect}
+        customLightSquareStyle={{ backgroundColor: '#E0E0E0' }}
+        customDarkSquareStyle={{ backgroundColor: '#6A0DAD' }}
       />
 
-      {/* Render highlight squares with cutout effect */}
-      {possibleMoves.map((square) => {
-        const column = square[0] // e.g., 'a', 'b', ...
-        const row = square[1] // e.g., '1', '2', ...
-
-        // Calculate positioning
-        const squareSize = 12.5 // 12.5% for each square
-        const top = `${100 - parseInt(row) * squareSize}%`
-        const left = `${
-          (column.charCodeAt(0) - 'a'.charCodeAt(0)) * squareSize
-        }%`
-
-        return (
-          <div
-            key={square}
-            style={{
-              position: 'absolute',
-              top: top,
-              left: left,
-              width: `${squareSize}%`, // Match square size
-              height: `${squareSize}%`, // Match square size
-              backgroundColor: 'rgb(95, 85, 100)', // White background for the overlay
-              borderRadius: '8px',
-              clipPath: 'circle(20% at 50% 50%)', // Circular cutout in the middle
-              pointerEvents: 'none', // Prevent interaction
-              zIndex: 10, // Ensure it overlays the square
-            }}
-          />
-        )
-      })}
+      {/* Highlight possible moves */}
+      {selectedSquare &&
+        possibleMoves.map(({ square, isCapture }) => (
+          <div key={square} style={getMoveHighlightStyle(square, isCapture)} />
+        ))}
     </div>
   )
 }
