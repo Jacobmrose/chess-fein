@@ -2,6 +2,13 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Chessboard } from 'react-chessboard'
 import { Chess, Square } from 'chess.js'
 import { getPieceName, Piece, PieceType } from '../utils/pieceUtils'
+import { getMoveHighlightStyle } from '../utils/highlightStyles'
+import { getGameOverDescription, clearSelection } from '../utils/gameUtils'
+import { makeMove } from '../utils/moveUtils'
+import {
+  onPromotionCheck,
+  onPromotionPieceSelect,
+} from '../utils/promotionUtils'
 
 interface ChessGameProps {
   color: 'white' | 'black'
@@ -9,8 +16,6 @@ interface ChessGameProps {
   onGameOver: () => void
   isGameOver: boolean
 }
-
-const squareSize = 12.5 // Each square occupies 12.5% of the board size
 
 const ChessGame: React.FC<ChessGameProps> = ({
   color,
@@ -25,13 +30,20 @@ const ChessGame: React.FC<ChessGameProps> = ({
     { square: Square; isCapture: boolean }[]
   >([])
 
-  const getGameOverDescription = useCallback((game: Chess): string => {
-    if (game.isCheckmate()) return ' (Checkmate)'
-    if (game.isStalemate()) return ' (Stalemate)'
-    if (game.isThreefoldRepetition()) return ' (Threefold Repetition)'
-    if (game.isInsufficientMaterial()) return ' (Insufficient Material)'
-    if (game.isDraw()) return ' (Draw)'
-    return ''
+  const highlightStyles = useMemo(
+    () =>
+      possibleMoves.map(({ square, isCapture }) =>
+        getMoveHighlightStyle(square, isCapture, color)
+      ),
+    [possibleMoves, color]
+  )
+
+  const handleClearSelection = useCallback(() => {
+    clearSelection(setSelectedSquare, setPossibleMoves)
+  }, [])
+
+  const handleGameOverDescription = useCallback((game: Chess) => {
+    return getGameOverDescription(game)
   }, [])
 
   useEffect(() => {
@@ -40,111 +52,46 @@ const ChessGame: React.FC<ChessGameProps> = ({
     }
   }, [onGameOver])
 
-  const isValidSquare = (square: string) => /^[a-h][1-8]$/.test(square)
-
-  const clearSelection = useCallback(() => {
-    setSelectedSquare(null)
-    setPossibleMoves([])
-  }, [])
-
-  const onPromotionCheck = useCallback(
-    (sourceSquare: Square, targetSquare: Square, piece: string) => {
-      // For white pawn: it reaches the 8th rank from 7th
-      const isWhitePawnPromotion =
-        piece === 'wP' && sourceSquare[1] === '7' && targetSquare[1] === '8'
-
-      // For black pawn: it reaches the 1st rank from 2nd
-      const isBlackPawnPromotion =
-        piece === 'bP' && sourceSquare[1] === '2' && targetSquare[1] === '1'
-
-      return isWhitePawnPromotion || isBlackPawnPromotion
-    },
-    []
-  )
-
-  const onPromotionPieceSelect = useCallback(
+  const handlePromotionSelection = useCallback(
     (
       piece: string | undefined,
       promoteFromSquare?: Square,
       promoteToSquare?: Square
     ) => {
       const game = chessGame.current
-      if (promoteFromSquare && promoteToSquare && piece) {
-        const promotionPiece = piece.charAt(1).toLowerCase()
-        const promotionMove = game.move({
-          from: promoteFromSquare,
-          to: promoteToSquare,
-          promotion: promotionPiece,
-        })
-
-        if (promotionMove) {
-          setPosition(game.fen())
-          const pieceName = getPieceName(
-            promotionPiece.toUpperCase() as PieceType
-          )
-          let moveDescription = `${pieceName} promoted on ${promoteToSquare}`
-          moveDescription += getGameOverDescription(game)
-          if (!game.isGameOver() && game.inCheck()) {
-            moveDescription += ' (Check)'
-          }
-
-          onMove(moveDescription)
-          return true
-        }
-      }
-      return false
+      return onPromotionPieceSelect(
+        piece,
+        promoteFromSquare,
+        promoteToSquare,
+        game,
+        setPosition,
+        getPieceName,
+        handleGameOverDescription,
+        onMove
+      )
     },
-    [getGameOverDescription, onMove]
+    [handleGameOverDescription, onMove, setPosition, chessGame, getPieceName]
   )
 
-  const makeMove = useCallback(
-    (fromSquare: Square, toSquare: Square, promotionPiece?: string) => {
-      const game = chessGame.current
-      if (isGameOver) return false
-      if (!isValidSquare(fromSquare) || !isValidSquare(toSquare)) return false
-
-      try {
-        const move = game.move({
-          from: fromSquare,
-          to: toSquare,
-          promotion: promotionPiece,
-        })
-        if (move) {
-          setPosition(game.fen())
-          clearSelection()
-
-          const pieceType = move.piece.toUpperCase() as PieceType
-          let moveDescription = `${getPieceName(pieceType)} to ${toSquare}`
-          if (move.captured) {
-            const capturedPieceName = getPieceName(
-              move.captured.toUpperCase() as PieceType
-            )
-            moveDescription = `${getPieceName(
-              pieceType
-            )} takes ${capturedPieceName} on ${toSquare}`
-          }
-
-          moveDescription += getGameOverDescription(game)
-          if (!game.isGameOver() && game.inCheck()) {
-            moveDescription += ' (Check)'
-          }
-
-          onMove(moveDescription)
-          return true
-        }
-      } catch {
-        // Ignore invalid moves without logging errors
-      }
-      return false
+  const makeMoveCallback = useCallback(
+    (fromSquare: Square, toSquare: Square) => {
+      return makeMove(
+        fromSquare,
+        toSquare,
+        chessGame.current,
+        onMove,
+        isGameOver,
+        setPosition
+      )
     },
-    [clearSelection, getGameOverDescription, isGameOver, onMove]
+    [onMove, isGameOver]
   )
 
   const handlePieceDrop = useCallback(
     (fromSquare: Square, toSquare: Square) => {
-      return makeMove(fromSquare, toSquare)
+      return makeMoveCallback(fromSquare, toSquare)
     },
-    [makeMove]
+    [makeMoveCallback]
   )
 
   const getPossibleMoves = useCallback((square: Square) => {
@@ -158,30 +105,24 @@ const ChessGame: React.FC<ChessGameProps> = ({
   }, [])
 
   const handleDragEnd = useCallback(() => {
-    clearSelection()
-  }, [clearSelection])
+    handleClearSelection()
+  }, [handleClearSelection])
 
   const handleSquareClick = useCallback(
     (square: Square) => {
       const game = chessGame.current
       const piece = game.get(square)
-
-      // If there's a selected square and clicking on a new piece of the same color, change selection
       if (selectedSquare && piece && piece.color === game.turn()) {
         setSelectedSquare(square)
         getPossibleMoves(square)
       } else if (selectedSquare) {
-        // Attempt to move if there is a selected square
         const fromSquare = selectedSquare
         const toSquare = square
 
-        // Get the list of legal moves for the selected piece
         const legalMoves = game.moves({ square: fromSquare, verbose: true })
 
-        // Find the move object corresponding to the target square
         const legalMove = legalMoves.find((move) => move.to === toSquare)
 
-        // If the move is not in the legal moves, do nothing
         if (!legalMove) {
           return
         }
@@ -199,7 +140,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
             'Promote to (q : Queen, r : Rook, b : Bishop, n : Knight):',
             'q'
           )
-
           // Loop until a valid single character input is provided
           while (promotionPiece && promotionPiece.length !== 1) {
             promotionPiece = prompt(
@@ -207,7 +147,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
               'q'
             )
           }
-
           // If a valid promotion piece is chosen
           if (
             promotionPiece &&
@@ -221,19 +160,16 @@ const ChessGame: React.FC<ChessGameProps> = ({
             }
             game.move(promotionMove) // Apply the promotion move
             setPosition(game.fen()) // Update the board position after the move
-
             // Set the move description
             const promotionPieceName = getPieceName(
               promotionPiece.toUpperCase() as PieceType
             )
             let moveDescription = `${promotionPieceName} promoted on ${toSquare}`
-
             // Add any game-over state or check information
-            moveDescription += getGameOverDescription(game)
+            moveDescription += handleGameOverDescription(game)
             if (!game.isGameOver() && game.inCheck()) {
               moveDescription += ' (Check)'
             }
-
             // Trigger the onMove callback with the move description
             onMove(moveDescription)
           }
@@ -242,7 +178,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
           const move = game.move({ from: fromSquare, to: toSquare })
           if (move) {
             setPosition(game.fen()) // Update the board position after the move
-
             // Set the move description
             const pieceType = move.piece.toUpperCase() as PieceType
             let moveDescription = `${getPieceName(pieceType)} to ${toSquare}`
@@ -254,33 +189,31 @@ const ChessGame: React.FC<ChessGameProps> = ({
                 pieceType
               )} takes ${capturedPieceName} on ${toSquare}`
             }
-
-            moveDescription += getGameOverDescription(game)
+            moveDescription += handleGameOverDescription(game)
             if (!game.isGameOver() && game.inCheck()) {
               moveDescription += ' (Check)'
             }
-
             // Trigger the onMove callback with the move description
             onMove(moveDescription)
           }
         }
-        clearSelection()
+        handleClearSelection()
       } else if (piece) {
         // Select the new piece if there is no selected square yet
         setSelectedSquare(square)
         getPossibleMoves(square)
       } else {
         // Clear selection if clicking on an empty square
-        clearSelection()
+        handleClearSelection()
       }
     },
     [
-      makeMove,
+      makeMoveCallback,
       selectedSquare,
       getPossibleMoves,
       clearSelection,
       setPosition,
-      getGameOverDescription,
+      handleGameOverDescription,
       onMove,
     ]
   )
@@ -290,40 +223,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
       handleSquareClick(square)
     },
     [handleSquareClick]
-  )
-
-  const getMoveHighlightStyle = useMemo(
-    () =>
-      (square: string, isCapture: boolean): React.CSSProperties => {
-        const column = square[0]
-        const row = square[1]
-
-        const top =
-          color === 'white'
-            ? `${100 - parseInt(row) * squareSize}%`
-            : `${(parseInt(row) - 1) * squareSize}%`
-        const left =
-          color === 'white'
-            ? `${(column.charCodeAt(0) - 'a'.charCodeAt(0)) * squareSize}%`
-            : `${
-                (7 - (column.charCodeAt(0) - 'a'.charCodeAt(0))) * squareSize
-              }%`
-
-        return {
-          position: 'absolute',
-          top,
-          left,
-          width: `${squareSize}%`,
-          height: `${squareSize}%`,
-          background: isCapture
-            ? 'radial-gradient(transparent 0%, transparent 80%, rgba(0, 0, 0, 0.7) 80%)'
-            : 'rgba(0, 0, 0, 0.7)',
-          clipPath: isCapture ? 'none' : 'circle(13% at 50% 50%)',
-          pointerEvents: 'none',
-          zIndex: 10,
-        }
-      },
-    [color]
   )
 
   const handleDragBegin = useCallback(
@@ -351,15 +250,12 @@ const ChessGame: React.FC<ChessGameProps> = ({
         customLightSquareStyle={{ backgroundColor: '#E0E0E0' }}
         customDarkSquareStyle={{ backgroundColor: '#6A0DAD' }}
         onPromotionCheck={onPromotionCheck}
-        onPromotionPieceSelect={onPromotionPieceSelect}
+        onPromotionPieceSelect={handlePromotionSelection}
       />
 
       {selectedSquare &&
-        possibleMoves.map(({ square, isCapture }, index) => (
-          <div
-            key={`${square}-${index}`}
-            style={getMoveHighlightStyle(square, isCapture)}
-          />
+        highlightStyles.map((style, index) => (
+          <div key={`${possibleMoves[index].square}-${index}`} style={style} />
         ))}
     </div>
   )
