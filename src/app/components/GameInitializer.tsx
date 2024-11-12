@@ -1,17 +1,21 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 interface GameInitializerProps {
-  onStartGame: (color: 'white' | 'black') => void
+  onStartGame: (
+    color: 'white' | 'black',
+    timeLimit: number,
+    difficulty: number
+  ) => void
 }
 
 const GameInitializer: React.FC<GameInitializerProps> = ({ onStartGame }) => {
   const [selectedColor, setSelectedColor] = useState<'white' | 'black' | null>(
     null
   )
-  const [timeLimit, setTimeLimit] = useState<number>(5)
-  const [difficulty, setDifficulty] = useState<number>(1)
+  const [timeLimit, setTimeLimit] = useState<number>(5) // In minutes
+  const [difficulty, setDifficulty] = useState<number>(1) // Difficulty level
 
   return (
     <div className='flex flex-col items-center mt-10 w-full'>
@@ -84,7 +88,7 @@ const GameInitializer: React.FC<GameInitializerProps> = ({ onStartGame }) => {
         <button
           onClick={() => {
             if (selectedColor) {
-              onStartGame(selectedColor)
+              onStartGame(selectedColor, timeLimit, difficulty)
             }
           }}
           className='w-full bg-purple-600 text-white py-2 lg:py-3 rounded-md hover:bg-purple-700 transition-colors duration-300 text-base lg:text-lg'

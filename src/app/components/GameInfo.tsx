@@ -38,7 +38,7 @@ const GameInfo: React.FC<GameInfoProps> = ({
   }
 
   return (
-    <div className='mt-4 p-4 w-full max-w-[75vmin] bg-purple-900 bg-opacity-90 text-white rounded-lg shadow-lg'>
+    <div className='mt-20 p-4 w-full max-w-[75vmin] bg-purple-900 bg-opacity-90 text-white rounded-lg shadow-lg'>
       <h3 className='text-xl font-bold text-center'>Game Info</h3>
       <h4 className='font-semibold text-center mt-5 mb-5'>Move History</h4>
       <div className='flex justify-around space-x-4'>

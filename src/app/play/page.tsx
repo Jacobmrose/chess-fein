@@ -1,17 +1,39 @@
 'use client'
 
 import { useState } from 'react'
+import { useUser } from '@auth0/nextjs-auth0/client'
 import ChessGame from '@/app/components/ChessGame'
 import GameInitializer from '@/app/components/GameInitializer'
 import GameInfo from '@/app/components/GameInfo'
 
 export default function Play() {
+  const { user } = useUser() // Get user data from Auth0
   const [color, setColor] = useState<'white' | 'black' | null>(null)
   const [moves, setMoves] = useState<string[]>([])
-  const [isGameOver, setIsGameOver] = useState(false) // State to track if the game is over
+  const [isGameOver, setIsGameOver] = useState(false)
+  const [computerOpponent, setComputerOpponent] = useState(true)
+  const [timeLimit, setTimeLimit] = useState<number>(5) // Default time limit in minutes
+  const [difficulty, setDifficulty] = useState<number>(1) // Default AI difficulty
 
-  const handleStartGame = (selectedColor: 'white' | 'black') => {
+  // Dynamically set player names based on Auth0 or fallback to Stockfish for AI
+  const whitePlayerName =
+    color === 'white'
+      ? user?.name || 'White Player'
+      : `Stockfish Level ${difficulty}`
+
+  const blackPlayerName =
+    color === 'black'
+      ? user?.name || 'Black Player'
+      : `Stockfish Level ${difficulty}`
+
+  const handleStartGame = (
+    selectedColor: 'white' | 'black',
+    selectedTimeLimit: number,
+    selectedDifficulty: number
+  ) => {
     setColor(selectedColor)
+    setTimeLimit(selectedTimeLimit)
+    setDifficulty(selectedDifficulty)
     localStorage.setItem('playerColor', selectedColor)
     setMoves([]) // Clear previous moves when starting a new game
     setIsGameOver(false) // Reset game over state
@@ -23,19 +45,17 @@ export default function Play() {
 
   const handleResign = () => {
     alert('You resigned!')
-    setIsGameOver(true) // Set game over state
+    setIsGameOver(true)
   }
 
-  // New reset function
   const handleResetGame = () => {
-    setColor(null) // Reset color
-    setMoves([]) // Clear moves
-    setIsGameOver(false) // Reset game over state
+    setColor(null)
+    setMoves([])
+    setIsGameOver(false)
   }
 
-  // New game over handler
   const handleGameOver = () => {
-    setIsGameOver(true) // Set game over state
+    setIsGameOver(true)
   }
 
   return (
@@ -50,14 +70,17 @@ export default function Play() {
               onMove={handleMove}
               onGameOver={handleGameOver}
               isGameOver={isGameOver}
+              whitePlayerName={whitePlayerName}
+              blackPlayerName={blackPlayerName}
+              timeLimit={timeLimit * 60} // Convert minutes to seconds
+              difficulty={difficulty}
             />
-            {/* Render GameInfo below the ChessGame */}
             <GameInfo
               moves={moves}
               onResign={handleResign}
-              onResetGame={handleResetGame} // Pass reset function
+              onResetGame={handleResetGame}
               color={color}
-              isGameOver={isGameOver} // Pass game over state
+              isGameOver={isGameOver}
             />
           </>
         )}

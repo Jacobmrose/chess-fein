@@ -4,17 +4,22 @@ import { Chess, Square } from 'chess.js'
 import { getPieceName, Piece, PieceType } from '../utils/pieceUtils'
 import { getMoveHighlightStyle } from '../utils/highlightStyles'
 import { getGameOverDescription, clearSelection } from '../utils/gameUtils'
-import { makeMove } from '../utils/moveUtils'
+import { makeMove, handleSquareClick } from '../utils/moveUtils'
 import {
   onPromotionCheck,
   onPromotionPieceSelect,
 } from '../utils/promotionUtils'
+import PlayerInfo from './PlayerInfo'
 
 interface ChessGameProps {
   color: 'white' | 'black'
   onMove: (move: string) => void
   onGameOver: () => void
   isGameOver: boolean
+  whitePlayerName: string
+  blackPlayerName: string
+  timeLimit: number // Time limit in seconds
+  difficulty: number // AI difficulty level
 }
 
 const ChessGame: React.FC<ChessGameProps> = ({
@@ -22,6 +27,10 @@ const ChessGame: React.FC<ChessGameProps> = ({
   onMove,
   onGameOver,
   isGameOver,
+  whitePlayerName,
+  blackPlayerName,
+  timeLimit,
+  difficulty,
 }) => {
   const chessGame = useRef(new Chess())
   const [position, setPosition] = useState(chessGame.current.fen())
@@ -29,6 +38,11 @@ const ChessGame: React.FC<ChessGameProps> = ({
   const [possibleMoves, setPossibleMoves] = useState<
     { square: Square; isCapture: boolean }[]
   >([])
+  const [whiteTime, setWhiteTime] = useState(timeLimit)
+  const [blackTime, setBlackTime] = useState(timeLimit)
+  const [activePlayer, setActivePlayer] = useState<'white' | 'black'>('white') // Always start with white
+  const [gameEnded, setGameEnded] = useState(false)
+  const [winner, setWinner] = useState<string | null>(null) // Winner state for the banner
 
   const highlightStyles = useMemo(
     () =>
@@ -47,7 +61,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
   }, [])
 
   useEffect(() => {
-    if (chessGame.current.isGameOver()) {
+    if (chessGame.current.isGameOver() || gameEnded) {
       onGameOver()
     }
   }, [onGameOver])
@@ -70,7 +84,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
         onMove
       )
     },
-    [handleGameOverDescription, onMove, setPosition, chessGame, getPieceName]
+    [handleGameOverDescription, onMove]
   )
 
   const makeMoveCallback = useCallback(
@@ -108,121 +122,35 @@ const ChessGame: React.FC<ChessGameProps> = ({
     handleClearSelection()
   }, [handleClearSelection])
 
-  const handleSquareClick = useCallback(
+  const handleSquareClickCallback = useCallback(
     (square: Square) => {
-      const game = chessGame.current
-      const piece = game.get(square)
-      if (selectedSquare && piece && piece.color === game.turn()) {
-        setSelectedSquare(square)
-        getPossibleMoves(square)
-      } else if (selectedSquare) {
-        const fromSquare = selectedSquare
-        const toSquare = square
-
-        const legalMoves = game.moves({ square: fromSquare, verbose: true })
-
-        const legalMove = legalMoves.find((move) => move.to === toSquare)
-
-        if (!legalMove) {
-          return
-        }
-
-        const movingPiece = game.get(fromSquare)?.type
-        const isPawn = movingPiece === 'p'
-        const isBackRank =
-          (game.turn() === 'w' && toSquare[1] === '8') ||
-          (game.turn() === 'b' && toSquare[1] === '1')
-
-        // Check for promotion
-        if (isPawn && isBackRank) {
-          // Trigger promotion dialog if the pawn reaches the back rank
-          let promotionPiece = prompt(
-            'Promote to (q : Queen, r : Rook, b : Bishop, n : Knight):',
-            'q'
-          )
-          // Loop until a valid single character input is provided
-          while (promotionPiece && promotionPiece.length !== 1) {
-            promotionPiece = prompt(
-              'Please enter only one character: (q : Queen, r : Rook, b : Bishop, n : Knight):',
-              'q'
-            )
-          }
-          // If a valid promotion piece is chosen
-          if (
-            promotionPiece &&
-            ['q', 'r', 'b', 'n'].includes(promotionPiece.toLowerCase())
-          ) {
-            // Apply the promotion move
-            const promotionMove = {
-              from: fromSquare,
-              to: toSquare,
-              promotion: promotionPiece.toLowerCase() as 'q' | 'r' | 'b' | 'n',
-            }
-            game.move(promotionMove) // Apply the promotion move
-            setPosition(game.fen()) // Update the board position after the move
-            // Set the move description
-            const promotionPieceName = getPieceName(
-              promotionPiece.toUpperCase() as PieceType
-            )
-            let moveDescription = `${promotionPieceName} promoted on ${toSquare}`
-            // Add any game-over state or check information
-            moveDescription += handleGameOverDescription(game)
-            if (!game.isGameOver() && game.inCheck()) {
-              moveDescription += ' (Check)'
-            }
-            // Trigger the onMove callback with the move description
-            onMove(moveDescription)
-          }
-        } else {
-          // Handle regular moves (no promotion required)
-          const move = game.move({ from: fromSquare, to: toSquare })
-          if (move) {
-            setPosition(game.fen()) // Update the board position after the move
-            // Set the move description
-            const pieceType = move.piece.toUpperCase() as PieceType
-            let moveDescription = `${getPieceName(pieceType)} to ${toSquare}`
-            if (move.captured) {
-              const capturedPieceName = getPieceName(
-                move.captured.toUpperCase() as PieceType
-              )
-              moveDescription = `${getPieceName(
-                pieceType
-              )} takes ${capturedPieceName} on ${toSquare}`
-            }
-            moveDescription += handleGameOverDescription(game)
-            if (!game.isGameOver() && game.inCheck()) {
-              moveDescription += ' (Check)'
-            }
-            // Trigger the onMove callback with the move description
-            onMove(moveDescription)
-          }
-        }
-        handleClearSelection()
-      } else if (piece) {
-        // Select the new piece if there is no selected square yet
-        setSelectedSquare(square)
-        getPossibleMoves(square)
-      } else {
-        // Clear selection if clicking on an empty square
-        handleClearSelection()
-      }
+      handleSquareClick(
+        square,
+        chessGame,
+        selectedSquare,
+        setSelectedSquare,
+        setPosition,
+        getPossibleMoves,
+        handleGameOverDescription,
+        onMove,
+        handleClearSelection
+      )
     },
     [
-      makeMoveCallback,
+      chessGame,
       selectedSquare,
       getPossibleMoves,
-      clearSelection,
-      setPosition,
       handleGameOverDescription,
       onMove,
+      handleClearSelection,
     ]
   )
 
   const handlePieceClick = useCallback(
     (piece: Piece, square: Square) => {
-      handleSquareClick(square)
+      handleSquareClickCallback(square)
     },
-    [handleSquareClick]
+    [handleSquareClickCallback]
   )
 
   const handleDragBegin = useCallback(
@@ -233,25 +161,96 @@ const ChessGame: React.FC<ChessGameProps> = ({
     [getPossibleMoves]
   )
 
+  // Timer effect to handle countdown and declare a winner when time runs out
+  useEffect(() => {
+    if (isGameOver || gameEnded) return
+
+    const handleTimer = () => {
+      if (activePlayer === 'white') {
+        setWhiteTime((prevTime) => {
+          if (prevTime <= 1) {
+            setGameEnded(true)
+            setWinner('Black wins by time!')
+            return 0
+          }
+          return prevTime - 1
+        })
+      } else {
+        setBlackTime((prevTime) => {
+          if (prevTime <= 1) {
+            setGameEnded(true)
+            setWinner('White wins by time!')
+            return 0
+          }
+          return prevTime - 1
+        })
+      }
+    }
+
+    const interval = setInterval(handleTimer, 1000)
+
+    // Clear the interval when active player changes or game ends
+    return () => clearInterval(interval)
+  }, [activePlayer, isGameOver, gameEnded])
+
+  // Switch active player after each move
+  useEffect(() => {
+    if (!chessGame.current.isGameOver() && !gameEnded) {
+      setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
+    }
+  }, [position, gameEnded])
+
   return (
-    <div className='flex justify-center items-center w-full h-full max-w-[75vmin] max-h-[75vmin] rounded-lg shadow-lg relative'>
-      <Chessboard
-        position={position}
-        boardOrientation={color}
-        onPieceDrop={handlePieceDrop}
-        onPieceDragBegin={handleDragBegin}
-        onPieceDragEnd={handleDragEnd}
-        onSquareClick={handleSquareClick}
-        onPieceClick={handlePieceClick}
-        arePiecesDraggable={!isGameOver}
-        customDropSquareStyle={{
-          boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.3)',
-        }}
-        customLightSquareStyle={{ backgroundColor: '#E0E0E0' }}
-        customDarkSquareStyle={{ backgroundColor: '#6A0DAD' }}
-        onPromotionCheck={onPromotionCheck}
-        onPromotionPieceSelect={handlePromotionSelection}
-      />
+    <div className='flex flex-col justify-center items-center w-full h-full max-w-[75vmin] max-h-[75vmin] rounded-lg shadow-lg relative'>
+      {/* Banner for winner */}
+      {winner && (
+        <div className='absolute top-1/2 left-0 transform -translate-y-1/2 w-full bg-purple-300 text-black text-center p-2 font-bold z-10'>
+          {winner}
+        </div>
+      )}
+
+      {/* Player Info Component - Opponent */}
+      <div className='flex justify-between w-full mb-4'>
+        <PlayerInfo
+          playerName={color === 'white' ? blackPlayerName : whitePlayerName}
+          timer={color === 'white' ? blackTime : whiteTime}
+          isActive={activePlayer === (color === 'white' ? 'black' : 'white')}
+          position='top'
+          color={color === 'white' ? 'black' : 'white'}
+        />
+      </div>
+
+      {/* Chessboard */}
+      <div className='flex justify-center w-full'>
+        <Chessboard
+          position={position}
+          boardOrientation={color}
+          onPieceDrop={handlePieceDrop}
+          onPieceDragBegin={handleDragBegin}
+          onPieceDragEnd={handleDragEnd}
+          onSquareClick={isGameOver ? undefined : handleSquareClickCallback}
+          onPieceClick={isGameOver ? undefined : handlePieceClick}
+          arePiecesDraggable={!isGameOver}
+          customDropSquareStyle={{
+            boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.3)',
+          }}
+          customLightSquareStyle={{ backgroundColor: '#E0E0E0' }}
+          customDarkSquareStyle={{ backgroundColor: '#6A0DAD' }}
+          onPromotionCheck={onPromotionCheck}
+          onPromotionPieceSelect={handlePromotionSelection}
+        />
+      </div>
+
+      {/* Player Info Component - Player */}
+      <div className='flex justify-between w-full mt-4'>
+        <PlayerInfo
+          playerName={color === 'white' ? whitePlayerName : blackPlayerName}
+          timer={color === 'white' ? whiteTime : blackTime}
+          isActive={activePlayer === color}
+          position='bottom'
+          color={color}
+        />
+      </div>
 
       {selectedSquare &&
         highlightStyles.map((style, index) => (
