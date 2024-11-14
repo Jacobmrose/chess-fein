@@ -3,13 +3,18 @@ import { Chessboard } from 'react-chessboard'
 import { Chess, Square } from 'chess.js'
 import { getPieceName, Piece } from '../utils/pieceUtils'
 import { getMoveHighlightStyle } from '../utils/highlightStyles'
-import { getGameOverDescription, clearSelection } from '../utils/gameUtils'
+import { clearSelection } from '../utils/gameUtils'
 import { makeMove, handleSquareClick } from '../utils/moveUtils'
 import {
   onPromotionCheck,
   onPromotionPieceSelect,
 } from '../utils/promotionUtils'
 import PlayerInfo from './PlayerInfo'
+import {
+  handleGameOverDescription,
+  declareWinner,
+} from '../utils/gameOverUtils'
+import { startTimer } from '../utils/timerUtils'
 
 interface ChessGameProps {
   color: 'white' | 'black'
@@ -60,40 +65,16 @@ const ChessGame: React.FC<ChessGameProps> = ({
     clearSelection(setSelectedSquare, setPossibleMoves)
   }, [])
 
-  const handleGameOverDescription = useCallback((game: Chess) => {
-    const description = getGameOverDescription(game)
-    setEndReason(description)
-    return description
-  }, [])
-
   useEffect(() => {
     if (gameEnded) return
 
     if (chessGame.current.isGameOver()) {
-      const description = handleGameOverDescription(chessGame.current)
+      handleGameOverDescription(chessGame.current, setEndReason)
       setGameEnded(true)
-
-      if (chessGame.current.isCheckmate()) {
-        setWinner(
-          chessGame.current.turn() === 'w'
-            ? 'Black wins by checkmate!'
-            : 'White wins by checkmate!'
-        )
-      } else if (chessGame.current.isDraw()) {
-        setWinner('Game ends in a draw!')
-      } else if (chessGame.current.isStalemate()) {
-        setWinner('Draw by stalemate!')
-      } else if (chessGame.current.isThreefoldRepetition()) {
-        setWinner('Draw by threefold repetition!')
-      } else if (chessGame.current.isInsufficientMaterial()) {
-        setWinner('Draw by insufficient material!')
-      } else {
-        setWinner('Game over')
-      }
-
+      declareWinner(chessGame.current, setWinner)
       onGameOver()
     }
-  }, [position, handleGameOverDescription, onGameOver, gameEnded])
+  }, [position, onGameOver, gameEnded, setEndReason])
 
   const handlePromotionSelection = useCallback(
     (
@@ -109,11 +90,11 @@ const ChessGame: React.FC<ChessGameProps> = ({
         game,
         setPosition,
         getPieceName,
-        handleGameOverDescription,
+        (game) => handleGameOverDescription(game, setEndReason),
         onMove
       )
     },
-    [handleGameOverDescription, onMove]
+    [handleGameOverDescription, onMove, setEndReason]
   )
 
   const makeMoveCallback = useCallback(
@@ -160,7 +141,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
         setSelectedSquare,
         setPosition,
         getPossibleMoves,
-        handleGameOverDescription,
+        (game) => handleGameOverDescription(game, setEndReason),
         onMove,
         handleClearSelection
       )
@@ -172,6 +153,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
       handleGameOverDescription,
       onMove,
       handleClearSelection,
+      setEndReason,
     ]
   )
 
@@ -190,51 +172,34 @@ const ChessGame: React.FC<ChessGameProps> = ({
     [getPossibleMoves]
   )
 
-  // Display winner banner after resignation
   useEffect(() => {
     if (isResigned) {
-      const winningPlayer = color === 'white' ? 'Black' : 'White'
-      setWinner(`${winningPlayer} wins by resignation!`)
+      const losingPlayer = color !== 'white' ? 'Black' : 'White'
+      setWinner(`${losingPlayer} loses by resignation!`)
       setGameEnded(true)
       onGameOver()
     }
   }, [isResigned, color, onGameOver])
 
-  // Timer effect to handle countdown and declare a winner when time runs out
+  // Use the timer utility function
   useEffect(() => {
     if (isGameOver || gameEnded) return
 
-    const handleTimer = () => {
-      if (activePlayer === 'white') {
-        setWhiteTime((prevTime) => {
-          if (prevTime <= 1) {
-            setGameEnded(true)
-            setWinner('Black wins by time!')
-            onGameOver()
-            return 0
-          }
-          return prevTime - 1
-        })
-      } else {
-        setBlackTime((prevTime) => {
-          if (prevTime <= 1) {
-            setGameEnded(true)
-            setWinner('White wins by time!')
-            onGameOver()
-            return 0
-          }
-          return prevTime - 1
-        })
-      }
-    }
+    const stopTimer = startTimer(
+      activePlayer,
+      whiteTime,
+      blackTime,
+      setWhiteTime,
+      setBlackTime,
+      setGameEnded,
+      setWinner,
+      onGameOver
+    )
 
-    const interval = setInterval(handleTimer, 1000)
+    // Clear the interval when the component unmounts or the timer stops
+    return stopTimer
+  }, [activePlayer, isGameOver, gameEnded, whiteTime, blackTime])
 
-    // Clear the interval when active player changes or game ends
-    return () => clearInterval(interval)
-  }, [activePlayer, isGameOver, gameEnded])
-
-  // Switch active player after each move
   useEffect(() => {
     if (!chessGame.current.isGameOver() && !gameEnded) {
       setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
@@ -243,14 +208,12 @@ const ChessGame: React.FC<ChessGameProps> = ({
 
   return (
     <div className='flex flex-col justify-center items-center w-full h-full max-w-[75vmin] max-h-[75vmin] rounded-lg shadow-lg relative'>
-      {/* Banner for winner */}
       {winner && (
         <div className='absolute top-1/2 left-0 transform -translate-y-1/2 w-full bg-purple-300 text-black text-center p-2 font-bold z-10'>
           {winner} {endReason}
         </div>
       )}
 
-      {/* Player Info Component - Opponent */}
       <div className='flex justify-between w-full mb-4'>
         <PlayerInfo
           playerName={color === 'white' ? blackPlayerName : whitePlayerName}
@@ -261,7 +224,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
         />
       </div>
 
-      {/* Chessboard */}
       <div className='flex justify-center w-full'>
         <Chessboard
           position={position}
@@ -282,7 +244,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
         />
       </div>
 
-      {/* Player Info Component - Player */}
       <div className='flex justify-between w-full mt-4'>
         <PlayerInfo
           playerName={color === 'white' ? whitePlayerName : blackPlayerName}

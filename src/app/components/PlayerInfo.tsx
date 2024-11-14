@@ -15,7 +15,7 @@ const PlayerInfo: React.FC<PlayerInfoProps> = ({
 }) => {
   return (
     <div
-      className={`flex justify-between items-center w-full py-2 px-4 rounded-lg shadow-lg
+      className={`flex justify-between items-center w-full py-2 px-4 sm:py-3 sm:px-6 rounded-lg shadow-lg
         ${position === 'top' ? 'flex-row' : 'flex-row-reverse'}
         ${
           isActive
@@ -27,8 +27,8 @@ const PlayerInfo: React.FC<PlayerInfoProps> = ({
             : 'bg-black text-gray-300' // Inactive black
         }`}
     >
-      <div className='text-lg font-medium'>{playerName}</div>
-      <div className='text-xl font-bold'>
+      <div className='text-base sm:text-lg font-medium'>{playerName}</div>
+      <div className='text-xl sm:text-2xl font-bold'>
         {/* Format time as mm:ss */}
         {`${Math.floor(timer / 60)}:${(timer % 60)
           .toString()
