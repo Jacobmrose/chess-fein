@@ -18,7 +18,7 @@ import { startTimer } from '../utils/timerUtils'
 
 interface ChessGameProps {
   color: 'white' | 'black'
-  onMove: (move: string) => void
+  onMove: (move: string, fen: string) => void
   onGameOver: () => void
   isGameOver: boolean
   isResigned: boolean
@@ -27,6 +27,7 @@ interface ChessGameProps {
   timeLimit: number
   difficulty: number
   onResign: () => void
+  currentMoveIndex: number
 }
 
 const ChessGame: React.FC<ChessGameProps> = ({
@@ -39,9 +40,13 @@ const ChessGame: React.FC<ChessGameProps> = ({
   blackPlayerName,
   timeLimit,
   difficulty,
+  currentMoveIndex,
 }) => {
   const chessGame = useRef(new Chess())
   const [position, setPosition] = useState(chessGame.current.fen())
+  const [fenHistory, setFenHistory] = useState<string[]>([
+    chessGame.current.fen(),
+  ])
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null)
   const [possibleMoves, setPossibleMoves] = useState<
     { square: Square; isCapture: boolean }[]
@@ -53,12 +58,37 @@ const ChessGame: React.FC<ChessGameProps> = ({
   const [winner, setWinner] = useState<string | null>(null)
   const [endReason, setEndReason] = useState<string | null>(null)
 
+  const isAtCurrentMove = useMemo(
+    () => position === fenHistory[fenHistory.length - 1],
+    [position, fenHistory]
+  )
+
+  useEffect(() => {
+    const savedHistory = JSON.parse(localStorage.getItem('fenHistory') || '[]')
+    if (savedHistory.length) {
+      setFenHistory(savedHistory)
+      setPosition(savedHistory[savedHistory.length - 1])
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('fenHistory', JSON.stringify(fenHistory))
+  }, [fenHistory])
+
+  useEffect(() => {
+    if (currentMoveIndex >= 0 && currentMoveIndex < fenHistory.length) {
+      setPosition(fenHistory[currentMoveIndex])
+    }
+  }, [currentMoveIndex, fenHistory])
+
   const highlightStyles = useMemo(
     () =>
-      possibleMoves.map(({ square, isCapture }) =>
-        getMoveHighlightStyle(square, isCapture, color)
-      ),
-    [possibleMoves, color]
+      isAtCurrentMove // Only apply highlights if at the current move
+        ? possibleMoves.map(({ square, isCapture }) =>
+            getMoveHighlightStyle(square, isCapture, color)
+          )
+        : [],
+    [possibleMoves, color, isAtCurrentMove]
   )
 
   const handleClearSelection = useCallback(() => {
@@ -88,10 +118,13 @@ const ChessGame: React.FC<ChessGameProps> = ({
         promoteFromSquare,
         promoteToSquare,
         game,
-        setPosition,
+        (newFen) => {
+          setPosition(newFen)
+          setFenHistory((prevHistory) => [...prevHistory, newFen])
+        },
         getPieceName,
         (game) => handleGameOverDescription(game, setEndReason),
-        onMove
+        (move) => onMove(move, chessGame.current.fen())
       )
     },
     [handleGameOverDescription, onMove, setEndReason]
@@ -103,9 +136,12 @@ const ChessGame: React.FC<ChessGameProps> = ({
         fromSquare,
         toSquare,
         chessGame.current,
-        onMove,
+        (move) => onMove(move, chessGame.current.fen()),
         isGameOver,
-        setPosition
+        (newFen) => {
+          setPosition(newFen)
+          setFenHistory((prevHistory) => [...prevHistory, newFen])
+        }
       )
     },
     [onMove, isGameOver]
@@ -113,9 +149,13 @@ const ChessGame: React.FC<ChessGameProps> = ({
 
   const handlePieceDrop = useCallback(
     (fromSquare: Square, toSquare: Square) => {
-      return makeMoveCallback(fromSquare, toSquare)
+      // Prevent moves if not at the latest FEN position
+      if (!isAtCurrentMove) return false
+
+      // Return the result of makeMoveCallback, assuming it returns a boolean for move success
+      return makeMoveCallback(fromSquare, toSquare) || false
     },
-    [makeMoveCallback]
+    [makeMoveCallback, isAtCurrentMove]
   )
 
   const getPossibleMoves = useCallback((square: Square) => {
@@ -128,21 +168,28 @@ const ChessGame: React.FC<ChessGameProps> = ({
     setPossibleMoves(moveSquares)
   }, [])
 
-  const handleDragEnd = useCallback(() => {
-    handleClearSelection()
-  }, [handleClearSelection])
+  const handleDragEnd = useCallback(
+    () => handleClearSelection(),
+    [handleClearSelection]
+  )
 
   const handleSquareClickCallback = useCallback(
     (square: Square) => {
+      // Prevent moves if not at the latest FEN position
+      if (!isAtCurrentMove) return
+
       handleSquareClick(
         square,
         chessGame,
         selectedSquare,
         setSelectedSquare,
-        setPosition,
+        (newFen) => {
+          setPosition(newFen)
+          setFenHistory((prevHistory) => [...prevHistory, newFen] as string[])
+        },
         getPossibleMoves,
         (game) => handleGameOverDescription(game, setEndReason),
-        onMove,
+        (move) => onMove(move, chessGame.current.fen()),
         handleClearSelection
       )
     },
@@ -154,13 +201,12 @@ const ChessGame: React.FC<ChessGameProps> = ({
       onMove,
       handleClearSelection,
       setEndReason,
+      isAtCurrentMove,
     ]
   )
 
   const handlePieceClick = useCallback(
-    (piece: Piece, square: Square) => {
-      handleSquareClickCallback(square)
-    },
+    (piece: Piece, square: Square) => handleSquareClickCallback(square),
     [handleSquareClickCallback]
   )
 
@@ -181,7 +227,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
     }
   }, [isResigned, color, onGameOver])
 
-  // Use the timer utility function
   useEffect(() => {
     if (isGameOver || gameEnded) return
 
@@ -196,7 +241,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
       onGameOver
     )
 
-    // Clear the interval when the component unmounts or the timer stops
     return stopTimer
   }, [activePlayer, isGameOver, gameEnded, whiteTime, blackTime])
 
@@ -254,7 +298,8 @@ const ChessGame: React.FC<ChessGameProps> = ({
         />
       </div>
 
-      {selectedSquare &&
+      {isAtCurrentMove &&
+        selectedSquare &&
         highlightStyles.map((style, index) => (
           <div key={`${possibleMoves[index].square}-${index}`} style={style} />
         ))}
