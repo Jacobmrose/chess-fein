@@ -7,7 +7,9 @@ import {
   FaAngleDoubleRight,
   FaChevronUp,
   FaChevronDown,
+  FaRedoAlt,
 } from 'react-icons/fa'
+import { TbSwitch2 } from 'react-icons/tb'
 
 interface GameInfoProps {
   moves: string[]
@@ -18,6 +20,8 @@ interface GameInfoProps {
   onResetGame: () => void
   color: 'white' | 'black'
   isGameOver: boolean
+  boardOrientation: 'white' | 'black'
+  onToggleBoardOrientation: () => void
 }
 
 const GameInfo: React.FC<GameInfoProps> = ({
@@ -29,6 +33,8 @@ const GameInfo: React.FC<GameInfoProps> = ({
   onResetGame,
   color,
   isGameOver,
+  boardOrientation,
+  onToggleBoardOrientation,
 }) => {
   const [showConfirm, setShowConfirm] = useState(false)
   const [isGameInfoVisible, setIsGameInfoVisible] = useState(true)
@@ -60,17 +66,30 @@ const GameInfo: React.FC<GameInfoProps> = ({
     setIsGameInfoVisible(!isGameInfoVisible)
   }
 
+  const handleTakeBackMove = () => {
+    console.log('Take back the last move')
+  }
+
   return (
     <div className='mt-20 p-4 w-full max-w-[75vmin] bg-purple-900 bg-opacity-90 text-white rounded-lg shadow-lg'>
       {/* Centered navigation buttons with space between */}
-      <div className='flex justify-center items-center space-x-8 mb-2'>
+      <div className='flex justify-center items-center space-x-4 mb-2'>
+        {/* New button to switch board orientation */}
+        <button
+          onClick={onToggleBoardOrientation}
+          className='bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex items-center justify-center'
+          aria-label='Switch board orientation'
+        >
+          <TbSwitch2 className='h-5 w-5 sm:h-4 sm:w-4 -rotate-90' />
+        </button>
+
         <button
           onClick={handleFirstMove}
           className='bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex items-center justify-center'
           disabled={currentMoveIndex === 0}
           aria-label='Go to first move'
         >
-          <FaAngleDoubleLeft className='h-5 w-5' />
+          <FaAngleDoubleLeft className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
         <button
           onClick={handlePreviousMove}
@@ -78,7 +97,7 @@ const GameInfo: React.FC<GameInfoProps> = ({
           disabled={currentMoveIndex === 0}
           aria-label='Go to previous move'
         >
-          <FaChevronLeft className='h-5 w-5' />
+          <FaChevronLeft className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
         <button
           onClick={handleNextMove}
@@ -86,7 +105,7 @@ const GameInfo: React.FC<GameInfoProps> = ({
           disabled={currentMoveIndex >= fenHistory.length - 1}
           aria-label='Go to next move'
         >
-          <FaChevronRight className='h-5 w-5' />
+          <FaChevronRight className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
         <button
           onClick={handleCurrentMove}
@@ -94,7 +113,16 @@ const GameInfo: React.FC<GameInfoProps> = ({
           disabled={currentMoveIndex >= fenHistory.length - 1}
           aria-label='Go to current game state'
         >
-          <FaAngleDoubleRight className='h-5 w-5' />
+          <FaAngleDoubleRight className='h-5 w-5 sm:h-4 sm:w-4' />
+        </button>
+
+        {/* New button to take back a move */}
+        <button
+          onClick={handleTakeBackMove}
+          className='bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex items-center justify-center'
+          aria-label='Take back last move'
+        >
+          <FaRedoAlt className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
       </div>
 
@@ -192,17 +220,19 @@ const GameInfo: React.FC<GameInfoProps> = ({
           {showConfirm && (
             <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
               <div className='bg-white rounded-lg p-4 shadow-lg max-w-xs w-full'>
-                <h4 className='text-lg font-semibold'>Confirm Resignation</h4>
+                <h4 className='text-lg text-center font-semibold text-black'>
+                  Are you sure you want to resign?
+                </h4>
                 <div className='flex justify-around mt-4'>
                   <button
                     onClick={handleConfirmResign}
-                    className='bg-green-600 text-white py-2 px-4 rounded-lg'
+                    className='bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700'
                   >
                     Yes
                   </button>
                   <button
                     onClick={handleCancelResign}
-                    className='bg-red-600 text-white py-2 px-4 rounded-lg'
+                    className='bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700'
                   >
                     No
                   </button>

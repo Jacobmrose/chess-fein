@@ -3,16 +3,16 @@ export const squareSize = 12.5
 export const getMoveHighlightStyle = (
   square: string,
   isCapture: boolean,
-  color: 'white' | 'black'
+  boardOrientation: 'white' | 'black'
 ): React.CSSProperties => {
   const column = square[0]
   const row = square[1]
   const top =
-    color === 'white'
+    boardOrientation === 'white'
       ? `${100 - parseInt(row) * squareSize}%`
       : `${(parseInt(row) - 1) * squareSize}%`
   const left =
-    color === 'white'
+    boardOrientation === 'white'
       ? `${(column.charCodeAt(0) - 'a'.charCodeAt(0)) * squareSize}%`
       : `${(7 - (column.charCodeAt(0) - 'a'.charCodeAt(0))) * squareSize}%`
 

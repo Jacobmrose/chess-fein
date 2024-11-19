@@ -18,6 +18,7 @@ import { startTimer } from '../utils/timerUtils'
 
 interface ChessGameProps {
   color: 'white' | 'black'
+  boardOrientation: 'white' | 'black' // Add this prop
   onMove: (move: string, fen: string) => void
   onGameOver: () => void
   isGameOver: boolean
@@ -32,6 +33,7 @@ interface ChessGameProps {
 
 const ChessGame: React.FC<ChessGameProps> = ({
   color,
+  boardOrientation,
   onMove,
   onGameOver,
   isGameOver,
@@ -49,7 +51,10 @@ const ChessGame: React.FC<ChessGameProps> = ({
   ])
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null)
   const [possibleMoves, setPossibleMoves] = useState<
-    { square: Square; isCapture: boolean }[]
+    {
+      square: Square
+      isCapture: boolean
+    }[]
   >([])
   const [whiteTime, setWhiteTime] = useState(timeLimit)
   const [blackTime, setBlackTime] = useState(timeLimit)
@@ -83,12 +88,12 @@ const ChessGame: React.FC<ChessGameProps> = ({
 
   const highlightStyles = useMemo(
     () =>
-      isAtCurrentMove // Only apply highlights if at the current move
+      isAtCurrentMove
         ? possibleMoves.map(({ square, isCapture }) =>
-            getMoveHighlightStyle(square, isCapture, color)
+            getMoveHighlightStyle(square, isCapture, boardOrientation)
           )
         : [],
-    [possibleMoves, color, isAtCurrentMove]
+    [possibleMoves, boardOrientation, isAtCurrentMove]
   )
 
   const handleClearSelection = useCallback(() => {
@@ -149,10 +154,8 @@ const ChessGame: React.FC<ChessGameProps> = ({
 
   const handlePieceDrop = useCallback(
     (fromSquare: Square, toSquare: Square) => {
-      // Prevent moves if not at the latest FEN position
       if (!isAtCurrentMove) return false
 
-      // Return the result of makeMoveCallback, assuming it returns a boolean for move success
       return makeMoveCallback(fromSquare, toSquare) || false
     },
     [makeMoveCallback, isAtCurrentMove]
@@ -175,7 +178,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
 
   const handleSquareClickCallback = useCallback(
     (square: Square) => {
-      // Prevent moves if not at the latest FEN position
       if (!isAtCurrentMove) return
 
       handleSquareClick(
@@ -271,7 +273,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
       <div className='flex justify-center w-full'>
         <Chessboard
           position={position}
-          boardOrientation={color}
+          boardOrientation={boardOrientation}
           onPieceDrop={handlePieceDrop}
           onPieceDragBegin={handleDragBegin}
           onPieceDragEnd={handleDragEnd}

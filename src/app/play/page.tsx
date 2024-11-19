@@ -10,6 +10,9 @@ import { Chess } from 'chess.js'
 export default function Play() {
   const { user } = useUser()
   const [color, setColor] = useState<'white' | 'black' | null>(null)
+  const [boardOrientation, setBoardOrientation] = useState<'white' | 'black'>(
+    'white'
+  ) // New state
   const [moves, setMoves] = useState<string[]>([])
   const [fenHistory, setFenHistory] = useState<string[]>([new Chess().fen()]) // Initialize with starting position
   const [currentMoveIndex, setCurrentMoveIndex] = useState<number>(0)
@@ -29,6 +32,7 @@ export default function Play() {
     selectedDifficulty: number
   ) => {
     setColor(selectedColor)
+    setBoardOrientation(selectedColor) // Set initial orientation to player's color
     setTimeLimit(selectedTimeLimit)
     setDifficulty(selectedDifficulty)
     setMoves([])
@@ -50,6 +54,7 @@ export default function Play() {
 
   const handleResetGame = () => {
     setColor(null)
+    setBoardOrientation('white') // Reset orientation to default
     setMoves([])
     setFenHistory([new Chess().fen()]) // Reset fenHistory to initial position
     setCurrentMoveIndex(0)
@@ -59,6 +64,10 @@ export default function Play() {
 
   const handleGameOver = () => {
     setIsGameOver(true)
+  }
+
+  const toggleBoardOrientation = () => {
+    setBoardOrientation((prev) => (prev === 'white' ? 'black' : 'white'))
   }
 
   const getPlayerName = (side: 'white' | 'black') =>
@@ -78,6 +87,7 @@ export default function Play() {
           <>
             <ChessGame
               color={color}
+              boardOrientation={boardOrientation} // Pass down boardOrientation
               onMove={(move, fen) => handleMove(move, fen)}
               onGameOver={handleGameOver}
               isGameOver={isGameOver}
@@ -98,6 +108,8 @@ export default function Play() {
               onResetGame={handleResetGame}
               color={color}
               isGameOver={isGameOver}
+              boardOrientation={boardOrientation} // Pass down boardOrientation
+              onToggleBoardOrientation={toggleBoardOrientation} // Pass toggle handler
             />
           </>
         )}

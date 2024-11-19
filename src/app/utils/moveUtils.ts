@@ -9,7 +9,7 @@ export const makeMove = (
   fromSquare: Square,
   toSquare: Square,
   game: Chess,
-  onMove: (move: string, fen: string) => void, // Updated to include FEN in onMove
+  onMove: (move: string, fen: string) => void,
   isGameOver: boolean,
   setPosition: (fen: string) => void
 ) => {
@@ -24,7 +24,37 @@ export const makeMove = (
 
   if (!isLegalMove) return false
 
-  const move = game.move({ from: fromSquare, to: toSquare })
+  // Check for pawn promotion
+  const movingPiece = game.get(fromSquare)?.type
+  const isPawn = movingPiece === 'p'
+  const isBackRank =
+    (game.turn() === 'w' && toSquare[1] === '8') ||
+    (game.turn() === 'b' && toSquare[1] === '1')
+
+  let move
+  if (isPawn && isBackRank) {
+    let promotionPiece = prompt(
+      'Promote to (q: Queen, r: Rook, b: Bishop, n: Knight):',
+      'q'
+    )
+    while (
+      promotionPiece &&
+      !['q', 'r', 'b', 'n'].includes(promotionPiece.toLowerCase())
+    ) {
+      promotionPiece = prompt(
+        'Invalid input. Please enter one of q, r, b, n:',
+        'q'
+      )
+    }
+    move = game.move({
+      from: fromSquare,
+      to: toSquare,
+      promotion: promotionPiece?.toLowerCase() as 'q' | 'r' | 'b' | 'n',
+    })
+  } else {
+    move = game.move({ from: fromSquare, to: toSquare })
+  }
+
   if (move) {
     const newFen = game.fen()
     setPosition(newFen)
@@ -42,10 +72,17 @@ export const makeMove = (
       )} takes ${capturedPieceName} on ${toSquare}`
     }
 
+    if (isPawn && isBackRank && move.promotion) {
+      const promotionPieceName = getPieceName(
+        move.promotion.toUpperCase() as PieceType
+      )
+      moveDescription = ` ${promotionPieceName} promoted on ${toSquare}`
+    }
+
     moveDescription += getGameOverDescription(game)
     if (!game.isGameOver() && game.inCheck()) moveDescription += ' (Check)'
 
-    onMove(moveDescription, newFen) // Pass move description and FEN
+    onMove(moveDescription, newFen)
     return true
   }
 
@@ -66,7 +103,6 @@ export const navigateToMove = (
   setPosition(fen)
 }
 
-// Updated handleSquareClick function
 export const handleSquareClick = (
   square: Square,
   chessGame: React.MutableRefObject<Chess>,
@@ -75,7 +111,7 @@ export const handleSquareClick = (
   setPosition: React.Dispatch<React.SetStateAction<string>>,
   getPossibleMoves: (square: Square) => void,
   handleGameOverDescription: (game: Chess) => string,
-  onMove: (move: string, fen: string) => void, // Include FEN
+  onMove: (move: string, fen: string) => void,
   clearSelection: () => void
 ) => {
   const game = chessGame.current
@@ -88,37 +124,18 @@ export const handleSquareClick = (
     const fromSquare = selectedSquare
     const toSquare = square
 
-    const legalMoves = game.moves({ square: fromSquare, verbose: true })
-    const legalMove = legalMoves.find((move) => move.to === toSquare)
+    const isMoveSuccessful = makeMove(
+      fromSquare,
+      toSquare,
+      game,
+      onMove,
+      game.isGameOver(),
+      setPosition
+    )
 
-    if (!legalMove) return
-
-    const move = game.move({ from: fromSquare, to: toSquare })
-    if (move) {
-      const newFen = game.fen()
-      setPosition(newFen)
-
-      let moveDescription = `${getPieceName(
-        move.piece.toUpperCase() as PieceType
-      )} to ${toSquare}`
-
-      if (move.captured) {
-        const capturedPieceName = getPieceName(
-          move.captured.toUpperCase() as PieceType
-        )
-        moveDescription = `${getPieceName(
-          move.piece.toUpperCase() as PieceType
-        )} takes ${capturedPieceName} on ${toSquare}`
-      }
-
-      moveDescription += handleGameOverDescription(game)
-      if (!game.isGameOver() && game.inCheck()) {
-        moveDescription += ' (Check)'
-      }
-
-      onMove(moveDescription, newFen) // Update FEN and move description
+    if (isMoveSuccessful) {
+      clearSelection()
     }
-    clearSelection()
   } else if (piece) {
     setSelectedSquare(square)
     getPossibleMoves(square)
