@@ -29,6 +29,10 @@ interface ChessGameProps {
   difficulty: number
   onResign: () => void
   currentMoveIndex: number
+  activePlayer: 'white' | 'black' // New prop
+  setActivePlayer: (player: 'white' | 'black') => void // New function prop
+  fenHistory: string[] // Accept fenHistory as a prop
+  setFenHistory: React.Dispatch<React.SetStateAction<string[]>> // Make sure this is correct
 }
 
 const ChessGame: React.FC<ChessGameProps> = ({
@@ -43,12 +47,13 @@ const ChessGame: React.FC<ChessGameProps> = ({
   timeLimit,
   difficulty,
   currentMoveIndex,
+  activePlayer,
+  setActivePlayer,
+  fenHistory,
+  setFenHistory,
 }) => {
   const chessGame = useRef(new Chess())
   const [position, setPosition] = useState(chessGame.current.fen())
-  const [fenHistory, setFenHistory] = useState<string[]>([
-    chessGame.current.fen(),
-  ])
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null)
   const [possibleMoves, setPossibleMoves] = useState<
     {
@@ -58,10 +63,20 @@ const ChessGame: React.FC<ChessGameProps> = ({
   >([])
   const [whiteTime, setWhiteTime] = useState(timeLimit)
   const [blackTime, setBlackTime] = useState(timeLimit)
-  const [activePlayer, setActivePlayer] = useState<'white' | 'black'>('white')
   const [gameEnded, setGameEnded] = useState(false)
   const [winner, setWinner] = useState<string | null>(null)
   const [endReason, setEndReason] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!chessGame.current.isGameOver() && !gameEnded) {
+      setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
+    }
+  }, [position, gameEnded, currentMoveIndex])
+
+  useEffect(() => {
+    chessGame.current.load(position)
+    setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
+  }, [position])
 
   const isAtCurrentMove = useMemo(
     () => position === fenHistory[fenHistory.length - 1],
@@ -83,6 +98,8 @@ const ChessGame: React.FC<ChessGameProps> = ({
   useEffect(() => {
     if (currentMoveIndex >= 0 && currentMoveIndex < fenHistory.length) {
       setPosition(fenHistory[currentMoveIndex])
+      chessGame.current.load(fenHistory[currentMoveIndex])
+      setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
     }
   }, [currentMoveIndex, fenHistory])
 
@@ -125,7 +142,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
         game,
         (newFen) => {
           setPosition(newFen)
-          setFenHistory((prevHistory) => [...prevHistory, newFen])
+          setFenHistory((prevHistory: string[]) => [...prevHistory, newFen])
         },
         getPieceName,
         (game) => handleGameOverDescription(game, setEndReason),
@@ -145,7 +162,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
         isGameOver,
         (newFen) => {
           setPosition(newFen)
-          setFenHistory((prevHistory) => [...prevHistory, newFen])
+          setFenHistory((prevHistory: string[]) => [...prevHistory, newFen])
         }
       )
     },
@@ -187,7 +204,9 @@ const ChessGame: React.FC<ChessGameProps> = ({
         setSelectedSquare,
         (newFen) => {
           setPosition(newFen)
-          setFenHistory((prevHistory) => [...prevHistory, newFen] as string[])
+          setFenHistory((prevHistory: any) => {
+            return [...prevHistory, newFen]
+          })
         },
         getPossibleMoves,
         (game) => handleGameOverDescription(game, setEndReason),

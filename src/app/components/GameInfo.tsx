@@ -20,8 +20,8 @@ interface GameInfoProps {
   onResetGame: () => void
   color: 'white' | 'black'
   isGameOver: boolean
-  boardOrientation: 'white' | 'black'
   onToggleBoardOrientation: () => void
+  onTakeBackMove: () => void
 }
 
 const GameInfo: React.FC<GameInfoProps> = ({
@@ -33,8 +33,8 @@ const GameInfo: React.FC<GameInfoProps> = ({
   onResetGame,
   color,
   isGameOver,
-  boardOrientation,
   onToggleBoardOrientation,
+  onTakeBackMove,
 }) => {
   const [showConfirm, setShowConfirm] = useState(false)
   const [isGameInfoVisible, setIsGameInfoVisible] = useState(true)
@@ -67,7 +67,7 @@ const GameInfo: React.FC<GameInfoProps> = ({
   }
 
   const handleTakeBackMove = () => {
-    console.log('Take back the last move')
+    onTakeBackMove()
   }
 
   return (
