@@ -15,6 +15,7 @@ import {
   declareWinner,
 } from '../utils/gameOverUtils'
 import { startTimer } from '../utils/timerUtils'
+import { pieceValues } from '../utils/pieceUtils'
 
 interface ChessGameProps {
   color: 'white' | 'black'
@@ -66,6 +67,12 @@ const ChessGame: React.FC<ChessGameProps> = ({
   const [gameEnded, setGameEnded] = useState(false)
   const [winner, setWinner] = useState<string | null>(null)
   const [endReason, setEndReason] = useState<string | null>(null)
+  const [materialDifference, setMaterialDifference] = useState(0)
+
+  useEffect(() => {
+    const newMaterialDifference = calculateMaterialDifference()
+    setMaterialDifference(newMaterialDifference)
+  }, [position])
 
   useEffect(() => {
     if (!chessGame.current.isGameOver() && !gameEnded) {
@@ -102,6 +109,30 @@ const ChessGame: React.FC<ChessGameProps> = ({
       setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
     }
   }, [currentMoveIndex, fenHistory])
+
+  const calculateMaterialDifference = () => {
+    const board = chessGame.current.board()
+    let whiteMaterial = 0
+    let blackMaterial = 0
+
+    board.forEach((row) => {
+      row.forEach((piece) => {
+        if (piece) {
+          const value = pieceValues[piece.type]
+          if (piece.color === 'w') {
+            whiteMaterial += value
+          } else {
+            blackMaterial += value
+          }
+        }
+      })
+    })
+
+    return whiteMaterial - blackMaterial
+  }
+
+  const whiteMaterialDifference = calculateMaterialDifference() // Positive for white advantage.
+  const blackMaterialDifference = -whiteMaterialDifference // Opposite for black.
 
   const highlightStyles = useMemo(
     () =>
@@ -286,6 +317,11 @@ const ChessGame: React.FC<ChessGameProps> = ({
           isActive={activePlayer === (color === 'white' ? 'black' : 'white')}
           position='top'
           color={color === 'white' ? 'black' : 'white'}
+          materialDifference={
+            color === 'white'
+              ? blackMaterialDifference
+              : whiteMaterialDifference
+          }
         />
       </div>
 
@@ -316,6 +352,11 @@ const ChessGame: React.FC<ChessGameProps> = ({
           isActive={activePlayer === color}
           position='bottom'
           color={color}
+          materialDifference={
+            color === 'white'
+              ? whiteMaterialDifference
+              : blackMaterialDifference
+          }
         />
       </div>
 

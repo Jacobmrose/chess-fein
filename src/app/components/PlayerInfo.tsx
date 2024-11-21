@@ -4,6 +4,7 @@ interface PlayerInfoProps {
   isActive: boolean // Active player flag determines if this player's timer counts down
   position: 'top' | 'bottom'
   color: 'white' | 'black'
+  materialDifference?: number
 }
 
 const PlayerInfo: React.FC<PlayerInfoProps> = ({
@@ -12,6 +13,7 @@ const PlayerInfo: React.FC<PlayerInfoProps> = ({
   isActive,
   position,
   color,
+  materialDifference = 0,
 }) => {
   return (
     <div
@@ -20,16 +22,29 @@ const PlayerInfo: React.FC<PlayerInfoProps> = ({
         ${
           isActive
             ? color === 'white'
-              ? 'bg-gray-500 text-black' // Active white
-              : 'bg-gray-500 text-white' // Active black
+              ? 'bg-gray-500 text-black'
+              : 'bg-gray-500 text-white'
             : color === 'white'
-            ? 'bg-white text-gray-800' // Inactive white
-            : 'bg-black text-gray-300' // Inactive black
+            ? 'bg-white text-gray-800'
+            : 'bg-black text-gray-300'
         }`}
     >
-      <div className='text-base sm:text-lg font-medium'>{playerName}</div>
-      <div className='text-xl sm:text-2xl font-bold'>
-        {/* Format time as mm:ss */}
+      {/* Player Name */}
+      <div className='text-sm sm:text-base md:text-md font-medium text-center flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis'>
+        {playerName}
+      </div>
+
+      {/* Material Difference */}
+      {materialDifference !== 0 && (
+        <div className='text-xs sm:text-sm md:text-base font-semibold text-center flex-1'>
+          {materialDifference > 0
+            ? `+${materialDifference}`
+            : materialDifference}
+        </div>
+      )}
+
+      {/* Timer */}
+      <div className='text-sm sm:text-base md:text-lg font-medium text-center flex-1'>
         {`${Math.floor(timer / 60)}:${(timer % 60)
           .toString()
           .padStart(2, '0')}`}

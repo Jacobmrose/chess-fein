@@ -18,7 +18,6 @@ interface GameInfoProps {
   navigateToMove: (index: number) => void
   onResign: () => void
   onResetGame: () => void
-  color: 'white' | 'black'
   isGameOver: boolean
   onToggleBoardOrientation: () => void
   onTakeBackMove: () => void
@@ -31,7 +30,6 @@ const GameInfo: React.FC<GameInfoProps> = ({
   navigateToMove,
   onResign,
   onResetGame,
-  color,
   isGameOver,
   onToggleBoardOrientation,
   onTakeBackMove,
@@ -73,11 +71,11 @@ const GameInfo: React.FC<GameInfoProps> = ({
   return (
     <div className='mt-20 p-4 w-full max-w-[75vmin] bg-purple-900 bg-opacity-90 text-white rounded-lg shadow-lg'>
       {/* Centered navigation buttons with space between */}
-      <div className='flex justify-center items-center space-x-4 mb-2'>
-        {/* New button to switch board orientation */}
+      <div className='flex justify-center items-center gap-2 mb-2'>
+        {/* Button to switch board orientation */}
         <button
           onClick={onToggleBoardOrientation}
-          className='bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex items-center justify-center'
+          className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
           aria-label='Switch board orientation'
         >
           <TbSwitch2 className='h-5 w-5 sm:h-4 sm:w-4 -rotate-90' />
@@ -85,41 +83,43 @@ const GameInfo: React.FC<GameInfoProps> = ({
 
         <button
           onClick={handleFirstMove}
-          className='bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex items-center justify-center'
+          className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
           disabled={currentMoveIndex === 0}
           aria-label='Go to first move'
         >
           <FaAngleDoubleLeft className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
+
         <button
           onClick={handlePreviousMove}
-          className='bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex items-center justify-center'
+          className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
           disabled={currentMoveIndex === 0}
           aria-label='Go to previous move'
         >
           <FaChevronLeft className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
+
         <button
           onClick={handleNextMove}
-          className='bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex items-center justify-center'
+          className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
           disabled={currentMoveIndex >= fenHistory.length - 1}
           aria-label='Go to next move'
         >
           <FaChevronRight className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
+
         <button
           onClick={handleCurrentMove}
-          className='bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex items-center justify-center'
+          className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
           disabled={currentMoveIndex >= fenHistory.length - 1}
           aria-label='Go to current game state'
         >
           <FaAngleDoubleRight className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
 
-        {/* New button to take back a move */}
         <button
           onClick={handleTakeBackMove}
-          className='bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex items-center justify-center'
+          className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
           aria-label='Take back last move'
         >
           <FaRedoAlt className='h-5 w-5 sm:h-4 sm:w-4' />
