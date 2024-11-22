@@ -109,7 +109,7 @@ export default function Play() {
   const getPlayerName = (side: 'white' | 'black') =>
     side === color
       ? user?.name || `${side.charAt(0).toUpperCase() + side.slice(1)} Player`
-      : `Stockfish Level ${gameSettings.difficulty}`
+      : `Stockfish ${gameSettings.difficulty} Elo`
 
   const whitePlayerName = getPlayerName('white')
   const blackPlayerName = getPlayerName('black')
@@ -146,7 +146,6 @@ export default function Play() {
               navigateToMove={handleNavigateToMove}
               onResign={handleResignation}
               onResetGame={handleResetGame}
-              color={color}
               isGameOver={isGameOver}
               onToggleBoardOrientation={toggleBoardOrientation} // Pass toggle handler
               onTakeBackMove={handleTakeBackMove}

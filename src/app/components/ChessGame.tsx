@@ -19,7 +19,7 @@ import { pieceValues } from '../utils/pieceUtils'
 
 interface ChessGameProps {
   color: 'white' | 'black'
-  boardOrientation: 'white' | 'black' // Add this prop
+  boardOrientation: 'white' | 'black'
   onMove: (move: string, fen: string) => void
   onGameOver: () => void
   isGameOver: boolean
@@ -30,10 +30,10 @@ interface ChessGameProps {
   difficulty: number
   onResign: () => void
   currentMoveIndex: number
-  activePlayer: 'white' | 'black' // New prop
-  setActivePlayer: (player: 'white' | 'black') => void // New function prop
-  fenHistory: string[] // Accept fenHistory as a prop
-  setFenHistory: React.Dispatch<React.SetStateAction<string[]>> // Make sure this is correct
+  activePlayer: 'white' | 'black'
+  setActivePlayer: (player: 'white' | 'black') => void
+  fenHistory: string[]
+  setFenHistory: React.Dispatch<React.SetStateAction<string[]>>
 }
 
 const ChessGame: React.FC<ChessGameProps> = ({
@@ -68,6 +68,36 @@ const ChessGame: React.FC<ChessGameProps> = ({
   const [winner, setWinner] = useState<string | null>(null)
   const [endReason, setEndReason] = useState<string | null>(null)
   const [materialDifference, setMaterialDifference] = useState(0)
+
+  const stockfishWorker = useRef<Worker | null>(null)
+
+  useEffect(() => {
+    // Initialize the Stockfish worker
+    stockfishWorker.current = new Worker('/stockfish.js')
+
+    // Handle messages from the Stockfish worker
+    stockfishWorker.current.onmessage = (event) => {
+      // console.log('Stockfish worker message:', event.data)
+    }
+
+    // Handle errors in the Stockfish worker
+    stockfishWorker.current.onerror = (error) => {
+      console.error('Stockfish worker error:', error)
+    }
+
+    // Send a message to load the WebAssembly file
+    stockfishWorker.current.postMessage({
+      type: 'load',
+      wasmPath: '/stockfish.wasm', // Ensure this points to the .wasm file in the public folder
+    })
+
+    return () => {
+      // Cleanup the worker when the component is unmounted
+      if (stockfishWorker.current) {
+        stockfishWorker.current.terminate()
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const newMaterialDifference = calculateMaterialDifference()
@@ -301,6 +331,59 @@ const ChessGame: React.FC<ChessGameProps> = ({
       setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
     }
   }, [position, gameEnded])
+
+  const getBestMove = useCallback(() => {
+    if (!stockfishWorker.current) return
+
+    // Ensure UCI initialization and setting options
+    stockfishWorker.current.postMessage('uci')
+    stockfishWorker.current.postMessage(
+      'setoption name UCI_LimitStrength value true'
+    )
+    stockfishWorker.current.postMessage(
+      `setoption name UCI_Elo value ${difficulty}`
+    )
+
+    // Set the current position for Stockfish
+    stockfishWorker.current.postMessage(`position fen ${position}`)
+
+    // Request the best move within a defined time (in milliseconds)
+    stockfishWorker.current.postMessage('go movetime 3000')
+
+    // Handle Stockfish's response
+    const handleStockfishMessage = (event: MessageEvent) => {
+      const data = event.data
+
+      if (data.startsWith('bestmove')) {
+        const parts = data.split(' ')
+
+        const bestMove = parts[1]
+        if (!bestMove || bestMove === '(none)') return
+
+        const fromSquare = bestMove.slice(0, 2) as Square
+        const toSquare = bestMove.slice(2, 4) as Square
+
+        makeMoveCallback(fromSquare, toSquare)
+
+        stockfishWorker.current?.removeEventListener(
+          'message',
+          handleStockfishMessage
+        )
+      }
+    }
+
+    // Add message listener
+    stockfishWorker.current.addEventListener('message', handleStockfishMessage)
+  }, [position, difficulty, makeMoveCallback])
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (gameEnded || activePlayer === color) return
+      getBestMove()
+    }, 1000)
+
+    return () => clearInterval(intervalId) // Cleanup on component unmount
+  }, [activePlayer, color, gameEnded, getBestMove])
 
   return (
     <div className='flex flex-col justify-center items-center w-full h-full max-w-[75vmin] max-h-[75vmin] rounded-lg shadow-lg relative'>
