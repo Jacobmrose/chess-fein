@@ -77,7 +77,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
 
     // Handle messages from the Stockfish worker
     stockfishWorker.current.onmessage = (event) => {
-      // console.log('Stockfish worker message:', event.data)
+      console.log('Stockfish worker message:', event.data)
     }
 
     // Handle errors in the Stockfish worker
@@ -338,17 +338,21 @@ const ChessGame: React.FC<ChessGameProps> = ({
     // Ensure UCI initialization and setting options
     stockfishWorker.current.postMessage('uci')
     stockfishWorker.current.postMessage(
-      'setoption name UCI_LimitStrength value true'
+      'setoption name UCI_LimitStrength value false'
     )
-    stockfishWorker.current.postMessage(
-      `setoption name UCI_Elo value ${difficulty}`
+
+    // Dynamically calculate the depth based on the difficulty
+    // Convert difficulty (100-3000) to depth (1-20+)
+    const calculatedDepth = Math.min(
+      20,
+      Math.max(1, Math.floor(difficulty / 150))
     )
 
     // Set the current position for Stockfish
     stockfishWorker.current.postMessage(`position fen ${position}`)
 
-    // Request the best move within a defined time (in milliseconds)
-    stockfishWorker.current.postMessage('go movetime 3000')
+    // Request the best move with a calculated depth
+    stockfishWorker.current.postMessage(`go depth ${calculatedDepth}`)
 
     // Handle Stockfish's response
     const handleStockfishMessage = (event: MessageEvent) => {
@@ -365,6 +369,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
 
         makeMoveCallback(fromSquare, toSquare)
 
+        // Remove the message listener to avoid duplication
         stockfishWorker.current?.removeEventListener(
           'message',
           handleStockfishMessage
