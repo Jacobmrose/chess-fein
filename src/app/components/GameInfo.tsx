@@ -119,8 +119,11 @@ const GameInfo: React.FC<GameInfoProps> = ({
 
         <button
           onClick={handleTakeBackMove}
-          className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
+          className={`flex-1 bg-purple-600 text-white py-2 rounded-lg flex items-center justify-center max-w-[120px] sm:max-w-[100px] ${
+            isGameOver ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-700'
+          }`}
           aria-label='Take back last move'
+          disabled={isGameOver}
         >
           <FaRedoAlt className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>

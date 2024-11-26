@@ -15,7 +15,7 @@ const GameInitializer: React.FC<GameInitializerProps> = ({ onStartGame }) => {
     null
   )
   const [timeLimit, setTimeLimit] = useState<number>(5) // In minutes
-  const [difficulty, setDifficulty] = useState<number>(100) // Difficulty level
+  const [difficulty, setDifficulty] = useState<number>(1320) // Difficulty level
 
   return (
     <div className='flex flex-col items-center mt-10 w-full'>
@@ -72,12 +72,12 @@ const GameInitializer: React.FC<GameInitializerProps> = ({ onStartGame }) => {
         {/* Difficulty Slider */}
         <div className='flex flex-col items-center space-y-2'>
           <label className='text-white text-base lg:text-lg'>
-            Elo (100-3000): {difficulty}
+            Elo (1320-3190): {difficulty}
           </label>
           <input
             type='range'
-            min='100'
-            max='3000'
+            min='1320'
+            max='3190'
             value={difficulty}
             onChange={(e) => setDifficulty(Number(e.target.value))}
             className='w-full h-2 lg:h-3 bg-gray-600 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-600'

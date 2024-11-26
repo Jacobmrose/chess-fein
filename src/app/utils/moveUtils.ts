@@ -9,29 +9,34 @@ export const makeMove = (
   fromSquare: Square,
   toSquare: Square,
   game: Chess,
-  onMove: (move: string, fen: string) => void,
+  onMove: (
+    moveDescription: string,
+    newFen: string,
+    lastMove: { from: string; to: string }
+  ) => void,
   isGameOver: boolean,
   setPosition: (fen: string) => void
-) => {
-  if (isGameOver) return false
+): boolean => {
+  // Return type is now boolean
+  if (isGameOver) return false // If the game is over, the move is not valid
 
-  if (!isValidSquare(fromSquare) || !isValidSquare(toSquare)) return false
+  if (!isValidSquare(fromSquare) || !isValidSquare(toSquare)) return false // Invalid squares
 
   const legalMoves = game.moves({ verbose: true })
   const isLegalMove = legalMoves.some(
     (move) => move.from === fromSquare && move.to === toSquare
   )
 
-  if (!isLegalMove) return false
+  if (!isLegalMove) return false // If not a legal move, return false
 
-  // Check for pawn promotion
+  let move
   const movingPiece = game.get(fromSquare)?.type
   const isPawn = movingPiece === 'p'
   const isBackRank =
     (game.turn() === 'w' && toSquare[1] === '8') ||
     (game.turn() === 'b' && toSquare[1] === '1')
 
-  let move
+  // Handle pawn promotion
   if (isPawn && isBackRank) {
     let promotionPiece = prompt(
       'Promote to (q: Queen, r: Rook, b: Bishop, n: Knight):',
@@ -76,17 +81,18 @@ export const makeMove = (
       const promotionPieceName = getPieceName(
         move.promotion.toUpperCase() as PieceType
       )
-      moveDescription = ` ${promotionPieceName} promoted on ${toSquare}`
+      moveDescription = `${promotionPieceName} promoted on ${toSquare}`
     }
 
     moveDescription += getGameOverDescription(game)
     if (!game.isGameOver() && game.inCheck()) moveDescription += ' (Check)'
 
-    onMove(moveDescription, newFen)
-    return true
+    onMove(moveDescription, newFen, { from: fromSquare, to: toSquare })
+
+    return true // Successfully made the move
   }
 
-  return false
+  return false // If no move was made, return false
 }
 
 // Function to navigate to a specific move
@@ -111,7 +117,11 @@ export const handleSquareClick = (
   setPosition: React.Dispatch<React.SetStateAction<string>>,
   getPossibleMoves: (square: Square) => void,
   handleGameOverDescription: (game: Chess) => string,
-  onMove: (move: string, fen: string) => void,
+  onMove: (
+    move: string,
+    fen: string,
+    lastMove: { from: string; to: string }
+  ) => void, // Pass the lastMove object to parent
   clearSelection: () => void
 ) => {
   const game = chessGame.current
@@ -124,16 +134,18 @@ export const handleSquareClick = (
     const fromSquare = selectedSquare
     const toSquare = square
 
-    const isMoveSuccessful = makeMove(
+    const moveDetails = makeMove(
       fromSquare,
       toSquare,
       game,
-      onMove,
+      (moveDescription, newFen, lastMove) => {
+        onMove(moveDescription, newFen, lastMove) // Pass the last move details
+      },
       game.isGameOver(),
       setPosition
     )
 
-    if (isMoveSuccessful) {
+    if (moveDetails) {
       clearSelection()
     }
   } else if (piece) {
