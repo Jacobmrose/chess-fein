@@ -10,6 +10,7 @@ import {
   FaRedoAlt,
 } from 'react-icons/fa'
 import { TbSwitch2 } from 'react-icons/tb'
+import { FaFishFins } from 'react-icons/fa6'
 
 interface GameInfoProps {
   moves: string[]
@@ -21,6 +22,9 @@ interface GameInfoProps {
   isGameOver: boolean
   onToggleBoardOrientation: () => void
   onTakeBackMove: () => void
+  aiEnabled: boolean
+  onToggleAI: () => void
+  isPlaygroundMode: boolean
 }
 
 const GameInfo: React.FC<GameInfoProps> = ({
@@ -33,6 +37,9 @@ const GameInfo: React.FC<GameInfoProps> = ({
   isGameOver,
   onToggleBoardOrientation,
   onTakeBackMove,
+  aiEnabled,
+  onToggleAI,
+  isPlaygroundMode,
 }) => {
   const [showConfirm, setShowConfirm] = useState(false)
   const [isGameInfoVisible, setIsGameInfoVisible] = useState(true)
@@ -70,9 +77,25 @@ const GameInfo: React.FC<GameInfoProps> = ({
 
   return (
     <div className='mt-20 p-4 w-full max-w-[75vmin] bg-purple-900 bg-opacity-90 text-white rounded-lg shadow-lg'>
-      {/* Centered navigation buttons with space between */}
+      {isPlaygroundMode && (
+        <div className='flex justify-center mb-4'>
+          <button
+            onClick={onToggleAI}
+            className={`p-3 rounded-full flex items-center justify-center ${
+              aiEnabled
+                ? 'bg-green-700 hover:bg-green-800'
+                : 'bg-gray-600 hover:bg-gray-700'
+            }`}
+            title={aiEnabled ? 'Disable AI' : 'Enable AI'}
+            aria-label={aiEnabled ? 'Disable AI' : 'Enable AI'}
+          >
+            <FaFishFins className='h-6 w-6 text-white' />
+          </button>
+        </div>
+      )}
+
       <div className='flex justify-center items-center gap-2 mb-2'>
-        {/* Button to switch board orientation */}
+        {/* Move navigation buttons */}
         <button
           onClick={onToggleBoardOrientation}
           className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
@@ -80,7 +103,6 @@ const GameInfo: React.FC<GameInfoProps> = ({
         >
           <TbSwitch2 className='h-5 w-5 sm:h-4 sm:w-4 -rotate-90' />
         </button>
-
         <button
           onClick={handleFirstMove}
           className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
@@ -89,7 +111,6 @@ const GameInfo: React.FC<GameInfoProps> = ({
         >
           <FaAngleDoubleLeft className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
-
         <button
           onClick={handlePreviousMove}
           className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
@@ -98,7 +119,6 @@ const GameInfo: React.FC<GameInfoProps> = ({
         >
           <FaChevronLeft className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
-
         <button
           onClick={handleNextMove}
           className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
@@ -107,7 +127,6 @@ const GameInfo: React.FC<GameInfoProps> = ({
         >
           <FaChevronRight className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
-
         <button
           onClick={handleCurrentMove}
           className='flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-gray-700 flex items-center justify-center max-w-[120px] sm:max-w-[100px]'
@@ -116,7 +135,6 @@ const GameInfo: React.FC<GameInfoProps> = ({
         >
           <FaAngleDoubleRight className='h-5 w-5 sm:h-4 sm:w-4' />
         </button>
-
         <button
           onClick={handleTakeBackMove}
           className={`flex-1 bg-purple-600 text-white py-2 rounded-lg flex items-center justify-center max-w-[120px] sm:max-w-[100px] ${

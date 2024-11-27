@@ -14,7 +14,7 @@ export default function Play() {
     'white'
   )
   const [moves, setMoves] = useState<string[]>([])
-  const [fenHistory, setFenHistory] = useState<string[]>([new Chess().fen()]) // Initialize with starting position
+  const [fenHistory, setFenHistory] = useState<string[]>([new Chess().fen()])
   const [currentMoveIndex, setCurrentMoveIndex] = useState<number>(0)
   const [isGameOver, setIsGameOver] = useState(false)
   const [isResigned, setIsResigned] = useState(false)
@@ -23,6 +23,8 @@ export default function Play() {
     timeLimit: 5,
     difficulty: 1,
   })
+  const [isPlaygroundMode, setIsPlaygroundMode] = useState<boolean>(false)
+  const [aiEnabled, setAiEnabled] = useState<boolean>(true)
 
   const handleResignation = useCallback(() => {
     setIsResigned(true)
@@ -32,19 +34,25 @@ export default function Play() {
   const handleStartGame = (
     selectedColor: 'white' | 'black',
     selectedTimeLimit: number,
-    selectedDifficulty: number
+    selectedDifficulty: number,
+    selectedPlaygroundMode: boolean
   ) => {
     setColor(selectedColor)
-    setBoardOrientation(selectedColor) // Set initial orientation to player's color
+    setBoardOrientation(selectedColor)
     setGameSettings({
       timeLimit: selectedTimeLimit,
       difficulty: selectedDifficulty,
     })
+    setIsPlaygroundMode(selectedPlaygroundMode)
     setMoves([])
-    setFenHistory([new Chess().fen()]) // Start fenHistory with initial board setup
+    setFenHistory([new Chess().fen()])
     setCurrentMoveIndex(0)
     setIsGameOver(false)
     setIsResigned(false)
+  }
+
+  const toggleAI = () => {
+    setAiEnabled((prev) => !prev) // Toggle AI state
   }
 
   const handleMove = (move: string, fen: string) => {
@@ -70,9 +78,9 @@ export default function Play() {
 
   const handleResetGame = () => {
     setColor(null)
-    setBoardOrientation('white') // Reset orientation to default
+    setBoardOrientation('white')
     setMoves([])
-    setFenHistory([new Chess().fen()]) // Reset fenHistory to initial position
+    setFenHistory([new Chess().fen()])
     setCurrentMoveIndex(0)
     setIsGameOver(false)
     setIsResigned(false)
@@ -123,7 +131,7 @@ export default function Play() {
           <>
             <ChessGame
               color={color}
-              boardOrientation={boardOrientation} // Pass down boardOrientation
+              boardOrientation={boardOrientation}
               onMove={(move, fen) => handleMove(move, fen)}
               onGameOver={handleGameOver}
               isGameOver={isGameOver}
@@ -134,10 +142,12 @@ export default function Play() {
               difficulty={gameSettings.difficulty}
               onResign={handleResignation}
               currentMoveIndex={currentMoveIndex}
-              activePlayer={activePlayer} // Pass active player
-              setActivePlayer={setActivePlayer} // Pass setter for active player
+              activePlayer={activePlayer}
+              setActivePlayer={setActivePlayer}
               fenHistory={fenHistory}
               setFenHistory={setFenHistory}
+              aiEnabled={aiEnabled}
+              isPlaygroundMode={isPlaygroundMode}
             />
             <GameInfo
               moves={moves}
@@ -147,8 +157,11 @@ export default function Play() {
               onResign={handleResignation}
               onResetGame={handleResetGame}
               isGameOver={isGameOver}
-              onToggleBoardOrientation={toggleBoardOrientation} // Pass toggle handler
+              onToggleBoardOrientation={toggleBoardOrientation}
               onTakeBackMove={handleTakeBackMove}
+              aiEnabled={aiEnabled}
+              onToggleAI={toggleAI}
+              isPlaygroundMode={isPlaygroundMode}
             />
           </>
         )}

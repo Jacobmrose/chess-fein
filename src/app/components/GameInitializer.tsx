@@ -1,12 +1,11 @@
-'use client'
-
 import { useState } from 'react'
 
 interface GameInitializerProps {
   onStartGame: (
     color: 'white' | 'black',
     timeLimit: number,
-    difficulty: number
+    difficulty: number,
+    isPlaygroundMode: boolean
   ) => void
 }
 
@@ -15,7 +14,8 @@ const GameInitializer: React.FC<GameInitializerProps> = ({ onStartGame }) => {
     null
   )
   const [timeLimit, setTimeLimit] = useState<number>(5) // In minutes
-  const [difficulty, setDifficulty] = useState<number>(1320) // Difficulty level
+  const [difficulty, setDifficulty] = useState<number>(1320)
+  const [isPlaygroundMode, setIsPlaygroundMode] = useState<boolean>(false) // Playground mode state
 
   return (
     <div className='flex flex-col items-center mt-10 w-full'>
@@ -84,11 +84,35 @@ const GameInitializer: React.FC<GameInitializerProps> = ({ onStartGame }) => {
           />
         </div>
 
+        {/* Playground Mode Checkbox */}
+        <div className='flex flex-col items-center space-y-2'>
+          <div className='flex items-center space-x-3'>
+            <input
+              type='checkbox'
+              id='playgroundMode'
+              checked={isPlaygroundMode}
+              onChange={() => setIsPlaygroundMode((prev) => !prev)}
+              className='w-5 h-5 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500 focus:ring-2'
+            />
+            <label
+              htmlFor='playgroundMode'
+              className='text-white text-base lg:text-lg'
+            >
+              Playground Mode
+            </label>
+          </div>
+        </div>
+
         {/* Create Game Button */}
         <button
           onClick={() => {
             if (selectedColor) {
-              onStartGame(selectedColor, timeLimit, difficulty)
+              onStartGame(
+                selectedColor,
+                timeLimit,
+                difficulty,
+                isPlaygroundMode
+              )
             }
           }}
           className='w-full bg-purple-600 text-white py-2 lg:py-3 rounded-md hover:bg-purple-700 transition-colors duration-300 text-base lg:text-lg'

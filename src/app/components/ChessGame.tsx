@@ -19,6 +19,7 @@ import {
 } from '../utils/gameOverUtils'
 import { startTimer } from '../utils/timerUtils'
 import { pieceValues } from '../utils/pieceUtils'
+import { useStockfish } from '../hooks/useStockfish'
 
 interface ChessGameProps {
   color: 'white' | 'black'
@@ -37,6 +38,8 @@ interface ChessGameProps {
   setActivePlayer: (player: 'white' | 'black') => void
   fenHistory: string[]
   setFenHistory: React.Dispatch<React.SetStateAction<string[]>>
+  aiEnabled: boolean
+  isPlaygroundMode: boolean
 }
 
 const ChessGame: React.FC<ChessGameProps> = ({
@@ -55,6 +58,8 @@ const ChessGame: React.FC<ChessGameProps> = ({
   setActivePlayer,
   fenHistory,
   setFenHistory,
+  aiEnabled,
+  isPlaygroundMode,
 }) => {
   const chessGame = useRef(new Chess())
   const [position, setPosition] = useState(chessGame.current.fen())
@@ -76,6 +81,8 @@ const ChessGame: React.FC<ChessGameProps> = ({
   )
 
   const prevFenHistory = useRef<string[]>([])
+  const pieceColor = (piece: string) =>
+    piece.startsWith('w') ? 'white' : 'black'
 
   useEffect(() => {
     // If fenHistory has been shortened (a move was undone), clear the last move
@@ -208,7 +215,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
         toSquare,
         chessGame.current,
         (move) => {
-          setLastMove({ from: fromSquare, to: toSquare }) // Set the last move
+          setLastMove({ from: fromSquare, to: toSquare })
           onMove(move, chessGame.current.fen())
         },
         isGameOver,
@@ -223,9 +230,8 @@ const ChessGame: React.FC<ChessGameProps> = ({
 
   const handlePieceDrop = useCallback(
     (fromSquare: Square, toSquare: Square) => {
-      if (!isAtCurrentMove) return false // Skip if it's not the current move
+      if (!isAtCurrentMove) return false
 
-      // Call makeMoveCallback and return the boolean result directly
       return makeMoveCallback(fromSquare, toSquare)
     },
     [makeMoveCallback, isAtCurrentMove]
@@ -250,6 +256,16 @@ const ChessGame: React.FC<ChessGameProps> = ({
     (square: Square) => {
       if (!isAtCurrentMove) return
 
+      // Check if there's a piece at the square and if it's an opponent's piece
+      const pieceAtSquare = chessGame.current.get(square)
+      if (
+        pieceAtSquare &&
+        !isPlaygroundMode &&
+        pieceColor(pieceAtSquare.color) !== color
+      ) {
+        return
+      }
+
       handleSquareClick(
         square,
         chessGame,
@@ -262,8 +278,8 @@ const ChessGame: React.FC<ChessGameProps> = ({
         getPossibleMoves,
         (game) => handleGameOverDescription(game, setEndReason),
         (move: string, fen: string, lastMove: { from: string; to: string }) => {
-          onMove(move, fen) // Continue handling the move
-          setLastMove(lastMove) // Set the last move for styling
+          onMove(move, fen)
+          setLastMove(lastMove)
         },
         handleClearSelection
       )
@@ -277,6 +293,8 @@ const ChessGame: React.FC<ChessGameProps> = ({
       handleClearSelection,
       setEndReason,
       isAtCurrentMove,
+      isPlaygroundMode,
+      color,
     ]
   )
 
@@ -325,100 +343,19 @@ const ChessGame: React.FC<ChessGameProps> = ({
     }
   }, [position, gameEnded])
 
-  const stockfishWorker = useRef<Worker | null>(null)
+  const { getBestMove } = useStockfish({
+    position,
+    onMove: (from, to) => makeMoveCallback(from, to),
+    difficulty,
+    enabled: aiEnabled, // Respect AI toggle
+  })
 
   useEffect(() => {
-    // Initialize the Stockfish worker
-    stockfishWorker.current = new Worker('/stockfish.js')
-
-    // Function to configure Stockfish
-    const configureStockfish = () => {
-      if (stockfishWorker.current) {
-        stockfishWorker.current.postMessage('uci')
-        stockfishWorker.current.postMessage(
-          'setoption name UCI_LimitStrength value true'
-        )
-        stockfishWorker.current.postMessage('setoption name UCI_Elo value 1320')
-        stockfishWorker.current.postMessage(
-          'setoption name Skill Level value 0'
-        )
-      }
-    }
-
-    // Listener for the "readyok" message
-    const readyListener = (event: MessageEvent) => {
-      if (event.data === 'readyok') {
-        configureStockfish()
-        stockfishWorker.current?.removeEventListener('message', readyListener)
-      }
-    }
-
-    // Handle messages from the Stockfish worker
-    stockfishWorker.current.onmessage = (event) => {
-      if (event.data === 'uciok') {
-      }
-    }
-
-    // Handle errors from the Stockfish worker
-    stockfishWorker.current.onerror = (error) => {
-      console.error('Stockfish worker error:', error)
-    }
-
-    // Add the ready listener and send the initial "isready" message
-    stockfishWorker.current.addEventListener('message', readyListener)
-    stockfishWorker.current.postMessage('isready')
-
-    return () => {
-      stockfishWorker.current?.terminate()
-    }
-  }, [])
-
-  const getBestMove = useCallback(() => {
-    if (!stockfishWorker.current) return
-
-    // Configure Stockfish based on difficulty
-    const elo = Math.min(3190, Math.max(1320, difficulty))
-    const skill = Math.min(
-      20,
-      Math.max(0, Math.round(((difficulty - 1320) / (3000 - 1320)) * 20))
-    )
-    const depth = skill === 20 ? 20 : Math.min(20, Math.max(1, skill))
-
-    // Send commands to Stockfish
-    stockfishWorker.current.postMessage(
-      `setoption name UCI_LimitStrength value true`
-    )
-    stockfishWorker.current.postMessage(`setoption name UCI_Elo value ${elo}`)
-    stockfishWorker.current.postMessage(
-      `setoption name Skill Level value ${skill}`
-    )
-    stockfishWorker.current.postMessage(`position fen ${position}`)
-    stockfishWorker.current.postMessage(`go depth ${depth}`)
-
-    const handleStockfishMessage = (event: MessageEvent) => {
-      if (event.data.startsWith('bestmove')) {
-        const [_, bestMove] = event.data.split(' ')
-        if (bestMove && bestMove !== '(none)') {
-          const from = bestMove.slice(0, 2) as Square
-          const to = bestMove.slice(2, 4) as Square
-          makeMoveCallback(from, to)
-        }
-        stockfishWorker.current?.removeEventListener(
-          'message',
-          handleStockfishMessage
-        )
-      }
-    }
-
-    stockfishWorker.current.addEventListener('message', handleStockfishMessage)
-  }, [position, difficulty, makeMoveCallback])
-
-  useEffect(() => {
-    if (activePlayer !== color && !gameEnded) {
+    if (aiEnabled && activePlayer !== color && !gameEnded) {
       const timer = setTimeout(getBestMove, 1000)
       return () => clearTimeout(timer)
     }
-  }, [activePlayer, color, gameEnded, getBestMove])
+  }, [aiEnabled, activePlayer, color, gameEnded, getBestMove])
 
   return (
     <div className='flex flex-col justify-center items-center w-full h-full max-w-[75vmin] max-h-[75vmin] rounded-lg shadow-lg relative'>
@@ -452,7 +389,9 @@ const ChessGame: React.FC<ChessGameProps> = ({
           onPieceDragEnd={handleDragEnd}
           onSquareClick={isGameOver ? undefined : handleSquareClickCallback}
           onPieceClick={isGameOver ? undefined : handlePieceClick}
-          arePiecesDraggable={!isGameOver}
+          arePiecesDraggable={
+            !isGameOver && (isPlaygroundMode || activePlayer === color)
+          }
           customDropSquareStyle={{
             boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.3)',
           }}
