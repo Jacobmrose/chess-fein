@@ -1,126 +1,39 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useChessGame } from '@/app/hooks/useChessGame'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import ChessGame from '@/app/components/ChessGame'
 import GameInitializer from '@/app/components/GameInitializer'
 import GameInfo from '@/app/components/GameInfo'
-import { Chess } from 'chess.js'
 
 export default function Play() {
   const { user } = useUser()
-  const [color, setColor] = useState<'white' | 'black' | null>(null)
-  const [boardOrientation, setBoardOrientation] = useState<'white' | 'black'>(
-    'white'
-  )
-  const [moves, setMoves] = useState<string[]>([])
-  const [fenHistory, setFenHistory] = useState<string[]>([new Chess().fen()])
-  const [currentMoveIndex, setCurrentMoveIndex] = useState<number>(0)
-  const [isGameOver, setIsGameOver] = useState(false)
-  const [isResigned, setIsResigned] = useState(false)
-  const [activePlayer, setActivePlayer] = useState<'white' | 'black'>('white')
-  const [gameSettings, setGameSettings] = useState({
-    timeLimit: 5,
-    difficulty: 1,
-  })
-  const [isPlaygroundMode, setIsPlaygroundMode] = useState<boolean>(false)
-  const [aiEnabled, setAiEnabled] = useState<boolean>(true)
-
-  const handleResignation = useCallback(() => {
-    setIsResigned(true)
-    handleGameOver()
-  }, [])
-
-  const handleStartGame = (
-    selectedColor: 'white' | 'black',
-    selectedTimeLimit: number,
-    selectedDifficulty: number,
-    selectedPlaygroundMode: boolean
-  ) => {
-    setColor(selectedColor)
-    setBoardOrientation(selectedColor)
-    setGameSettings({
-      timeLimit: selectedTimeLimit,
-      difficulty: selectedDifficulty,
-    })
-    setIsPlaygroundMode(selectedPlaygroundMode)
-    setMoves([])
-    setFenHistory([new Chess().fen()])
-    setCurrentMoveIndex(0)
-    setIsGameOver(false)
-    setIsResigned(false)
-  }
-
-  const toggleAI = () => {
-    setAiEnabled((prev) => !prev) // Toggle AI state
-  }
-
-  const handleMove = (move: string, fen: string) => {
-    const updatedMoves = [...moves.slice(0, currentMoveIndex + 1), move]
-    const updatedFenHistory = [
-      ...fenHistory.slice(0, currentMoveIndex + 1),
-      fen,
-    ]
-
-    setMoves(updatedMoves)
-    setFenHistory(updatedFenHistory)
-    setCurrentMoveIndex((prevIndex) => prevIndex + 1)
-
-    // Persist updated history to localStorage
-    localStorage.setItem('fenHistory', JSON.stringify(updatedFenHistory))
-  }
-
-  const handleNavigateToMove = (index: number) => {
-    if (index >= 0 && index < fenHistory.length) {
-      setCurrentMoveIndex(index)
-    }
-  }
-
-  const handleResetGame = () => {
-    setColor(null)
-    setBoardOrientation('white')
-    setMoves([])
-    setFenHistory([new Chess().fen()])
-    setCurrentMoveIndex(0)
-    setIsGameOver(false)
-    setIsResigned(false)
-  }
-
-  const handleGameOver = () => {
-    setIsGameOver(true)
-  }
-
-  const toggleBoardOrientation = () => {
-    setBoardOrientation((prev) => (prev === 'white' ? 'black' : 'white'))
-  }
-
-  const handleTakeBackMove = () => {
-    if (currentMoveIndex > 0) {
-      const updatedMoves = moves.slice(0, -1)
-      const updatedFenHistory = fenHistory.slice(0, -1)
-      const previousFen = updatedFenHistory[updatedFenHistory.length - 1]
-      const game = new Chess(previousFen)
-
-      setMoves(updatedMoves)
-      setFenHistory(updatedFenHistory)
-      setCurrentMoveIndex((prevIndex) => prevIndex - 1)
-
-      // Update localStorage
-      localStorage.setItem('fenHistory', JSON.stringify(updatedFenHistory))
-
-      // Sync the turn with the ChessGame state by determining the active player
-      const activePlayer = game.turn() === 'w' ? 'white' : 'black'
-      setActivePlayer(activePlayer)
-    }
-  }
-
-  const getPlayerName = (side: 'white' | 'black') =>
-    side === color
-      ? user?.name || `${side.charAt(0).toUpperCase() + side.slice(1)} Player`
-      : `Stockfish ${gameSettings.difficulty} Elo`
-
-  const whitePlayerName = getPlayerName('white')
-  const blackPlayerName = getPlayerName('black')
+  const {
+    color,
+    boardOrientation,
+    moves,
+    fenHistory,
+    currentMoveIndex,
+    isGameOver,
+    isResigned,
+    activePlayer,
+    gameSettings,
+    isPlaygroundMode,
+    aiEnabled,
+    whitePlayerName,
+    blackPlayerName,
+    handleStartGame,
+    handleMove,
+    handleNavigateToMove,
+    handleResignation,
+    handleResetGame,
+    toggleBoardOrientation,
+    handleTakeBackMove,
+    toggleAI,
+    handleGameOver,
+    setFenHistory,
+    setActivePlayer,
+  } = useChessGame(user || null)
 
   return (
     <div className='flex flex-col items-center w-full h-auto p-4 mt-16'>
@@ -132,7 +45,7 @@ export default function Play() {
             <ChessGame
               color={color}
               boardOrientation={boardOrientation}
-              onMove={(move, fen) => handleMove(move, fen)}
+              onMove={handleMove}
               onGameOver={handleGameOver}
               isGameOver={isGameOver}
               isResigned={isResigned}
@@ -140,28 +53,28 @@ export default function Play() {
               blackPlayerName={blackPlayerName}
               timeLimit={gameSettings.timeLimit * 60}
               difficulty={gameSettings.difficulty}
-              onResign={handleResignation}
-              currentMoveIndex={currentMoveIndex}
-              activePlayer={activePlayer}
               setActivePlayer={setActivePlayer}
-              fenHistory={fenHistory}
+              currentMoveIndex={currentMoveIndex}
               setFenHistory={setFenHistory}
+              activePlayer={activePlayer}
+              fenHistory={fenHistory}
               aiEnabled={aiEnabled}
               isPlaygroundMode={isPlaygroundMode}
+              onResign={handleResignation}
             />
             <GameInfo
               moves={moves}
               fenHistory={fenHistory}
               currentMoveIndex={currentMoveIndex}
               navigateToMove={handleNavigateToMove}
-              onResign={handleResignation}
               onResetGame={handleResetGame}
-              isGameOver={isGameOver}
-              onToggleBoardOrientation={toggleBoardOrientation}
               onTakeBackMove={handleTakeBackMove}
-              aiEnabled={aiEnabled}
+              onToggleBoardOrientation={toggleBoardOrientation}
               onToggleAI={toggleAI}
+              isGameOver={isGameOver}
               isPlaygroundMode={isPlaygroundMode}
+              aiEnabled={aiEnabled}
+              onResign={handleResignation}
             />
           </>
         )}

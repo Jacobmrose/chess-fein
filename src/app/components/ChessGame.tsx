@@ -20,6 +20,10 @@ import {
 import { startTimer } from '../utils/timerUtils'
 import { pieceValues } from '../utils/pieceUtils'
 import { useStockfish } from '../hooks/useStockfish'
+import {
+  calculateMaterialDifference,
+  getMaterialDifferences,
+} from '../utils/calculateMaterialDifference'
 
 interface ChessGameProps {
   color: 'white' | 'black'
@@ -79,85 +83,71 @@ const ChessGame: React.FC<ChessGameProps> = ({
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(
     null
   )
+  const [whiteMaterialDifference, setWhiteMaterialDifference] = useState(0)
+  const [blackMaterialDifference, setBlackMaterialDifference] = useState(0)
 
   const prevFenHistory = useRef<string[]>([])
   const pieceColor = (piece: string) =>
     piece.startsWith('w') ? 'white' : 'black'
 
   useEffect(() => {
-    // If fenHistory has been shortened (a move was undone), clear the last move
-    if (fenHistory.length < prevFenHistory.current.length) {
-      setLastMove(null) // Clear the last move if history has been shortened
-    }
+    // Update material differences when the position changes
+    const board = chessGame.current.board()
+    const materialDiff = calculateMaterialDifference(board, pieceValues)
+    const { whiteMaterialDifference, blackMaterialDifference } =
+      getMaterialDifferences(board)
+    setMaterialDifference(materialDiff)
+    setWhiteMaterialDifference(whiteMaterialDifference)
+    setBlackMaterialDifference(blackMaterialDifference)
 
-    // Update the previous fenHistory with the current one
-    prevFenHistory.current = fenHistory
-  }, [fenHistory]) // Trigger effect only when fenHistory changes
-
-  useEffect(() => {
-    const newMaterialDifference = calculateMaterialDifference()
-    setMaterialDifference(newMaterialDifference)
-  }, [position])
-
-  useEffect(() => {
+    // Update the active player if the game is not over
     if (!chessGame.current.isGameOver() && !gameEnded) {
       setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
     }
-  }, [position, gameEnded, currentMoveIndex])
+
+    // Check for game over
+    if (!gameEnded && chessGame.current.isGameOver()) {
+      handleGameOverDescription(chessGame.current, setEndReason)
+      setGameEnded(true)
+      declareWinner(chessGame.current, setWinner)
+      onGameOver()
+    }
+  }, [position, gameEnded, onGameOver, setEndReason])
 
   useEffect(() => {
-    chessGame.current.load(position)
-    setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
-  }, [position])
+    // Handle changes to fenHistory and position
+    if (fenHistory.length < prevFenHistory.current.length) {
+      setLastMove(null) // Clear last move if history has been shortened
+    }
+
+    if (currentMoveIndex >= 0 && currentMoveIndex < fenHistory.length) {
+      const newFen = fenHistory[currentMoveIndex]
+      setPosition(newFen)
+      chessGame.current.load(newFen)
+      setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
+    }
+
+    // Save fenHistory to local storage
+    localStorage.setItem('fenHistory', JSON.stringify(fenHistory))
+
+    // Load previous fenHistory on initial render
+    if (prevFenHistory.current.length === 0) {
+      const savedHistory = JSON.parse(
+        localStorage.getItem('fenHistory') || '[]'
+      )
+      if (savedHistory.length) {
+        setFenHistory(savedHistory)
+        setPosition(savedHistory[savedHistory.length - 1])
+      }
+    }
+
+    prevFenHistory.current = fenHistory
+  }, [fenHistory, currentMoveIndex])
 
   const isAtCurrentMove = useMemo(
     () => position === fenHistory[fenHistory.length - 1],
     [position, fenHistory]
   )
-
-  useEffect(() => {
-    const savedHistory = JSON.parse(localStorage.getItem('fenHistory') || '[]')
-    if (savedHistory.length) {
-      setFenHistory(savedHistory)
-      setPosition(savedHistory[savedHistory.length - 1])
-    }
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem('fenHistory', JSON.stringify(fenHistory))
-  }, [fenHistory])
-
-  useEffect(() => {
-    if (currentMoveIndex >= 0 && currentMoveIndex < fenHistory.length) {
-      setPosition(fenHistory[currentMoveIndex])
-      chessGame.current.load(fenHistory[currentMoveIndex])
-      setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
-    }
-  }, [currentMoveIndex, fenHistory])
-
-  const calculateMaterialDifference = () => {
-    const board = chessGame.current.board()
-    let whiteMaterial = 0
-    let blackMaterial = 0
-
-    board.forEach((row) => {
-      row.forEach((piece) => {
-        if (piece) {
-          const value = pieceValues[piece.type]
-          if (piece.color === 'w') {
-            whiteMaterial += value
-          } else {
-            blackMaterial += value
-          }
-        }
-      })
-    })
-
-    return whiteMaterial - blackMaterial
-  }
-
-  const whiteMaterialDifference = calculateMaterialDifference() // Positive for white advantage.
-  const blackMaterialDifference = -whiteMaterialDifference // Opposite for black.
 
   const highlightStyles = useMemo(
     () =>
@@ -172,17 +162,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
   const handleClearSelection = useCallback(() => {
     clearSelection(setSelectedSquare, setPossibleMoves)
   }, [])
-
-  useEffect(() => {
-    if (gameEnded) return
-
-    if (chessGame.current.isGameOver()) {
-      handleGameOverDescription(chessGame.current, setEndReason)
-      setGameEnded(true)
-      declareWinner(chessGame.current, setWinner)
-      onGameOver()
-    }
-  }, [position, onGameOver, gameEnded, setEndReason])
 
   const handlePromotionSelection = useCallback(
     (
@@ -312,30 +291,38 @@ const ChessGame: React.FC<ChessGameProps> = ({
   )
 
   useEffect(() => {
+    // Handle resignation
     if (isResigned) {
       const losingPlayer = color !== 'white' ? 'Black' : 'White'
       setWinner(`${losingPlayer} loses by resignation!`)
       setGameEnded(true)
       onGameOver()
     }
-  }, [isResigned, color, onGameOver])
 
-  useEffect(() => {
-    if (isGameOver || gameEnded) return
-
-    const stopTimer = startTimer(
-      activePlayer,
-      whiteTime,
-      blackTime,
-      setWhiteTime,
-      setBlackTime,
-      setGameEnded,
-      setWinner,
-      onGameOver
-    )
-
-    return stopTimer
-  }, [activePlayer, isGameOver, gameEnded, whiteTime, blackTime])
+    // Handle timer for active player
+    if (!isGameOver && !gameEnded) {
+      const stopTimer = startTimer(
+        activePlayer,
+        whiteTime,
+        blackTime,
+        setWhiteTime,
+        setBlackTime,
+        setGameEnded,
+        setWinner,
+        onGameOver
+      )
+      return stopTimer
+    }
+  }, [
+    isResigned,
+    color,
+    isGameOver,
+    gameEnded,
+    activePlayer,
+    whiteTime,
+    blackTime,
+    onGameOver,
+  ])
 
   useEffect(() => {
     if (!chessGame.current.isGameOver() && !gameEnded) {
