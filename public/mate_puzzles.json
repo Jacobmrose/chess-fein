@@ -1,0 +1,142 @@
+[
+  {
+    "PuzzleId": "001gi",
+    "FEN": "r6r/1pNk1ppp/2np4/b3p3/4P1b1/N1Q5/P4PPP/R3KB1R w KQ - 3 18",
+    "Moves": "c7a8 a5c3",
+    "Themes": "bodenMate hangingPiece mate mateIn1 middlegame oneMove",
+    "OpeningTags": "Sicilian_Defense Sicilian_Defense_Other_variations"
+  },
+  {
+    "PuzzleId": "001wb",
+    "FEN": "r3k2r/pb1p1ppp/1b4q1/1Q2P3/8/2NP1Pn1/PP4PP/R1B2R1K w kq - 1 17",
+    "Moves": "h2g3 g6h5",
+    "Themes": "mate mateIn1 middlegame oneMove",
+    "OpeningTags": "Ruy_Lopez Ruy_Lopez_Bird_Variation"
+  },
+  {
+    "PuzzleId": "003AX",
+    "FEN": "2r2rk1/5ppp/bq2p3/p1ppP1N1/Pb1P2P1/1P2P2P/2QN4/2R1K2R b K - 1 18",
+    "Moves": "c5d4 c2h7",
+    "Themes": "kingsideAttack mate mateIn1 middlegame oneMove",
+    "OpeningTags": "French_Defense French_Defense_Advance_Variation"
+  },
+  {
+    "PuzzleId": "003YF",
+    "FEN": "r4rk1/1pp2ppp/p2p4/2bPp3/2P1Pn1q/P1N2B2/1P3P2/R1BQK1R1 w Q - 1 15",
+    "Moves": "c1f4 h4f2",
+    "Themes": "attackingF2F7 mate mateIn1 middlegame oneMove",
+    "OpeningTags": "Mexican_Defense Mexican_Defense_Other_variations"
+  },
+  {
+    "PuzzleId": "006GK",
+    "FEN": "2kr1br1/ppBb1ppp/8/3P2Q1/3n2n1/5N2/PP3qPP/RN2R2K b - - 0 16",
+    "Moves": "d4f3 g5d8",
+    "Themes": "mate mateIn1 oneMove opening queensideAttack",
+    "OpeningTags": "Italian_Game Italian_Game_Two_Knights_Defense"
+  },
+  {
+    "PuzzleId": "007XE",
+    "FEN": "2kr3r/p1p1bpp1/2p2n1p/8/8/1P6/P1P1RPPP/RNB3K1 w - - 1 16",
+    "Moves": "e2e7 d8d1 e7e1 d1e1",
+    "Themes": "backRankMate fork mate mateIn2 middlegame short",
+    "OpeningTags": "Kings_Pawn_Game Kings_Pawn_Game_Leonardis_Variation"
+  },
+  {
+    "PuzzleId": "00CFp",
+    "FEN": "rn1q3k/pp4pp/1b2B3/4N3/5r2/2p5/PP4PP/RN3Q1K w - - 0 16",
+    "Moves": "f1f4 d8d1 f4f1 d1f1",
+    "Themes": "kingsideAttack mate mateIn2 middlegame short",
+    "OpeningTags": "Kings_Gambit_Accepted Kings_Gambit_Accepted_Kings_Knights_Gambit"
+  },
+  {
+    "PuzzleId": "00MS3",
+    "FEN": "rn1qr1k1/1p2bppp/2p2B2/p2p4/3P4/2N2N2/PPP1QPPP/2KRR3 b - - 0 12",
+    "Moves": "e7f6 e2e8 d8e8 e1e8",
+    "Themes": "backRankMate mate mateIn2 middlegame short",
+    "OpeningTags": "French_Defense French_Defense_Exchange_Variation"
+  },
+  {
+    "PuzzleId": "00QZ3",
+    "FEN": "r1bq3r/ppppnkpp/2n5/b5N1/4P3/B1P5/P4PPP/RN1QK2R b KQ - 1 9",
+    "Moves": "f7f8 d1f3 f8e8 f3f7",
+    "Themes": "mate mateIn2 opening short",
+    "OpeningTags": "Scotch_Game Scotch_Game_Scotch_Gambit"
+  },
+  {
+    "PuzzleId": "00SLR",
+    "FEN": "rnbqk1nr/ppppbppp/4p3/8/5P2/5N2/PPPPP1PP/RNBQKB1R w KQkq - 2 3",
+    "Moves": "g2g4 e7h4 f3h4 d8h4",
+    "Themes": "mate mateIn2 opening short",
+    "OpeningTags": "Bird_Opening Bird_Opening_Other_variations"
+  },
+  {
+    "PuzzleId": "00rHa",
+    "FEN": "2kr3r/pp2nppp/4p3/2PpP3/bn1N2Q1/q1N5/2PB1PPP/1K1R1B1R w - - 4 14",
+    "Moves": "f1b5 a4c2 d4c2 a3b3 b1a1 b4c2",
+    "Themes": "deflection fork long mate mateIn3 middlegame sacrifice",
+    "OpeningTags": "French_Defense French_Defense_Winawer_Variation"
+  },
+  {
+    "PuzzleId": "016rF",
+    "FEN": "r4qk1/pppb2p1/1bnp1R2/6N1/8/2NQ2B1/PP4PP/7K b - - 0 19",
+    "Moves": "f8f6 d3h7 g8f8 h7h8 f8e7 c3d5",
+    "Themes": "kingsideAttack long mate mateIn3 middlegame",
+    "OpeningTags": "Kings_Gambit_Declined Kings_Gambit_Declined_Queens_Knight_Defense"
+  },
+  {
+    "PuzzleId": "01S2P",
+    "FEN": "r4rk1/5qpp/p1p1p3/3pB3/6Q1/8/PPP2PPP/R3R1K1 w - - 4 18",
+    "Moves": "e1e3 f7f2 g1h1 f2f1 a1f1 f8f1",
+    "Themes": "backRankMate fork long mate mateIn3 middlegame sacrifice",
+    "OpeningTags": "Vienna_Game Vienna_Game_Other_variations"
+  },
+  {
+    "PuzzleId": "01TmZ",
+    "FEN": "r1b2rk1/1p2bppp/pqnp4/3Np3/2B1PP2/PN6/1PP2nPP/R1BQ1R1K w - - 5 13",
+    "Moves": "h1g1 f2h3 g1h1 b6g1 f1g1 h3f2",
+    "Themes": "doubleCheck kingsideAttack long mate mateIn3 opening sacrifice smotheredMate",
+    "OpeningTags": "Sicilian_Defense Sicilian_Defense_Najdorf_Variation"
+  },
+  {
+    "PuzzleId": "01vCu",
+    "FEN": "rn2r1k1/ppp2ppp/3p4/8/3qP3/4BQP1/P1P4P/R4RK1 b - - 3 17",
+    "Moves": "d4e5 f3f7 g8h8 f7f8 e8f8 f1f8",
+    "Themes": "backRankMate long mate mateIn3 middlegame sacrifice",
+    "OpeningTags": "Vienna_Game Vienna_Game_Vienna_Gambit"
+  },
+  {
+    "PuzzleId": "02ouU",
+    "FEN": "2kr2nr/1pp1q2p/p2b2p1/1N1P1b2/2BPp3/Q7/PB3PPP/4R1K1 b - - 1 17",
+    "Moves": "a6b5 a3a8 c8d7 c4b5 c7c6 b5c6 b7c6 a8c6",
+    "Themes": "intermezzo mate mateIn4 middlegame queensideAttack veryLong xRayAttack",
+    "OpeningTags": "Italian_Game Italian_Game_Evans_Gambit"
+  },
+  {
+    "PuzzleId": "02owE",
+    "FEN": "1nkr1qnr/1pp5/p2b1p2/3N2p1/2B1P1p1/4BN2/PPP1QPP1/R3R1K1 w - - 0 15",
+    "Moves": "f3d2 h8h1 g1h1 f8h6 h1g1 h6h2 g1f1 h2h1",
+    "Themes": "attraction kingsideAttack mate mateIn4 middlegame sacrifice veryLong",
+    "OpeningTags": "Philidor_Defense Philidor_Defense_Other_variations"
+  },
+  {
+    "PuzzleId": "03CZE",
+    "FEN": "r1bq1r1k/2p1b2p/p1np2p1/1p2p1P1/n3PN2/P1PP1Q2/BP3P2/RNB1K2R b KQ - 1 15",
+    "Moves": "e5f4 h1h7 h8h7 f3h1 c8h3 h1h3 h7g7 h3h6",
+    "Themes": "attraction kingsideAttack mate mateIn4 middlegame sacrifice veryLong",
+    "OpeningTags": "Bishops_Opening Bishops_Opening_Other_variations"
+  },
+  {
+    "PuzzleId": "06gwJ",
+    "FEN": "r1b1qbr1/ppp1pNk1/1n1pP1pp/4Q3/7P/1P6/PBPP1PP1/RN2K2R b KQ - 0 14",
+    "Moves": "d6e5 b2e5 g7h7 f7g5 h6g5 h4g5 f8h6 h1h6",
+    "Themes": "discoveredAttack master mate mateIn4 opening veryLong",
+    "OpeningTags": "Alekhine_Defense Alekhine_Defense_Normal_Variation"
+  },
+  {
+    "PuzzleId": "0AfyJ",
+    "FEN": "r1bq1b1r/pppp1kpp/1nn5/4P3/3P4/5Q2/PP3PPP/RNB1K1NR b KQ - 1 8",
+    "Moves": "f7g8 f3b3 d7d5 e5d6 b6c4 b3c4 c8e6 c4e6",
+    "Themes": "discoveredAttack enPassant kingsideAttack mate mateIn4 opening veryLong",
+    "OpeningTags": "Danish_Gambit Danish_Gambit_Other_variations"
+  }
+]

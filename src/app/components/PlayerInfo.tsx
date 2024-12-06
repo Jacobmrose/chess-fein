@@ -1,7 +1,7 @@
 interface PlayerInfoProps {
   playerName: string
-  timer: number
-  isActive: boolean // Active player flag determines if this player's timer counts down
+  timer?: number // Make timer optional
+  isActive: boolean
   position: 'top' | 'bottom'
   color: 'white' | 'black'
   materialDifference?: number
@@ -9,7 +9,7 @@ interface PlayerInfoProps {
 
 const PlayerInfo: React.FC<PlayerInfoProps> = ({
   playerName,
-  timer,
+  timer, // Now optional
   isActive,
   position,
   color,
@@ -44,11 +44,13 @@ const PlayerInfo: React.FC<PlayerInfoProps> = ({
       )}
 
       {/* Timer */}
-      <div className='text-sm sm:text-base md:text-lg font-medium text-center flex-1'>
-        {`${Math.floor(timer / 60)}:${(timer % 60)
-          .toString()
-          .padStart(2, '0')}`}
-      </div>
+      {timer !== undefined && (
+        <div className='text-sm sm:text-base md:text-lg font-medium text-center flex-1'>
+          {`${Math.floor(timer / 60)}:${(timer % 60)
+            .toString()
+            .padStart(2, '0')}`}
+        </div>
+      )}
     </div>
   )
 }
