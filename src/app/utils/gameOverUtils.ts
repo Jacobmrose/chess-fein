@@ -24,8 +24,6 @@ export const declareWinner = (
     setWinner('Game ends in a draw!')
   } else if (game.isStalemate()) {
     setWinner('Draw by stalemate!')
-  } else if (game.isThreefoldRepetition()) {
-    setWinner('Draw by threefold repetition!')
   } else if (game.isInsufficientMaterial()) {
     setWinner('Draw by insufficient material!')
   } else {

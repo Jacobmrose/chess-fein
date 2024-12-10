@@ -105,6 +105,22 @@ const ChessGame: React.FC<ChessGameProps> = ({
       setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
     }
 
+    // Check for 3-fold repetition
+
+    const extractBoardState = (fen: string) => fen.split(' ')[0]
+
+    // Check for threefold repetition by comparing the board state
+    const currentBoardState = extractBoardState(position)
+    const repetitionCount = fenHistory.filter(
+      (fen) => extractBoardState(fen) === currentBoardState
+    ).length
+
+    if (repetitionCount >= 3 && !gameEnded) {
+      setGameEnded(true)
+      setWinner('Draw by threefold repetition!')
+      onGameOver()
+    }
+
     // Check for game over
     if (!gameEnded && chessGame.current.isGameOver()) {
       handleGameOverDescription(chessGame.current, setEndReason)
@@ -112,7 +128,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
       declareWinner(chessGame.current, setWinner)
       onGameOver()
     }
-  }, [position, gameEnded, onGameOver, setEndReason])
+  }, [position, gameEnded, onGameOver, fenHistory, setEndReason])
 
   useEffect(() => {
     // Handle changes to fenHistory and position
@@ -142,7 +158,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
     }
 
     prevFenHistory.current = fenHistory
-  }, [fenHistory, currentMoveIndex])
+  }, [fenHistory, currentMoveIndex, setActivePlayer])
 
   const isAtCurrentMove = useMemo(
     () => position === fenHistory[fenHistory.length - 1],
@@ -338,11 +354,11 @@ const ChessGame: React.FC<ChessGameProps> = ({
   })
 
   useEffect(() => {
-    if (aiEnabled && activePlayer !== color && !gameEnded) {
+    if (aiEnabled && activePlayer !== color && !gameEnded && isAtCurrentMove) {
       const timer = setTimeout(getBestMove, 1000)
       return () => clearTimeout(timer)
     }
-  }, [aiEnabled, activePlayer, color, gameEnded, getBestMove])
+  }, [aiEnabled, activePlayer, color, gameEnded, getBestMove, isAtCurrentMove])
 
   return (
     <div className='flex flex-col justify-center items-center w-full h-full max-w-[75vmin] max-h-[75vmin] rounded-lg shadow-lg relative'>
@@ -404,7 +420,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
         />
       </div>
 
-      {lastMove && (
+      {isAtCurrentMove && lastMove && (
         <>
           <div
             style={getLastMoveHighlightStyle(lastMove.from, boardOrientation)}

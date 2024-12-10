@@ -76,7 +76,7 @@ export default function Play() {
         ) : (
           <>
             <PuzzleGame
-              color='white'
+              color={color}
               boardOrientation={boardOrientation}
               onMove={handleMove}
               onGameOver={handleGameOver}

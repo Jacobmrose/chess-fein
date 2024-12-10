@@ -52,7 +52,7 @@ export const getLastMoveHighlightStyle = (
     left,
     width: `${squareSize}%`,
     height: `${squareSize}%`,
-    background: 'rgba(125, 172, 201, 0.4)', // Highlight color for last move
+    background: 'rgba(125, 172, 201, 0.5)', // Highlight color for last move
     pointerEvents: 'none',
     zIndex: 9,
   }

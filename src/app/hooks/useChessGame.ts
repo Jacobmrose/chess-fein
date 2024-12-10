@@ -1,19 +1,22 @@
+// useChessGame.ts
+
 import { useState, useCallback } from 'react'
 import { Chess } from 'chess.js'
+
 import { UserProfile } from '@auth0/nextjs-auth0/client'
 
 // Define types
 type PlayerColor = 'white' | 'black'
 type GameSettings = {
-  timeLimit: number // Time limit in minutes
-  difficulty: number // Difficulty level (e.g., 1 to 10)
+  timeLimit: number
+  difficulty: number
 }
 
 export function useChessGame(user: UserProfile | null) {
   const [color, setColor] = useState<PlayerColor | null>(null)
   const [boardOrientation, setBoardOrientation] = useState<PlayerColor>('white')
   const [moves, setMoves] = useState<string[]>([])
-  const [fenHistory, setFenHistory] = useState<string[]>([new Chess().fen()])
+  const [fenHistory, setFenHistory] = useState<string[]>([])
   const [currentMoveIndex, setCurrentMoveIndex] = useState<number>(0)
   const [isGameOver, setIsGameOver] = useState<boolean>(false)
   const [isResigned, setIsResigned] = useState<boolean>(false)
@@ -50,7 +53,6 @@ export function useChessGame(user: UserProfile | null) {
     []
   )
 
-  // Handle making a move
   const handleMove = useCallback(
     (move: string, fen: string) => {
       const updatedMoves = [...moves.slice(0, currentMoveIndex + 1), move]
@@ -58,7 +60,6 @@ export function useChessGame(user: UserProfile | null) {
         ...fenHistory.slice(0, currentMoveIndex + 1),
         fen,
       ]
-
       setMoves(updatedMoves)
       setFenHistory(updatedFenHistory)
       setCurrentMoveIndex((prev) => prev + 1)
@@ -91,7 +92,7 @@ export function useChessGame(user: UserProfile | null) {
     setColor(null)
     setBoardOrientation('white')
     setMoves([])
-    setFenHistory([new Chess().fen()])
+    setFenHistory([fenHistory[0]]) // Keep the initial position
     setCurrentMoveIndex(0)
     setIsGameOver(false)
     setIsResigned(false)
@@ -107,16 +108,9 @@ export function useChessGame(user: UserProfile | null) {
     if (currentMoveIndex > 0) {
       const updatedMoves = moves.slice(0, -1)
       const updatedFenHistory = fenHistory.slice(0, -1)
-      const previousFen = updatedFenHistory[updatedFenHistory.length - 1]
-      const game = new Chess(previousFen)
-
       setMoves(updatedMoves)
       setFenHistory(updatedFenHistory)
       setCurrentMoveIndex((prev) => prev - 1)
-
-      // Determine active player
-      const activePlayer = game.turn() === 'w' ? 'white' : 'black'
-      setActivePlayer(activePlayer)
 
       // Save to localStorage
       localStorage.setItem('fenHistory', JSON.stringify(updatedFenHistory))
