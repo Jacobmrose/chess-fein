@@ -35,6 +35,7 @@ interface PuzzleGameProps {
   fenHistory: string[]
   setFenHistory: React.Dispatch<React.SetStateAction<string[]>>
   initialFen?: string
+  puzzleMoves: string[]
 }
 
 const PuzzleGame: React.FC<PuzzleGameProps> = ({
@@ -49,6 +50,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
   fenHistory,
   setFenHistory,
   initialFen,
+  puzzleMoves,
 }) => {
   const chessGame = useRef(new Chess())
   const [position, setPosition] = useState<string>(
