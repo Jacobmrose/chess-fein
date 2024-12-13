@@ -20,12 +20,11 @@ export function usePuzzles(
   const [isSolved, setIsSolved] = useState<boolean>(false)
   const [game] = useState(new Chess())
   const [fenHistory, setFenHistory] = useState<string[]>([]) // Track FEN history
-  const [activePlayer, setActivePlayer] = useState<'white' | 'black'>('white') // Active player with setter
-  const [playerColor, setPlayerColor] = useState<'white' | 'black'>('white') // Player's color in the puzzle
+  const [activePlayer, setActivePlayer] = useState<'white' | 'black'>('white')
+  const [playerColor, setPlayerColor] = useState<'white' | 'black'>('white')
   const [boardOrientation, setBoardOrientation] = useState<'white' | 'black'>(
     'white'
   )
-
   const [moves, setMoves] = useState<string[]>([])
 
   // Load puzzles from JSON on mount and filter by theme
@@ -35,7 +34,6 @@ export function usePuzzles(
         const response = await fetch(jsonPath)
         const data: Puzzle[] = await response.json()
 
-        // Filter puzzles by selected theme
         const filteredPuzzles =
           theme === 'All'
             ? data
@@ -57,7 +55,6 @@ export function usePuzzles(
       const sideToMove = currentFEN.split(' ')[1] // Second part of FEN indicates active side ('w' or 'b')
       setActivePlayer(sideToMove === 'w' ? 'white' : 'black')
 
-      // Set player color based on the starting FEN's active player
       if (fenHistory.length === 1) {
         setPlayerColor(sideToMove === 'w' ? 'white' : 'black')
       }
@@ -66,17 +63,6 @@ export function usePuzzles(
     }
   }, [fenHistory])
 
-  // Sync Chess.js game instance with FEN history
-  useEffect(() => {
-    if (fenHistory.length > 0) {
-      const currentFEN = fenHistory[fenHistory.length - 1]
-      if (game.fen() !== currentFEN) {
-        game.load(currentFEN)
-        console.log('Game FEN Updated:', currentFEN)
-      }
-    }
-  }, [fenHistory, game])
-
   // Get random puzzle
   const getRandomPuzzle = () => {
     if (puzzles.length > 0) {
@@ -84,24 +70,23 @@ export function usePuzzles(
       const puzzle = puzzles[randomIndex]
 
       setCurrentPuzzle(puzzle)
-      game.load(puzzle.FEN) // Update the game state
-      setFenHistory([puzzle.FEN]) // Initialize FEN history with the puzzle's starting position
+      game.load(puzzle.FEN)
+      setFenHistory([puzzle.FEN])
       setSolutionHistory(puzzle.Moves.split(' '))
       setCurrentSolutionIndex(0)
       setIsSolved(false)
 
-      // Determine active player's perspective from the starting FEN string
-      const startingSide = puzzle.FEN.split(' ')[1] // Extract the 'w' or 'b' value
-      setBoardOrientation(startingSide === 'b' ? 'black' : 'white') // Set the initial view accordingly
+      const startingSide = puzzle.FEN.split(' ')[1]
+      setBoardOrientation(startingSide === 'b' ? 'black' : 'white')
 
       console.log('Loaded Puzzle:', puzzle)
     }
   }
 
+  // Compare displayed FEN with Chess.js FEN during moves
   const handlePuzzleMove = (from: string, to: string) => {
     console.log('Received move:', { from, to })
 
-    // Validate input format
     if (!from.match(/^[a-h][1-8]$/) || !to.match(/^[a-h][1-8]$/)) {
       console.warn('Invalid square format:', { from, to })
       return false
@@ -110,11 +95,15 @@ export function usePuzzles(
     if (!currentPuzzle || isSolved) return false
 
     const currentFEN = fenHistory[fenHistory.length - 1]
+    console.log('Current FEN from fenHistory before move:', currentFEN)
+    console.log('Chess.js FEN before move:', game.fen())
+
     if (game.fen() !== currentFEN) {
-      game.load(currentFEN) // Load the current FEN into the Chess instance
+      game.load(currentFEN)
+      console.log('Synced Chess.js FEN with fenHistory:', currentFEN)
     }
 
-    const move = game.move({ from, to }) // Attempt the move
+    const move = game.move({ from, to })
 
     if (!move) {
       console.warn('Invalid move:', from, to)
@@ -125,20 +114,18 @@ export function usePuzzles(
     console.log('Player Move:', move.san, 'Expected Move:', expectedMove)
 
     if (move.san === expectedMove) {
-      // Correct move
       const newFEN = game.fen()
-      setFenHistory((prev) => [...prev, newFEN]) // Add the new FEN to the history
+      setFenHistory((prev) => [...prev, newFEN])
       setCurrentSolutionIndex((prevIndex) => prevIndex + 1)
 
       if (currentSolutionIndex + 1 === solutionHistory.length) {
-        // Puzzle is solved
         setIsSolved(true)
         console.log('Puzzle Solved!')
       }
 
+      console.log('New FEN after move:', newFEN)
       return true
     } else {
-      // Incorrect move, undo it
       game.undo()
       console.warn('Incorrect move. Move undone.')
       return false
@@ -156,9 +143,35 @@ export function usePuzzles(
     }
   }
 
-  const handleNavigateToMove = (index: number) => {
-    if (index >= 0 && index < fenHistory.length) {
-      setCurrentSolutionIndex(index)
+  // Check if the game is over or the puzzle is solved
+  useEffect(() => {
+    if (currentSolutionIndex === solutionHistory.length) {
+      setIsSolved(true)
+      console.log('Puzzle completed successfully!')
+    } else if (game.isGameOver()) {
+      setIsSolved(true)
+      console.log(
+        'Game over due to checkmate, stalemate, or other end conditions.'
+      )
+    }
+  }, [currentSolutionIndex, solutionHistory, game])
+
+  // Handle taking back a move
+  const handleTakeBackMove = () => {
+    if (isSolved || currentSolutionIndex === 0) {
+      console.error('Cannot take back moves: either solved or at the start.')
+      return
+    }
+
+    if (currentSolutionIndex > 0) {
+      const updatedFenHistory = fenHistory.slice(0, -1)
+      setFenHistory(updatedFenHistory)
+      setCurrentSolutionIndex((prev) => prev - 1)
+
+      game.undo()
+
+      localStorage.setItem('fenHistory', JSON.stringify(updatedFenHistory))
+      console.log('Move taken back successfully.')
     }
   }
 
@@ -167,17 +180,9 @@ export function usePuzzles(
     setBoardOrientation((prev) => (prev === 'white' ? 'black' : 'white'))
   }
 
-  // Handle taking back a move
-  const handleTakeBackMove = () => {
-    if (currentSolutionIndex > 0) {
-      const updatedMoves = moves.slice(0, -1)
-      const updatedFenHistory = fenHistory.slice(0, -1)
-      setMoves(updatedMoves)
-      setFenHistory(updatedFenHistory)
-      setCurrentSolutionIndex((prev) => prev - 1)
-
-      // Save to localStorage
-      localStorage.setItem('fenHistory', JSON.stringify(updatedFenHistory))
+  const handleNavigateToMove = (index: number) => {
+    if (index >= 0 && index < fenHistory.length) {
+      setCurrentSolutionIndex(index)
     }
   }
 
@@ -194,9 +199,10 @@ export function usePuzzles(
     activePlayer,
     setActivePlayer,
     playerColor,
-    handleNavigateToMove,
     toggleBoardOrientation,
     handleTakeBackMove,
     boardOrientation,
+    setCurrentSolutionIndex,
+    handleNavigateToMove,
   }
 }

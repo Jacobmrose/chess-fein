@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import PuzzleGame from '@/app/components/PuzzleGame'
 import PuzzleInitializer from '@/app/components/PuzzleInitializer'
-import GameInfo from '@/app/components/GameInfo'
 import { usePuzzles } from '../hooks/usePuzzles'
 import PuzzleGameInfo from '../components/PuzzleGameInfo'
 
@@ -29,6 +28,7 @@ export default function Play() {
     handleTakeBackMove,
     toggleBoardOrientation,
     boardOrientation,
+    setCurrentSolutionIndex,
   } = usePuzzles('mate_puzzles.json', theme) // Pass the selected theme here
 
   const handleFetchPuzzles = (selectedTheme: string) => {
@@ -47,6 +47,7 @@ export default function Play() {
               fenHistory={fenHistory} // FEN of the current puzzle
               puzzleMoves={solutionHistory} // Solution moves
               currentMoveIndex={currentSolutionIndex}
+              setCurrentMoveIndex={setCurrentSolutionIndex}
               isGameOver={isSolved} // Treat "solved" as game over for puzzles
               onMove={(from, to) => handlePuzzleMove(from, to)} // Handle moves
               onGameOver={() => {}} // Optional callback for when the puzzle is solved

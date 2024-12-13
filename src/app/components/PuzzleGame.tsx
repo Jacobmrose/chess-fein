@@ -36,6 +36,7 @@ interface PuzzleGameProps {
   setFenHistory: React.Dispatch<React.SetStateAction<string[]>>
   initialFen?: string
   puzzleMoves: string[]
+  setCurrentMoveIndex: React.Dispatch<React.SetStateAction<number>>
 }
 
 const PuzzleGame: React.FC<PuzzleGameProps> = ({
@@ -51,6 +52,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
   setFenHistory,
   initialFen,
   puzzleMoves,
+  setCurrentMoveIndex,
 }) => {
   const chessGame = useRef(new Chess())
   const [position, setPosition] = useState<string>(
@@ -64,6 +66,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
     }[]
   >([])
   const [gameEnded, setGameEnded] = useState(false)
+  const [moveProcessed, setMoveProcessed] = useState(false)
   const [winner, setWinner] = useState<string | null>(null)
   const [endReason, setEndReason] = useState<string | null>(null)
   const [materialDifference, setMaterialDifference] = useState(0)
@@ -184,22 +187,47 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
 
   const makeMoveCallback = useCallback(
     (fromSquare: Square, toSquare: Square) => {
-      return makeMove(
-        fromSquare,
-        toSquare,
-        chessGame.current,
-        (move) => {
-          setLastMove({ from: fromSquare, to: toSquare })
-          onMove(move, chessGame.current.fen())
-        },
-        isGameOver,
-        (newFen) => {
-          setPosition(newFen)
-          setFenHistory((prevHistory: string[]) => [...prevHistory, newFen])
-        }
-      )
+      const expectedMove = puzzleMoves[currentMoveIndex]
+      if (!expectedMove) {
+        console.error('No more moves in the puzzle.')
+        return false
+      }
+
+      const expectedFrom = expectedMove.slice(0, 2)
+      const expectedTo = expectedMove.slice(2, 4)
+
+      // Validate the move matches the puzzle
+      if (fromSquare !== expectedFrom || toSquare !== expectedTo) {
+        console.error(
+          `Invalid move. Expected: ${expectedFrom} to ${expectedTo}, got: ${fromSquare} to ${toSquare}`
+        )
+        return false
+      }
+
+      const move = chessGame.current.move({
+        from: fromSquare,
+        to: toSquare,
+      })
+
+      if (move) {
+        const currentFen = chessGame.current.fen()
+
+        // Update position and history
+        setPosition(currentFen)
+        setFenHistory((prevHistory) => [...prevHistory, currentFen])
+        setLastMove({ from: move.from, to: move.to })
+
+        // Progress to the next move
+        setCurrentMoveIndex((prevIndex) => prevIndex + 1) // Ensure index is updated
+        setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
+
+        return true
+      } else {
+        console.error('Move could not be made on the chessboard.')
+        return false
+      }
     },
-    [onMove, isGameOver]
+    [puzzleMoves, currentMoveIndex, fenHistory]
   )
 
   const handlePieceDrop = useCallback(
@@ -231,10 +259,10 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
       if (!isAtCurrentMove) return
 
       // Check if there's a piece at the square and if it's an opponent's piece
-      const pieceAtSquare = chessGame.current.get(square)
-      if (pieceAtSquare && pieceColor(pieceAtSquare.color) !== color) {
-        return
-      }
+      // const pieceAtSquare = chessGame.current.get(square)
+      // if (pieceAtSquare && pieceColor(pieceAtSquare.color) !== color) {
+      //   return
+      // }
 
       handleSquareClick(
         square,
@@ -280,6 +308,43 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
     [getPossibleMoves]
   )
 
+  // useEffect(() => {
+  //   if (gameEnded || chessGame.current.isGameOver()) return // Stop if the game is over
+
+  //   const isStockfishTurn = currentMoveIndex % 2 === 0
+
+  //   if (isStockfishTurn && !moveProcessed) {
+  //     const move = puzzleMoves[currentMoveIndex]
+  //     if (move) {
+  //       const fromSquare = move.slice(0, 2) as Square
+  //       const toSquare = move.slice(2, 4) as Square
+
+  //       console.log('Computer attempting move:', { fromSquare, toSquare })
+
+  //       const delay = setTimeout(() => {
+  //         const moveResult = makeMoveCallback(fromSquare, toSquare)
+  //         if (moveResult) {
+  //           console.log('Computer move accepted:', { fromSquare, toSquare })
+  //           setMoveProcessed(true) // Mark the move as processed
+
+  //           // Increment move index after the computer's move
+  //           setCurrentMoveIndex((prevIndex) => prevIndex + 1)
+  //         } else {
+  //           console.warn('Move rejected by Chess.js:', { fromSquare, toSquare })
+  //         }
+  //       }, 2000) // Introduce a 2-second delay
+
+  //       return () => clearTimeout(delay) // Cleanup timeout to avoid memory leaks
+  //     }
+  //   }
+  // }, [
+  //   currentMoveIndex,
+  //   puzzleMoves,
+  //   gameEnded,
+  //   makeMoveCallback,
+  //   moveProcessed, // Ensure this tracks correctly
+  // ])
+
   useEffect(() => {
     if (!chessGame.current.isGameOver() && !gameEnded) {
       setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
@@ -317,7 +382,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
           onPieceDragEnd={handleDragEnd}
           onSquareClick={isGameOver ? undefined : handleSquareClickCallback}
           onPieceClick={isGameOver ? undefined : handlePieceClick}
-          arePiecesDraggable={!isGameOver && activePlayer === color}
+          arePiecesDraggable={!isGameOver}
           customDropSquareStyle={{
             boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.3)',
           }}
