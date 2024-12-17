@@ -7,7 +7,6 @@ import {
   getLastMoveHighlightStyle,
 } from '../utils/highlightStyles'
 import { clearSelection } from '../utils/gameUtils'
-import { makeMove, handleSquareClick } from '../utils/moveUtils'
 import {
   onPromotionCheck,
   onPromotionPieceSelect,
@@ -184,9 +183,21 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
     },
     [handleGameOverDescription, onMove, setEndReason]
   )
+  const getPossibleMoves = useCallback((square: Square) => {
+    const game = chessGame.current
+    const moves = game.moves({ square, verbose: true })
+    const moveSquares = moves.map((move) => ({
+      square: move.to as Square,
+      isCapture: !!move.captured,
+    }))
+    setPossibleMoves(moveSquares)
+  }, [])
 
   const makeMoveCallback = useCallback(
     (fromSquare: Square, toSquare: Square) => {
+      const game = chessGame.current
+
+      // Step 1: Retrieve the expected move from the puzzle
       const expectedMove = puzzleMoves[currentMoveIndex]
       if (!expectedMove) {
         console.error('No more moves in the puzzle.')
@@ -196,7 +207,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
       const expectedFrom = expectedMove.slice(0, 2)
       const expectedTo = expectedMove.slice(2, 4)
 
-      // Validate the move matches the puzzle
+      // Step 2: Validate the move matches the puzzle's expected move
       if (fromSquare !== expectedFrom || toSquare !== expectedTo) {
         console.error(
           `Invalid move. Expected: ${expectedFrom} to ${expectedTo}, got: ${fromSquare} to ${toSquare}`
@@ -204,30 +215,102 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
         return false
       }
 
-      const move = chessGame.current.move({
-        from: fromSquare,
-        to: toSquare,
-      })
+      // Step 3: Check if the move is legal
+      const legalMoves = game.moves({ square: fromSquare, verbose: true })
+      const isMoveLegal = legalMoves.some((m) => m.to === toSquare)
 
+      if (!isMoveLegal) {
+        console.error(`Illegal move from ${fromSquare} to ${toSquare}`)
+        return false
+      }
+
+      // Step 4: Make the move
+      const move = game.move({ from: fromSquare, to: toSquare })
       if (move) {
-        const currentFen = chessGame.current.fen()
+        const currentFen = game.fen()
 
-        // Update position and history
+        // Update state
         setPosition(currentFen)
         setFenHistory((prevHistory) => [...prevHistory, currentFen])
         setLastMove({ from: move.from, to: move.to })
-
-        // Progress to the next move
-        setCurrentMoveIndex((prevIndex) => prevIndex + 1) // Ensure index is updated
-        setActivePlayer(chessGame.current.turn() === 'w' ? 'white' : 'black')
+        setCurrentMoveIndex((prevIndex) => prevIndex + 1)
+        setActivePlayer(game.turn() === 'w' ? 'white' : 'black')
 
         return true
       } else {
-        console.error('Move could not be made on the chessboard.')
         return false
       }
     },
-    [puzzleMoves, currentMoveIndex, fenHistory]
+    [
+      puzzleMoves,
+      currentMoveIndex,
+      setPosition,
+      setFenHistory,
+      setLastMove,
+      setCurrentMoveIndex,
+      setActivePlayer,
+    ]
+  )
+
+  const handleSquareClickCallback = useCallback(
+    (square: Square) => {
+      if (!isAtCurrentMove) return
+
+      const game = chessGame.current
+      const pieceAtSquare = game.get(square)
+
+      // Case 1: A piece is already selected
+      if (selectedSquare) {
+        const fromSquare = selectedSquare
+
+        // Case 1a: Clicking on a different piece of the same color
+        if (pieceAtSquare && pieceAtSquare.color === game.turn()) {
+          setSelectedSquare(square)
+          getPossibleMoves(square)
+          return
+        }
+
+        // Case 1b: Clicking on the same square (deselect)
+        if (fromSquare === square) {
+          handleClearSelection()
+          return
+        }
+
+        // Case 1c: Attempt to move to the square
+        const toSquare = square
+
+        // Delegate move validation and execution to makeMoveCallback
+        const moveSuccessful = makeMoveCallback(fromSquare, toSquare)
+        if (moveSuccessful) {
+          handleClearSelection() // Clear selection only after a successful move
+        } else {
+        }
+
+        return
+      }
+
+      // Case 2: No piece is selected yet
+      if (pieceAtSquare) {
+        // Select the piece and highlight its moves
+        if (pieceAtSquare.color === game.turn()) {
+          setSelectedSquare(square)
+          getPossibleMoves(square)
+        } else {
+        }
+      } else {
+        // No piece on the clicked square; clear selection
+        handleClearSelection()
+      }
+    },
+    [
+      chessGame,
+      selectedSquare,
+      setSelectedSquare,
+      getPossibleMoves,
+      handleClearSelection,
+      makeMoveCallback,
+      isAtCurrentMove,
+    ]
   )
 
   const handlePieceDrop = useCallback(
@@ -239,60 +322,9 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
     [makeMoveCallback, isAtCurrentMove]
   )
 
-  const getPossibleMoves = useCallback((square: Square) => {
-    const game = chessGame.current
-    const moves = game.moves({ square, verbose: true })
-    const moveSquares = moves.map((move) => ({
-      square: move.to as Square,
-      isCapture: !!move.captured,
-    }))
-    setPossibleMoves(moveSquares)
-  }, [])
-
   const handleDragEnd = useCallback(
     () => handleClearSelection(),
     [handleClearSelection]
-  )
-
-  const handleSquareClickCallback = useCallback(
-    (square: Square) => {
-      if (!isAtCurrentMove) return
-
-      // Check if there's a piece at the square and if it's an opponent's piece
-      // const pieceAtSquare = chessGame.current.get(square)
-      // if (pieceAtSquare && pieceColor(pieceAtSquare.color) !== color) {
-      //   return
-      // }
-
-      handleSquareClick(
-        square,
-        chessGame,
-        selectedSquare,
-        setSelectedSquare,
-        (newFen) => {
-          setPosition(newFen)
-          setFenHistory((prevHistory: any) => [...prevHistory, newFen])
-        },
-        getPossibleMoves,
-        (game) => handleGameOverDescription(game, setEndReason),
-        (move: string, fen: string, lastMove: { from: string; to: string }) => {
-          onMove(move, fen)
-          setLastMove(lastMove)
-        },
-        handleClearSelection
-      )
-    },
-    [
-      chessGame,
-      selectedSquare,
-      getPossibleMoves,
-      handleGameOverDescription,
-      onMove,
-      handleClearSelection,
-      setEndReason,
-      isAtCurrentMove,
-      color,
-    ]
   )
 
   const handlePieceClick = useCallback(
@@ -308,42 +340,46 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
     [getPossibleMoves]
   )
 
-  // useEffect(() => {
-  //   if (gameEnded || chessGame.current.isGameOver()) return // Stop if the game is over
+  useEffect(() => {
+    if (gameEnded || chessGame.current.isGameOver()) return // Stop if the game is over
 
-  //   const isStockfishTurn = currentMoveIndex % 2 === 0
+    const isComputerTurn = currentMoveIndex % 2 === 0
 
-  //   if (isStockfishTurn && !moveProcessed) {
-  //     const move = puzzleMoves[currentMoveIndex]
-  //     if (move) {
-  //       const fromSquare = move.slice(0, 2) as Square
-  //       const toSquare = move.slice(2, 4) as Square
+    if (isComputerTurn && !moveProcessed) {
+      const move = puzzleMoves[currentMoveIndex]
+      if (move) {
+        const fromSquare = move.slice(0, 2) as Square
+        const toSquare = move.slice(2, 4) as Square
 
-  //       console.log('Computer attempting move:', { fromSquare, toSquare })
+        console.log('Computer attempting move:', { fromSquare, toSquare })
 
-  //       const delay = setTimeout(() => {
-  //         const moveResult = makeMoveCallback(fromSquare, toSquare)
-  //         if (moveResult) {
-  //           console.log('Computer move accepted:', { fromSquare, toSquare })
-  //           setMoveProcessed(true) // Mark the move as processed
+        const delay = setTimeout(() => {
+          const moveResult = makeMoveCallback(fromSquare, toSquare)
+          if (moveResult) {
+            console.log('Computer move accepted:', { fromSquare, toSquare })
+            setMoveProcessed(true) // Mark as processed
+          } else {
+            console.warn('Move rejected by Chess.js:', { fromSquare, toSquare })
+          }
+        }, 2000) // 2-second delay for move execution
 
-  //           // Increment move index after the computer's move
-  //           setCurrentMoveIndex((prevIndex) => prevIndex + 1)
-  //         } else {
-  //           console.warn('Move rejected by Chess.js:', { fromSquare, toSquare })
-  //         }
-  //       }, 2000) // Introduce a 2-second delay
+        return () => clearTimeout(delay)
+      }
+    }
+  }, [
+    currentMoveIndex,
+    puzzleMoves,
+    gameEnded,
+    makeMoveCallback,
+    moveProcessed,
+  ])
 
-  //       return () => clearTimeout(delay) // Cleanup timeout to avoid memory leaks
-  //     }
-  //   }
-  // }, [
-  //   currentMoveIndex,
-  //   puzzleMoves,
-  //   gameEnded,
-  //   makeMoveCallback,
-  //   moveProcessed, // Ensure this tracks correctly
-  // ])
+  useEffect(() => {
+    // Reset moveProcessed only after the player's turn is processed
+    if (currentMoveIndex % 2 !== 0 && moveProcessed) {
+      setMoveProcessed(false)
+    }
+  }, [currentMoveIndex, moveProcessed])
 
   useEffect(() => {
     if (!chessGame.current.isGameOver() && !gameEnded) {
@@ -407,7 +443,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
         />
       </div>
 
-      {lastMove && (
+      {lastMove && isAtCurrentMove && (
         <>
           <div
             style={getLastMoveHighlightStyle(lastMove.from, boardOrientation)}

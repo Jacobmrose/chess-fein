@@ -7,10 +7,19 @@ import PuzzleInitializer from '@/app/components/PuzzleInitializer'
 import { usePuzzles } from '../hooks/usePuzzles'
 import PuzzleGameInfo from '../components/PuzzleGameInfo'
 
+// Define the Puzzle type
+type Puzzle = {
+  PuzzleId: string
+  FEN: string
+  Moves: string
+  Themes: string
+}
+
 export default function Play() {
   const { user } = useUser()
-  const [theme, setTheme] = useState<string>('All') // State to hold the selected theme
+  const [filteredPuzzles, setFilteredPuzzles] = useState<Puzzle[]>([]) // Store filtered puzzles
 
+  // Use the custom hook with the filtered puzzles
   const {
     currentPuzzle,
     getRandomPuzzle,
@@ -29,18 +38,26 @@ export default function Play() {
     toggleBoardOrientation,
     boardOrientation,
     setCurrentSolutionIndex,
-  } = usePuzzles('mate_puzzles.json', theme) // Pass the selected theme here
+  } = usePuzzles(filteredPuzzles) // Pass filtered puzzles to the hook
 
-  const handleFetchPuzzles = (selectedTheme: string) => {
-    setTheme(selectedTheme) // Update the theme when selected in PuzzleInitializer
-    getRandomPuzzle() // Fetch a random puzzle after setting the theme
+  // Callback for when puzzles are fetched and filtered
+  const handleFetchPuzzles = (puzzles: Puzzle[]) => {
+    setFilteredPuzzles(puzzles) // Set the filtered puzzles
+    console.log(puzzles)
+
+    getRandomPuzzle() // Immediately load a random puzzle
   }
 
   return (
     <div className='flex flex-col items-center w-full h-auto p-4 mt-16'>
       <div className='relative w-full max-w-4xl flex flex-col items-center'>
         {!currentPuzzle ? (
-          <PuzzleInitializer onFetchPuzzles={handleFetchPuzzles} />
+          <PuzzleInitializer
+            jsonPath='/mate_puzzles.json' // Path to your JSON file
+            onFetchPuzzles={handleFetchPuzzles} // Pass filtered puzzles to this callback
+            filteredPuzzles={filteredPuzzles}
+            setFilteredPuzzles={setFilteredPuzzles}
+          />
         ) : (
           <>
             <PuzzleGame
