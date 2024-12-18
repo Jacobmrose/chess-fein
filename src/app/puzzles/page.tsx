@@ -16,7 +16,6 @@ type Puzzle = {
 }
 
 export default function Play() {
-  const { user } = useUser()
   const [filteredPuzzles, setFilteredPuzzles] = useState<Puzzle[]>([]) // Store filtered puzzles
 
   // Use the custom hook with the filtered puzzles
@@ -38,14 +37,24 @@ export default function Play() {
     toggleBoardOrientation,
     boardOrientation,
     setCurrentSolutionIndex,
+    setGameStarted,
+    getNextPuzzle,
   } = usePuzzles(filteredPuzzles) // Pass filtered puzzles to the hook
 
   // Callback for when puzzles are fetched and filtered
   const handleFetchPuzzles = (puzzles: Puzzle[]) => {
-    setFilteredPuzzles(puzzles) // Set the filtered puzzles
-    console.log(puzzles)
+    if (puzzles.length === 0) {
+      console.warn('No puzzles fetched.')
+      return
+    }
 
-    getRandomPuzzle() // Immediately load a random puzzle
+    setFilteredPuzzles(puzzles) // Update state first
+
+    // Wait for the state to update before calling getRandomPuzzle
+    setTimeout(() => {
+      console.log('Filtered puzzles updated. Fetching random puzzle...')
+      getRandomPuzzle()
+    }, 0)
   }
 
   return (
@@ -57,6 +66,7 @@ export default function Play() {
             onFetchPuzzles={handleFetchPuzzles} // Pass filtered puzzles to this callback
             filteredPuzzles={filteredPuzzles}
             setFilteredPuzzles={setFilteredPuzzles}
+            setGameStarted={setGameStarted}
           />
         ) : (
           <>
@@ -73,6 +83,8 @@ export default function Play() {
               activePlayer={activePlayer}
               color={playerColor}
               boardOrientation={boardOrientation}
+              resetPuzzle={resetPuzzle}
+              getNextPuzzle={getNextPuzzle}
             />
             <PuzzleGameInfo
               fenHistory={fenHistory} // FEN of the current puzzle

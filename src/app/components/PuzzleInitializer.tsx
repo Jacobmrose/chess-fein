@@ -5,6 +5,7 @@ interface PuzzleInitializerProps {
   onFetchPuzzles: (puzzles: Puzzle[]) => void // Callback to pass puzzles
   filteredPuzzles: Puzzle[] // Filtered puzzles from parent
   setFilteredPuzzles: React.Dispatch<React.SetStateAction<Puzzle[]>> // Setter for filtered puzzles
+  setGameStarted: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 type Puzzle = {
@@ -15,33 +16,70 @@ type Puzzle = {
 }
 
 const PuzzleInitializer: React.FC<PuzzleInitializerProps> = React.memo(
-  ({ jsonPath, onFetchPuzzles, filteredPuzzles, setFilteredPuzzles }) => {
-    const [selectedTheme, setSelectedTheme] = useState<string>('All') // Selected theme
-    const [puzzles, setPuzzles] = useState<Puzzle[]>([]) // All loaded puzzles
-    const [currentBatch, setCurrentBatch] = useState<Puzzle[]>([]) // Current batch of 10 puzzles
-    const [isFetching, setIsFetching] = useState<boolean>(false) // Loading state
-    const hasFetched = useRef<boolean>(false) // Prevent duplicate fetches
+  ({ jsonPath, onFetchPuzzles, setFilteredPuzzles, setGameStarted }) => {
+    const [selectedTheme, setSelectedTheme] = useState<string>('All')
+    const [puzzles, setPuzzles] = useState<Puzzle[]>([])
+    const [currentBatch, setCurrentBatch] = useState<Puzzle[]>([])
+    const [isFetching, setIsFetching] = useState<boolean>(false)
+    const hasFetched = useRef<boolean>(false)
 
-    const batchSize = 10 // Number of puzzles per batch
+    const batchSize = 1
 
     const themes = [
+      'Test',
       'All',
+      'AdvancedPawn',
+      'Advantage',
+      'AnastasiaMate',
+      'AttackingF2F7',
+      'Attraction',
+      'BackRankMate',
+      'BodenMate',
+      'CapturingDefender',
+      'Castling',
+      'Clearance',
+      'Crushing',
+      'DefensiveMove',
+      'Deflection',
+      'DiscoveredAttack',
+      'DoubleBishopMate',
+      'DoubleCheck',
+      'EnPassant',
+      'Endgame',
+      'ExposedKing',
+      'Fork',
+      'Interference',
+      'Intermezzo',
+      'KingsideAttack',
+      'Long',
+      'Master',
+      'MasterVsMaster',
       'Mate',
       'MateIn1',
       'MateIn2',
       'MateIn3',
-      'Advantage',
-      'Fork',
-      'Crushing',
+      'MateIn4',
+      'MateIn5',
+      'Middlegame',
+      'OneMove',
+      'Opening',
       'Pin',
-      'DefensiveMove',
       'QueensideAttack',
+      'QuietMove',
+      'RookEndgame',
+      'Sacrifice',
+      'Short',
+      'Skewer',
+      'SmotheredMate',
+      'TrappedPiece',
+      'VeryLong',
+      'XRayAttack',
     ]
 
-    // Fetch puzzles when the component mounts
+    // Fetch puzzles on mount
     useEffect(() => {
       const loadPuzzles = async () => {
-        if (hasFetched.current) return // Prevent duplicate fetches
+        if (hasFetched.current) return
         hasFetched.current = true
 
         try {
@@ -60,30 +98,27 @@ const PuzzleInitializer: React.FC<PuzzleInitializerProps> = React.memo(
       loadPuzzles()
     }, [jsonPath])
 
-    // Memoized filtering logic
-    const filteredPuzzlesMemo = useMemo(() => {
-      const filtered =
-        selectedTheme === 'All'
-          ? puzzles
-          : puzzles.filter((puzzle) => {
-              const themesArray = puzzle.Themes?.split(/\s+/) || []
-              return themesArray.some(
-                (theme) => theme.toLowerCase() === selectedTheme.toLowerCase()
-              )
-            })
+    // Filter puzzles based on the selected theme
+    const filteredPuzzles = useMemo(() => {
+      if (selectedTheme === 'All') return puzzles
+      return puzzles.filter((puzzle) =>
+        (puzzle.Themes?.split(/\s+/) || []).some(
+          (theme) => theme.toLowerCase() === selectedTheme.toLowerCase()
+        )
+      )
+    }, [selectedTheme, puzzles])
 
-      setFilteredPuzzles(filtered)
-      return filtered
-    }, [selectedTheme, puzzles, setFilteredPuzzles])
-
-    // Set current batch when filtered puzzles change
+    // Update parent state with filtered puzzles
     useEffect(() => {
-      setCurrentBatch(filteredPuzzlesMemo.slice(0, batchSize))
-    }, [filteredPuzzlesMemo])
+      setFilteredPuzzles(filteredPuzzles)
+    }, [filteredPuzzles, setFilteredPuzzles])
 
+    // Start the game with the first batch of puzzles
     const handleStartGame = () => {
+      const currentBatch = filteredPuzzles.slice(0, batchSize)
       console.log('Starting game with puzzles:', currentBatch)
-      onFetchPuzzles(currentBatch) // Send the first batch of puzzles to the parent
+      onFetchPuzzles(currentBatch)
+      setGameStarted(true)
     }
 
     return (
@@ -93,7 +128,6 @@ const PuzzleInitializer: React.FC<PuzzleInitializerProps> = React.memo(
             Select Puzzle Theme
           </h2>
 
-          {/* Puzzle Theme Selection */}
           <div className='flex flex-col items-center space-y-2'>
             <label
               htmlFor='theme-select'
@@ -115,11 +149,10 @@ const PuzzleInitializer: React.FC<PuzzleInitializerProps> = React.memo(
             </select>
           </div>
 
-          {/* Start Game Button */}
           <button
             onClick={handleStartGame}
-            className={`w-full bg-green-600 hover:bg-green-700 text-white py-2 lg:py-3 rounded-md transition-colors duration-300 text-base lg:text-lg`}
-            disabled={currentBatch.length === 0 || isFetching}
+            className={`w-full bg-purple-600 hover:bg-gray-700 text-white py-2 lg:py-3 rounded-md transition-colors duration-300 text-base lg:text-lg`}
+            disabled={filteredPuzzles.length === 0 || isFetching}
           >
             Start Game
           </button>

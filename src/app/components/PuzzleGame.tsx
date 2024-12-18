@@ -7,10 +7,6 @@ import {
   getLastMoveHighlightStyle,
 } from '../utils/highlightStyles'
 import { clearSelection } from '../utils/gameUtils'
-import {
-  onPromotionCheck,
-  onPromotionPieceSelect,
-} from '../utils/promotionUtils'
 import PlayerInfo from './PlayerInfo'
 import {
   handleGameOverDescription,
@@ -33,9 +29,10 @@ interface PuzzleGameProps {
   setActivePlayer: (player: 'white' | 'black') => void
   fenHistory: string[]
   setFenHistory: React.Dispatch<React.SetStateAction<string[]>>
-  initialFen?: string
   puzzleMoves: string[]
   setCurrentMoveIndex: React.Dispatch<React.SetStateAction<number>>
+  resetPuzzle: () => void
+  getNextPuzzle: () => void
 }
 
 const PuzzleGame: React.FC<PuzzleGameProps> = ({
@@ -49,14 +46,13 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
   setActivePlayer,
   fenHistory,
   setFenHistory,
-  initialFen,
   puzzleMoves,
   setCurrentMoveIndex,
+  resetPuzzle,
+  getNextPuzzle,
 }) => {
   const chessGame = useRef(new Chess())
-  const [position, setPosition] = useState<string>(
-    initialFen || chessGame.current.fen()
-  )
+  const [position, setPosition] = useState<string>(chessGame.current.fen())
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null)
   const [possibleMoves, setPossibleMoves] = useState<
     {
@@ -78,14 +74,6 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const prevFenHistory = useRef<string[]>([])
   const pieceColor = (piece: string) =>
     piece.startsWith('w') ? 'white' : 'black'
-
-  useEffect(() => {
-    if (initialFen) {
-      chessGame.current.load(initialFen) // Load the initial FEN into the engine
-      setPosition(initialFen) // Set the initial position on the board
-      setFenHistory([initialFen]) // Initialize fenHistory with the initial FEN
-    }
-  }, [initialFen, setFenHistory])
 
   useEffect(() => {
     // Update material differences when the position changes
@@ -160,29 +148,6 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
     clearSelection(setSelectedSquare, setPossibleMoves)
   }, [])
 
-  const handlePromotionSelection = useCallback(
-    (
-      piece: string | undefined,
-      promoteFromSquare?: Square,
-      promoteToSquare?: Square
-    ) => {
-      const game = chessGame.current
-      return onPromotionPieceSelect(
-        piece,
-        promoteFromSquare,
-        promoteToSquare,
-        game,
-        (newFen) => {
-          setPosition(newFen)
-          setFenHistory((prevHistory: string[]) => [...prevHistory, newFen])
-        },
-        getPieceName,
-        (game) => handleGameOverDescription(game, setEndReason),
-        (move) => onMove(move, chessGame.current.fen())
-      )
-    },
-    [handleGameOverDescription, onMove, setEndReason]
-  )
   const getPossibleMoves = useCallback((square: Square) => {
     const game = chessGame.current
     const moves = game.moves({ square, verbose: true })
@@ -340,10 +305,27 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
     [getPossibleMoves]
   )
 
-  useEffect(() => {
-    if (gameEnded || chessGame.current.isGameOver()) return // Stop if the game is over
+  const resetPuzzleHandler = useCallback(() => {
+    chessGame.current = new Chess() // Reset the chess game instance
+    resetPuzzle() // Clear the current puzzle state
+    setCurrentMoveIndex(0) // Reset the move index
+    setMoveProcessed(false) // Reset move processing state
+    setGameEnded(false) // Reset the game-ended state
+  }, [resetPuzzle, setFenHistory, setCurrentMoveIndex])
 
-    const isComputerTurn = currentMoveIndex % 2 === 0
+  const getNextPuzzleHandler = useCallback(() => {
+    chessGame.current = new Chess() // Reset the chess game instance
+    setCurrentMoveIndex(0) // Reset the move index
+    setMoveProcessed(false) // Reset move processing state
+    setGameEnded(false) // Reset the game-ended state
+    getNextPuzzle() // Proceed to the next puzzle
+  }, [setFenHistory, setCurrentMoveIndex, getNextPuzzle])
+
+  const isComputerTurn = currentMoveIndex % 2 === 0
+
+  useEffect(() => {
+    // Reset moveProcessed when the puzzle resets
+    if (gameEnded) return // Don't trigger if the game has ended
 
     if (isComputerTurn && !moveProcessed) {
       const move = puzzleMoves[currentMoveIndex]
@@ -351,15 +333,10 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
         const fromSquare = move.slice(0, 2) as Square
         const toSquare = move.slice(2, 4) as Square
 
-        console.log('Computer attempting move:', { fromSquare, toSquare })
-
         const delay = setTimeout(() => {
           const moveResult = makeMoveCallback(fromSquare, toSquare)
           if (moveResult) {
-            console.log('Computer move accepted:', { fromSquare, toSquare })
-            setMoveProcessed(true) // Mark as processed
-          } else {
-            console.warn('Move rejected by Chess.js:', { fromSquare, toSquare })
+            setMoveProcessed(true) // Mark as processed after a successful move
           }
         }, 2000) // 2-second delay for move execution
 
@@ -389,9 +366,27 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
 
   return (
     <div className='flex flex-col justify-center items-center w-full h-full max-w-[75vmin] max-h-[75vmin] rounded-lg shadow-lg relative'>
-      {winner && (
+      {isGameOver && (
         <div className='absolute top-1/2 left-0 transform -translate-y-1/2 w-full bg-purple-300 text-black text-center p-2 font-bold z-10'>
-          {winner} {endReason}
+          {'Puzzle Solved!'}
+          <div className='mt-4 flex justify-center gap-4'>
+            <button
+              className='bg-purple-600 text-white px-4 py-2 rounded hover:bg-gray-700'
+              onClick={() => {
+                resetPuzzleHandler()
+              }}
+            >
+              Repeat Puzzle
+            </button>
+            <button
+              className='bg-purple-600 text-white px-4 py-2 rounded hover:bg-gray-700'
+              onClick={() => {
+                getNextPuzzleHandler()
+              }}
+            >
+              Next Puzzle
+            </button>
+          </div>
         </div>
       )}
 
@@ -416,16 +411,18 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
           onPieceDrop={handlePieceDrop}
           onPieceDragBegin={handleDragBegin}
           onPieceDragEnd={handleDragEnd}
-          onSquareClick={isGameOver ? undefined : handleSquareClickCallback}
-          onPieceClick={isGameOver ? undefined : handlePieceClick}
-          arePiecesDraggable={!isGameOver}
+          onSquareClick={
+            !isComputerTurn && gameEnded ? undefined : handleSquareClickCallback
+          }
+          onPieceClick={
+            !isComputerTurn && gameEnded ? undefined : handlePieceClick
+          }
+          arePiecesDraggable={!isComputerTurn && !gameEnded}
           customDropSquareStyle={{
             boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.3)',
           }}
           customLightSquareStyle={{ backgroundColor: '#E0E0E0' }}
           customDarkSquareStyle={{ backgroundColor: '#6A0DAD' }}
-          onPromotionCheck={onPromotionCheck}
-          onPromotionPieceSelect={handlePromotionSelection}
         />
       </div>
 
