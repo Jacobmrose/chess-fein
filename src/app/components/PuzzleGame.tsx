@@ -5,6 +5,7 @@ import { getPieceName, Piece } from '../utils/pieceUtils'
 import {
   getMoveHighlightStyle,
   getLastMoveHighlightStyle,
+  getHintHighlightStyle,
 } from '../utils/highlightStyles'
 import { clearSelection } from '../utils/gameUtils'
 import PlayerInfo from './PlayerInfo'
@@ -17,11 +18,11 @@ import {
   calculateMaterialDifference,
   getMaterialDifferences,
 } from '../utils/calculateMaterialDifference'
+import { clear } from 'console'
 
 interface PuzzleGameProps {
   color: 'white' | 'black'
   boardOrientation: 'white' | 'black'
-  onMove: (move: string, fen: string) => void
   onGameOver: () => void
   isGameOver: boolean
   currentMoveIndex: number
@@ -33,12 +34,13 @@ interface PuzzleGameProps {
   setCurrentMoveIndex: React.Dispatch<React.SetStateAction<number>>
   resetPuzzle: () => void
   getNextPuzzle: () => void
+  hint: string | null
+  clearHint: () => void
 }
 
 const PuzzleGame: React.FC<PuzzleGameProps> = ({
   color,
   boardOrientation,
-  onMove,
   onGameOver,
   isGameOver,
   currentMoveIndex,
@@ -50,6 +52,8 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
   setCurrentMoveIndex,
   resetPuzzle,
   getNextPuzzle,
+  hint,
+  clearHint,
 }) => {
   const chessGame = useRef(new Chess())
   const [position, setPosition] = useState<string>(chessGame.current.fen())
@@ -200,6 +204,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
         setLastMove({ from: move.from, to: move.to })
         setCurrentMoveIndex((prevIndex) => prevIndex + 1)
         setActivePlayer(game.turn() === 'w' ? 'white' : 'black')
+        clearHint()
 
         return true
       } else {
@@ -391,15 +396,18 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
       )}
 
       <div className='flex justify-between w-full mb-4'>
+        {/* Top Player */}
         <PlayerInfo
-          playerName={`Puzzle Mode`}
-          isActive={activePlayer === (color === 'white' ? 'black' : 'white')}
+          playerName={`Opponent`}
+          isActive={
+            activePlayer === (boardOrientation === 'white' ? 'black' : 'white')
+          }
           position='top'
-          color={color === 'white' ? 'black' : 'white'}
+          color={boardOrientation === 'white' ? 'black' : 'white'}
           materialDifference={
-            color === 'white'
-              ? blackMaterialDifference
-              : whiteMaterialDifference
+            boardOrientation === 'white'
+              ? blackMaterialDifference // Show black's material difference at the top
+              : whiteMaterialDifference // Show white's material difference at the top
           }
         />
       </div>
@@ -427,15 +435,18 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
       </div>
 
       <div className='flex justify-between w-full mt-4'>
+        {/* Bottom Player */}
         <PlayerInfo
-          playerName={`Puzzle Mode`}
-          isActive={activePlayer === color}
+          playerName={`Player`}
+          isActive={
+            activePlayer === (boardOrientation === 'white' ? 'white' : 'black')
+          }
           position='bottom'
-          color={color}
+          color={boardOrientation === 'white' ? 'white' : 'black'}
           materialDifference={
-            color === 'white'
-              ? whiteMaterialDifference
-              : blackMaterialDifference
+            boardOrientation === 'white'
+              ? whiteMaterialDifference // Show white's material difference at the bottom
+              : blackMaterialDifference // Show black's material difference at the bottom
           }
         />
       </div>
@@ -449,6 +460,10 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
             style={getLastMoveHighlightStyle(lastMove.to, boardOrientation)}
           />
         </>
+      )}
+
+      {hint && isAtCurrentMove && !isComputerTurn && (
+        <div style={getHintHighlightStyle(hint, boardOrientation)} />
       )}
 
       {isAtCurrentMove &&

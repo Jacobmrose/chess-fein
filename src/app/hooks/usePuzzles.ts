@@ -24,6 +24,7 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
     'white'
   )
   const [gameStarted, setGameStarted] = useState(false)
+  const [hint, setHint] = useState<string | null>(null) // Track the current hint
 
   // Update puzzles when `initialPuzzles` changes
   useEffect(() => {
@@ -68,6 +69,7 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
       setSolutionHistory(puzzle.Moves.split(' '))
       setCurrentSolutionIndex(0)
       setIsSolved(false)
+      setHint(null) // Reset hint when loading a new puzzle
 
       const startingSide = puzzle.FEN.split(' ')[1]
       setBoardOrientation(startingSide === 'b' ? 'white' : 'black')
@@ -153,10 +155,25 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
     }
   }
 
+  // Get a hint for the current puzzle
+  const getHint = () => {
+    if (currentPuzzle) {
+      const moves = solutionHistory
+      const nextMove = moves[currentSolutionIndex] // Get the next move in the solution
+      const fromSquare = nextMove.slice(0, 2) // Extract the starting square
+      setHint(fromSquare) // Set the hint to the starting square of the next move
+    }
+  }
+
+  // Clear the hint
+  const clearHint = () => {
+    setHint(null)
+  }
+
   // Detect when a puzzle is solved
   useEffect(() => {
     if (
-      solutionHistory.length > 0 && // Ensure the solution history is populated
+      solutionHistory.length > 0 &&
       currentSolutionIndex === solutionHistory.length
     ) {
       setIsSolved(true)
@@ -167,7 +184,7 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
   return {
     currentPuzzle,
     getRandomPuzzle,
-    getNextPuzzle, // Expose this new function
+    getNextPuzzle,
     handlePuzzleMove,
     resetPuzzle,
     isSolved,
@@ -185,5 +202,8 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
     handleNavigateToMove,
     gameStarted,
     setGameStarted,
+    getHint, // Expose the getHint function
+    clearHint, // Expose the clearHint function
+    hint, // Expose the current hint
   }
 }

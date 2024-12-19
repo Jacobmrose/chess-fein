@@ -39,6 +39,9 @@ export default function Play() {
     setCurrentSolutionIndex,
     setGameStarted,
     getNextPuzzle,
+    getHint,
+    hint,
+    clearHint,
   } = usePuzzles(filteredPuzzles) // Pass filtered puzzles to the hook
 
   // Callback for when puzzles are fetched and filtered
@@ -76,7 +79,6 @@ export default function Play() {
               currentMoveIndex={currentSolutionIndex}
               setCurrentMoveIndex={setCurrentSolutionIndex}
               isGameOver={isSolved} // Treat "solved" as game over for puzzles
-              onMove={(from, to) => handlePuzzleMove(from, to)} // Handle moves
               onGameOver={() => {}} // Optional callback for when the puzzle is solved
               setFenHistory={setFenHistory}
               setActivePlayer={setActivePlayer}
@@ -85,6 +87,8 @@ export default function Play() {
               boardOrientation={boardOrientation}
               resetPuzzle={resetPuzzle}
               getNextPuzzle={getNextPuzzle}
+              hint={hint}
+              clearHint={clearHint}
             />
             <PuzzleGameInfo
               fenHistory={fenHistory} // FEN of the current puzzle
@@ -92,6 +96,8 @@ export default function Play() {
               navigateToMove={handleNavigateToMove}
               onTakeBackMove={handleTakeBackMove}
               onToggleBoardOrientation={toggleBoardOrientation}
+              getNextPuzzle={getNextPuzzle}
+              onGetHint={getHint}
             />
           </>
         )}

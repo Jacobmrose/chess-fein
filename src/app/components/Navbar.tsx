@@ -1,7 +1,8 @@
+'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import UserInfo from './UserInfo' // Import UserInfo component
+import UserInfo from './UserInfo'
 
 function Navbar() {
   const pathname = usePathname()
@@ -20,7 +21,7 @@ function Navbar() {
         aria-label='Home'
         className={`flex items-center ${
           isActive('/') ? 'text-purple-700 font-bold' : 'text-white'
-        } hover:text-purple-500`} // Updated color classes
+        } hover:text-purple-500`}
       >
         <img
           src='/chess-fein.png'
@@ -75,7 +76,7 @@ function Navbar() {
           aria-label='Play'
           className={`${
             isActive('/play') ? 'text-purple-700 font-bold' : 'text-white'
-          } hover:text-purple-500`} // Updated color classes
+          } hover:text-purple-500`}
         >
           Play
         </Link>
@@ -84,40 +85,40 @@ function Navbar() {
           aria-label='About'
           className={`${
             isActive('/about') ? 'text-purple-700 font-bold' : 'text-white'
-          } hover:text-purple-500`} // Updated color classes
+          } hover:text-purple-500`}
         >
           About
         </Link>
         <Link
-          href='/history'
-          aria-label='History'
+          href='/learn'
+          aria-label='Learn'
           className={`${
-            isActive('/history') ? 'text-purple-700 font-bold' : 'text-white'
-          } hover:text-purple-500`} // Updated color classes
+            isActive('/learn') ? 'text-purple-700 font-bold' : 'text-white'
+          } hover:text-purple-500`}
         >
-          History
+          Learn
         </Link>
         <Link
           href='/puzzles'
           aria-label='Puzzles'
           className={`${
             isActive('/puzzles') ? 'text-purple-700 font-bold' : 'text-white'
-          } hover:text-purple-500`} // Updated color classes
+          } hover:text-purple-500`}
         >
           Puzzles
         </Link>
         <Link
-          href='/settings'
-          aria-label='Settings'
+          href='/community'
+          aria-label='Community'
           className={`${
-            isActive('/settings') ? 'text-purple-700 font-bold' : 'text-white'
-          } hover:text-purple-500`} // Updated color classes
+            isActive('/community') ? 'text-purple-700 font-bold' : 'text-white'
+          } hover:text-purple-500`}
         >
-          Settings
+          Community
         </Link>
 
         {/* Add UserInfo component here */}
-        <UserInfo />
+        {/* <UserInfo /> */}
       </div>
     </nav>
   )

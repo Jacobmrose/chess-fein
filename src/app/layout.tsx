@@ -1,10 +1,9 @@
 import Footer from './components/Footer'
-import NavbarWrapper from './components/NavbarWrapper' // Import the new NavbarWrapper
 import './styles/globals.css'
 import { ReactNode } from 'react'
 import { Inconsolata } from 'next/font/google'
-import { UserProvider } from '@auth0/nextjs-auth0/client'
-import { ToastContainer } from 'react-toastify' // Import ToastContainer
+// import { UserProvider } from '@auth0/nextjs-auth0/client'
+import Navbar from './components/Navbar'
 
 interface LayoutProps {
   children: ReactNode
@@ -30,29 +29,22 @@ export const generateViewport = () => ({
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <html lang='en'>
-      <UserProvider>
-        <body
-          className={`${inconsolata.className} flex flex-col min-h-screen bg-gradient-to-br from-purple-900 to-black text-white`}
-        >
-          <NavbarWrapper /> {/* Use the NavbarWrapper component here */}
-          <main className='w-full mx-auto flex-grow flex items-center justify-center p-8'>
-            {children}
-          </main>
-          <footer>
-            <Footer />
-          </footer>
-          <ToastContainer
-            position='top-center'
-            autoClose={5000} // 5 secs before autoclose
-            hideProgressBar={false}
-            newestOnTop={true}
-            closeOnClick
-            pauseOnHover
-            pauseOnFocusLoss
-            toastClassName='toast-centered'
-          />
-        </body>
-      </UserProvider>
+      {/* <UserProvider> */}
+      <body
+        className={`${inconsolata.className} flex flex-col min-h-screen bg-gradient-to-br from-purple-900 to-black text-white`}
+      >
+        {/* Use the NavbarWrapper component here if you are wanted to use the auth0 user authentication. */}
+        <nav className='bg-gray-900 text-white p-4'>
+          <Navbar />
+        </nav>
+        <main className='w-full mx-auto flex-grow flex items-center justify-center p-8'>
+          {children}
+        </main>
+        <footer>
+          <Footer />
+        </footer>
+      </body>
+      {/* </UserProvider> */}
     </html>
   )
 }

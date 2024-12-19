@@ -1,13 +1,11 @@
 'use client'
 
 import { useChessGame } from '@/app/hooks/useChessGame'
-import { useUser } from '@auth0/nextjs-auth0/client'
 import ChessGame from '@/app/components/ChessGame'
 import GameInitializer from '@/app/components/GameInitializer'
 import GameInfo from '@/app/components/GameInfo'
 
 export default function Play() {
-  const { user } = useUser()
   const {
     color,
     boardOrientation,
@@ -33,7 +31,7 @@ export default function Play() {
     handleGameOver,
     setFenHistory,
     setActivePlayer,
-  } = useChessGame(user || null)
+  } = useChessGame(null)
 
   return (
     <div className='flex flex-col items-center w-full h-auto p-4 mt-16'>

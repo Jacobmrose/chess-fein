@@ -1,9 +1,5 @@
-// useChessGame.ts
-
 import { useState, useCallback } from 'react'
 import { Chess } from 'chess.js'
-
-import { UserProfile } from '@auth0/nextjs-auth0/client'
 
 // Define types
 type PlayerColor = 'white' | 'black'
@@ -12,7 +8,7 @@ type GameSettings = {
   difficulty: number
 }
 
-export function useChessGame(user: UserProfile | null) {
+export function useChessGame(user: 'Player' | null) {
   const [color, setColor] = useState<PlayerColor | null>(null)
   const [boardOrientation, setBoardOrientation] = useState<PlayerColor>('white')
   const [moves, setMoves] = useState<string[]>([])
@@ -124,9 +120,7 @@ export function useChessGame(user: UserProfile | null) {
 
   // Get player name
   const getPlayerName = (side: PlayerColor): string =>
-    side === color
-      ? user?.name || `${side.charAt(0).toUpperCase() + side.slice(1)} Player`
-      : `Stockfish ${gameSettings.difficulty} Elo`
+    side === color ? 'Player' : `Stockfish ${gameSettings.difficulty} Elo`
 
   const whitePlayerName = getPlayerName('white')
   const blackPlayerName = getPlayerName('black')
