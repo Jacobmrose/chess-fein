@@ -76,7 +76,7 @@ const GameInfo: React.FC<GameInfoProps> = ({
   }
 
   return (
-    <div className='mt-20 p-4 w-full max-w-[75vmin] bg-purple-900 bg-opacity-90 text-white rounded-lg shadow-lg'>
+    <div className='mt-20 p-4 w-full max-w-[65vmin] bg-purple-900 bg-opacity-90 text-white rounded-lg shadow-lg'>
       {isPlaygroundMode && (
         <div className='flex justify-center mb-4'>
           <button

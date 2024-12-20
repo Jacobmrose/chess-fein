@@ -25,6 +25,10 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
   )
   const [gameStarted, setGameStarted] = useState(false)
   const [hint, setHint] = useState<string | null>(null) // Track the current hint
+  const [showConfirmationBox, setShowConfirmationBox] = useState<boolean>(false)
+  const [confirmationAction, setConfirmationAction] = useState<
+    (() => void) | null
+  >(null)
 
   // Update puzzles when `initialPuzzles` changes
   useEffect(() => {
@@ -92,39 +96,24 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
     loadPuzzleByIndex(randomIndex)
   }
 
-  // Fetch the next puzzle sequentially
   const getNextPuzzle = () => {
     if (currentPuzzleIndex < puzzles.length - 1) {
       loadPuzzleByIndex(currentPuzzleIndex + 1)
     } else {
-      alert(
-        'You finished all of the puzzles available in this theme! Redirecting you back to the theme selection screen...'
-      )
-
-      // Redirect immediately to /puzzles
-      if (typeof window !== 'undefined') {
-        window.location.href = '/puzzles'
-      }
+      setShowConfirmationBox(true)
+      setConfirmationAction(() => () => {
+        if (typeof window !== 'undefined') {
+          window.location.href = '/puzzles'
+        }
+      })
     }
   }
 
-  // Handle a move during the puzzle
-  const handlePuzzleMove = (from: string, to: string) => {
-    if (!currentPuzzle || isSolved) return false
-
-    const move = game.move({ from, to })
-    if (move) {
-      const newFEN = game.fen()
-      setFenHistory((prev) => [...prev, newFEN])
-
-      if (solutionHistory[currentSolutionIndex] === move.san) {
-        setCurrentSolutionIndex((prev) => prev + 1)
-      } else {
-        game.undo()
-      }
-      return true
+  const handleConfirm = () => {
+    if (confirmationAction) {
+      confirmationAction()
     }
-    return false
+    setShowConfirmationBox(false)
   }
 
   // Reset the current puzzle
@@ -185,7 +174,6 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
     currentPuzzle,
     getRandomPuzzle,
     getNextPuzzle,
-    handlePuzzleMove,
     resetPuzzle,
     isSolved,
     solutionHistory,
@@ -205,5 +193,7 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
     getHint, // Expose the getHint function
     clearHint, // Expose the clearHint function
     hint, // Expose the current hint
+    showConfirmationBox,
+    handleConfirm,
   }
 }

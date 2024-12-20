@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import 'react-toastify/dist/ReactToastify.css';
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -26,11 +24,4 @@ body {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-.toast-centered {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
 }

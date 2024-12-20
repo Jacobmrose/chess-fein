@@ -361,7 +361,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
   }, [aiEnabled, activePlayer, color, gameEnded, getBestMove, isAtCurrentMove])
 
   return (
-    <div className='flex flex-col justify-center items-center w-full h-full max-w-[75vmin] max-h-[75vmin] rounded-lg shadow-lg relative'>
+    <div className='flex flex-col justify-center items-center w-full h-full max-w-[65vmin] max-h-[65vmin] rounded-lg shadow-lg relative'>
       {winner && (
         <div className='absolute top-1/2 left-0 transform -translate-y-1/2 w-full bg-purple-300 text-black text-center p-2 font-bold z-10'>
           {winner} {endReason}

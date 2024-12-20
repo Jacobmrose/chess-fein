@@ -19,14 +19,12 @@ const PuzzleInitializer: React.FC<PuzzleInitializerProps> = React.memo(
   ({ jsonPath, onFetchPuzzles, setFilteredPuzzles, setGameStarted }) => {
     const [selectedTheme, setSelectedTheme] = useState<string>('All')
     const [puzzles, setPuzzles] = useState<Puzzle[]>([])
-    const [currentBatch, setCurrentBatch] = useState<Puzzle[]>([])
     const [isFetching, setIsFetching] = useState<boolean>(false)
     const hasFetched = useRef<boolean>(false)
 
     const batchSize = 1
 
     const themes = [
-      'Test',
       'All',
       'AdvancedPawn',
       'Advantage',

@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Chessboard } from 'react-chessboard'
 import { Chess, Square } from 'chess.js'
-import { getPieceName, Piece } from '../utils/pieceUtils'
+import { Piece } from '../utils/pieceUtils'
 import {
   getMoveHighlightStyle,
   getLastMoveHighlightStyle,
   getHintHighlightStyle,
+  getInvalidMoveHighlightStyle,
 } from '../utils/highlightStyles'
 import { clearSelection } from '../utils/gameUtils'
 import PlayerInfo from './PlayerInfo'
@@ -18,7 +19,6 @@ import {
   calculateMaterialDifference,
   getMaterialDifferences,
 } from '../utils/calculateMaterialDifference'
-import { clear } from 'console'
 
 interface PuzzleGameProps {
   color: 'white' | 'black'
@@ -39,7 +39,6 @@ interface PuzzleGameProps {
 }
 
 const PuzzleGame: React.FC<PuzzleGameProps> = ({
-  color,
   boardOrientation,
   onGameOver,
   isGameOver,
@@ -74,10 +73,9 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
   )
   const [whiteMaterialDifference, setWhiteMaterialDifference] = useState(0)
   const [blackMaterialDifference, setBlackMaterialDifference] = useState(0)
+  const [invalidMoveSquares, setInvalidMoveSquares] = useState<string[]>([])
 
   const prevFenHistory = useRef<string[]>([])
-  const pieceColor = (piece: string) =>
-    piece.startsWith('w') ? 'white' : 'black'
 
   useEffect(() => {
     // Update material differences when the position changes
@@ -166,7 +164,6 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
     (fromSquare: Square, toSquare: Square) => {
       const game = chessGame.current
 
-      // Step 1: Retrieve the expected move from the puzzle
       const expectedMove = puzzleMoves[currentMoveIndex]
       if (!expectedMove) {
         console.error('No more moves in the puzzle.')
@@ -176,40 +173,39 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
       const expectedFrom = expectedMove.slice(0, 2)
       const expectedTo = expectedMove.slice(2, 4)
 
-      // Step 2: Validate the move matches the puzzle's expected move
-      if (fromSquare !== expectedFrom || toSquare !== expectedTo) {
-        console.error(
-          `Invalid move. Expected: ${expectedFrom} to ${expectedTo}, got: ${fromSquare} to ${toSquare}`
-        )
-        return false
-      }
-
-      // Step 3: Check if the move is legal
+      // Check if the move is legal
       const legalMoves = game.moves({ square: fromSquare, verbose: true })
       const isMoveLegal = legalMoves.some((m) => m.to === toSquare)
 
       if (!isMoveLegal) {
         console.error(`Illegal move from ${fromSquare} to ${toSquare}`)
+        return false // No invalid highlighting for illegal moves
+      }
+
+      // Check if the move matches the puzzle's expected move
+      if (fromSquare !== expectedFrom || toSquare !== expectedTo) {
+        console.error(
+          `Invalid move. Expected: ${expectedFrom} to ${expectedTo}, got: ${fromSquare} to ${toSquare}`
+        )
+        setInvalidMoveSquares([toSquare]) // Highlight invalid square
+        setTimeout(() => setInvalidMoveSquares([]), 500) // Clear after 1 second
         return false
       }
 
-      // Step 4: Make the move
+      // Perform the move
       const move = game.move({ from: fromSquare, to: toSquare })
       if (move) {
         const currentFen = game.fen()
-
-        // Update state
         setPosition(currentFen)
         setFenHistory((prevHistory) => [...prevHistory, currentFen])
         setLastMove({ from: move.from, to: move.to })
         setCurrentMoveIndex((prevIndex) => prevIndex + 1)
         setActivePlayer(game.turn() === 'w' ? 'white' : 'black')
         clearHint()
-
         return true
-      } else {
-        return false
       }
+
+      return false
     },
     [
       puzzleMoves,
@@ -234,7 +230,11 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
         const fromSquare = selectedSquare
 
         // Case 1a: Clicking on a different piece of the same color
-        if (pieceAtSquare && pieceAtSquare.color === game.turn()) {
+        if (
+          pieceAtSquare &&
+          pieceAtSquare.color === game.turn() &&
+          !isComputerTurn
+        ) {
           setSelectedSquare(square)
           getPossibleMoves(square)
           return
@@ -262,10 +262,12 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
       // Case 2: No piece is selected yet
       if (pieceAtSquare) {
         // Select the piece and highlight its moves
-        if (pieceAtSquare.color === game.turn()) {
+        if (pieceAtSquare.color === game.turn() && !isComputerTurn) {
           setSelectedSquare(square)
           getPossibleMoves(square)
         } else {
+          // Clear selection if the piece doesn't belong to the current player
+          handleClearSelection()
         }
       } else {
         // No piece on the clicked square; clear selection
@@ -370,7 +372,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
   }, [position, gameEnded])
 
   return (
-    <div className='flex flex-col justify-center items-center w-full h-full max-w-[75vmin] max-h-[75vmin] rounded-lg shadow-lg relative'>
+    <div className='flex flex-col justify-center items-center w-full h-full max-w-[65vmin] max-h-[65vmin] rounded-lg shadow-lg relative'>
       {isGameOver && (
         <div className='absolute top-1/2 left-0 transform -translate-y-1/2 w-full bg-purple-300 text-black text-center p-2 font-bold z-10'>
           {'Puzzle Solved!'}
@@ -471,6 +473,14 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
         highlightStyles.map((style, index) => (
           <div key={`${possibleMoves[index].square}-${index}`} style={style} />
         ))}
+      {invalidMoveSquares.map((square) => (
+        <div
+          key={square}
+          style={getInvalidMoveHighlightStyle(square, boardOrientation)}
+        >
+          ❌
+        </div>
+      ))}
     </div>
   )
 }

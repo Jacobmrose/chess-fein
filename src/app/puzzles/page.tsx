@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useUser } from '@auth0/nextjs-auth0/client'
 import PuzzleGame from '@/app/components/PuzzleGame'
 import PuzzleInitializer from '@/app/components/PuzzleInitializer'
 import { usePuzzles } from '../hooks/usePuzzles'
@@ -22,7 +21,6 @@ export default function Play() {
   const {
     currentPuzzle,
     getRandomPuzzle,
-    handlePuzzleMove,
     resetPuzzle,
     isSolved,
     solutionHistory,
@@ -42,6 +40,8 @@ export default function Play() {
     getHint,
     hint,
     clearHint,
+    showConfirmationBox,
+    handleConfirm,
   } = usePuzzles(filteredPuzzles) // Pass filtered puzzles to the hook
 
   // Callback for when puzzles are fetched and filtered
@@ -98,6 +98,8 @@ export default function Play() {
               onToggleBoardOrientation={toggleBoardOrientation}
               getNextPuzzle={getNextPuzzle}
               onGetHint={getHint}
+              showConfirmationBox={showConfirmationBox}
+              handleConfirm={handleConfirm}
             />
           </>
         )}
