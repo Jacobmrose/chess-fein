@@ -115,7 +115,7 @@ const GameInitializer: React.FC<GameInitializerProps> = ({ onStartGame }) => {
               )
             }
           }}
-          className='w-full bg-purple-600 text-white py-2 lg:py-3 rounded-md hover:bg-purple-700 transition-colors duration-300 text-base lg:text-lg'
+          className='w-full bg-purple-600 text-white py-2 lg:py-3 rounded-md hover:bg-gray-700 transition-colors duration-300 text-base lg:text-lg'
           disabled={!selectedColor}
         >
           Create Game
