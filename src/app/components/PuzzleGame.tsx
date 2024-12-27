@@ -433,6 +433,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
           }}
           customLightSquareStyle={{ backgroundColor: '#E0E0E0' }}
           customDarkSquareStyle={{ backgroundColor: '#6A0DAD' }}
+          arePremovesAllowed={true}
         />
       </div>
 

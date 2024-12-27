@@ -402,6 +402,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
           customDarkSquareStyle={{ backgroundColor: '#6A0DAD' }}
           onPromotionCheck={onPromotionCheck}
           onPromotionPieceSelect={handlePromotionSelection}
+          arePremovesAllowed={true}
         />
       </div>
 
