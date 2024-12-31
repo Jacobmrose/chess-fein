@@ -63,6 +63,8 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
       isCapture: boolean
     }[]
   >([])
+  const [highlightedSquares, setHighlightedSquares] = useState<Square[]>([])
+
   const [gameEnded, setGameEnded] = useState(false)
   const [moveProcessed, setMoveProcessed] = useState(false)
   const [winner, setWinner] = useState<string | null>(null)
@@ -201,6 +203,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
         setLastMove({ from: move.from, to: move.to })
         setCurrentMoveIndex((prevIndex) => prevIndex + 1)
         setActivePlayer(game.turn() === 'w' ? 'white' : 'black')
+        setHighlightedSquares([])
         clearHint()
         return true
       }
@@ -312,6 +315,22 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
     [getPossibleMoves]
   )
 
+  const handleSquareRightClick = useCallback((square: Square) => {
+    setHighlightedSquares(
+      (prev) =>
+        prev.includes(square)
+          ? prev.filter((s) => s !== square) // Remove square if already highlighted
+          : [...prev, square] // Add square if not highlighted
+    )
+  }, [])
+
+  const customSquareStyles = useMemo(() => {
+    return highlightedSquares.reduce((acc, square) => {
+      acc[square] = { backgroundColor: 'rgb(255, 5, 5, 0.25)' } // Correctly type the styles
+      return acc
+    }, {} as Record<string, Record<string, string | number>>) // Match the expected type
+  }, [highlightedSquares])
+
   const resetPuzzleHandler = useCallback(() => {
     chessGame.current = new Chess() // Reset the chess game instance
     resetPuzzle() // Clear the current puzzle state
@@ -331,29 +350,34 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const isComputerTurn = currentMoveIndex % 2 === 0
 
   useEffect(() => {
-    // Reset moveProcessed when the puzzle resets
-    if (gameEnded) return // Don't trigger if the game has ended
+    // Ensure computer only moves at the latest position
+    if (gameEnded) return // Exit if the game has ended
+    if (!isComputerTurn || moveProcessed) return // Exit if not the computer's turn or move already processed
 
-    if (isComputerTurn && !moveProcessed) {
-      const move = puzzleMoves[currentMoveIndex]
-      if (move) {
-        const fromSquare = move.slice(0, 2) as Square
-        const toSquare = move.slice(2, 4) as Square
+    // Check if we're at the end of the move history
+    const isAtCurrentMove = currentMoveIndex === fenHistory.length - 1
+    if (!isAtCurrentMove) return // Prevent move execution if not at the latest move
 
-        const delay = setTimeout(() => {
-          const moveResult = makeMoveCallback(fromSquare, toSquare)
-          if (moveResult) {
-            setMoveProcessed(true) // Mark as processed after a successful move
-          }
-        }, 2000) // 2-second delay for move execution
+    const move = puzzleMoves[currentMoveIndex]
+    if (move) {
+      const fromSquare = move.slice(0, 2) as Square
+      const toSquare = move.slice(2, 4) as Square
 
-        return () => clearTimeout(delay)
-      }
+      const delay = setTimeout(() => {
+        const moveResult = makeMoveCallback(fromSquare, toSquare)
+        if (moveResult) {
+          setMoveProcessed(true) // Mark move as processed only after success
+        }
+      }, 2000) // 2-second delay for move execution
+
+      return () => clearTimeout(delay) // Cleanup timeout on re-render or dependency change
     }
   }, [
     currentMoveIndex,
+    fenHistory.length, // Track changes in fenHistory length
     puzzleMoves,
     gameEnded,
+    isComputerTurn,
     makeMoveCallback,
     moveProcessed,
   ])
@@ -427,12 +451,14 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
           onPieceClick={
             !isComputerTurn && gameEnded ? undefined : handlePieceClick
           }
+          onSquareRightClick={handleSquareRightClick}
           arePiecesDraggable={!isComputerTurn && !gameEnded}
           customDropSquareStyle={{
             boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.3)',
           }}
           customLightSquareStyle={{ backgroundColor: '#E0E0E0' }}
           customDarkSquareStyle={{ backgroundColor: '#6A0DAD' }}
+          customSquareStyles={customSquareStyles}
           arePremovesAllowed={true}
         />
       </div>

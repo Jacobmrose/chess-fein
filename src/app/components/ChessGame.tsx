@@ -68,6 +68,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
   const chessGame = useRef(new Chess())
   const [position, setPosition] = useState(chessGame.current.fen())
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null)
+  const [highlightedSquares, setHighlightedSquares] = useState<Square[]>([])
   const [possibleMoves, setPossibleMoves] = useState<
     {
       square: Square
@@ -217,6 +218,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
         (newFen) => {
           setPosition(newFen)
           setFenHistory((prevHistory: string[]) => [...prevHistory, newFen])
+          setHighlightedSquares([])
         }
       )
     },
@@ -269,6 +271,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
         (newFen) => {
           setPosition(newFen)
           setFenHistory((prevHistory: any) => [...prevHistory, newFen])
+          setHighlightedSquares([])
         },
         getPossibleMoves,
         (game) => handleGameOverDescription(game, setEndReason),
@@ -305,6 +308,22 @@ const ChessGame: React.FC<ChessGameProps> = ({
     },
     [getPossibleMoves]
   )
+
+  const handleSquareRightClick = useCallback((square: Square) => {
+    setHighlightedSquares(
+      (prev) =>
+        prev.includes(square)
+          ? prev.filter((s) => s !== square) // Remove square if already highlighted
+          : [...prev, square] // Add square if not highlighted
+    )
+  }, [])
+
+  const customSquareStyles = useMemo(() => {
+    return highlightedSquares.reduce((acc, square) => {
+      acc[square] = { backgroundColor: 'rgb(255, 5, 5, 0.25)' } // Correctly type the styles
+      return acc
+    }, {} as Record<string, Record<string, string | number>>) // Match the expected type
+  }, [highlightedSquares])
 
   useEffect(() => {
     // Handle resignation
@@ -391,6 +410,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
           onPieceDragBegin={handleDragBegin}
           onPieceDragEnd={handleDragEnd}
           onSquareClick={isGameOver ? undefined : handleSquareClickCallback}
+          onSquareRightClick={handleSquareRightClick}
           onPieceClick={isGameOver ? undefined : handlePieceClick}
           arePiecesDraggable={
             !isGameOver && (isPlaygroundMode || activePlayer === color)
@@ -400,6 +420,7 @@ const ChessGame: React.FC<ChessGameProps> = ({
           }}
           customLightSquareStyle={{ backgroundColor: '#E0E0E0' }}
           customDarkSquareStyle={{ backgroundColor: '#6A0DAD' }}
+          customSquareStyles={customSquareStyles}
           onPromotionCheck={onPromotionCheck}
           onPromotionPieceSelect={handlePromotionSelection}
           arePremovesAllowed={true}

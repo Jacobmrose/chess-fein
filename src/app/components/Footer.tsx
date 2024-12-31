@@ -10,7 +10,7 @@ function Footer() {
       <div>
         <p>
           Feedback?{' '}
-          <a href='/feedback' className='underline hover:text-purple-300'>
+          <a href='/community' className='underline hover:text-purple-300'>
             Let us know!
           </a>
         </p>

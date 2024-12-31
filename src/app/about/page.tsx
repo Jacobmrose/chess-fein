@@ -1,17 +1,11 @@
 'use client'
 import React from 'react'
-import {
-  FaChessKing,
-  FaChessQueen,
-  FaChessPawn,
-  FaChessBoard,
-} from 'react-icons/fa'
+import { FaChessPawn, FaChessBoard } from 'react-icons/fa'
 import {
   GiTrophyCup,
   GiChessKing,
   GiCastle,
   GiCrossedSwords,
-  GiPerspectiveDiceSixFacesRandom,
 } from 'react-icons/gi'
 
 const About: React.FC = () => {
@@ -143,13 +137,19 @@ const About: React.FC = () => {
           Your chess journey starts here.
         </p>
         <button
-          className='mt-8 px-8 py-3 bg-purple-700 text-white rounded-lg hover:bg-purple-500 transition'
+          className='mt-8 px-8 py-3 bg-purple-700 text-white rounded-lg hover:bg-gray-700 transition'
           onClick={() => (window.location.href = '/play')}
         >
           Player VS AI
         </button>
         <button
-          className='mt-8 px-8 py-3 bg-purple-700 text-white rounded-lg hover:bg-purple-500 transition'
+          className='mt-8 px-8 py-3 bg-purple-700 text-white rounded-lg hover:bg-gray-700 transition'
+          onClick={() => (window.location.href = '/learn')}
+        >
+          Learning Modules
+        </button>
+        <button
+          className='mt-8 px-8 py-3 mb-16 bg-purple-700 text-white rounded-lg hover:bg-gray-700 transition'
           onClick={() => (window.location.href = '/puzzles')}
         >
           Puzzles

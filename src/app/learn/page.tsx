@@ -115,7 +115,7 @@ const Learn: React.FC = () => {
         ].map((fundamental) => (
           <div
             key={fundamental.name}
-            className='bg-purple-900 p-8 rounded-lg shadow-md hover:bg-gray-700 transition cursor-pointer flex flex-col items-center justify-center w-full h-64'
+            className='bg-purple-900 p-8 rounded-lg shadow-md hover:bg-gray-700 transition cursor-pointer flex flex-col items-center justify-center w-full h-64 mb-16'
             onClick={() => handleNavigation(fundamental.name)}
           >
             <div className='w-20 h-20 flex items-center justify-center mb-4'>
