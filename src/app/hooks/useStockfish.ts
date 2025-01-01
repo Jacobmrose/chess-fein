@@ -56,7 +56,7 @@ export function useStockfish({
     stockfishWorker.current.postMessage(`go depth ${depth}`)
 
     const handleStockfishMessage = (event: MessageEvent) => {
-      console.log('Stockfish message:', event.data) // Log all messages for debugging
+      // console.log('Stockfish message:', event.data) // Log all messages for debugging
       if (event.data.startsWith('bestmove')) {
         const [_, bestMove] = event.data.split(' ')
         if (bestMove && bestMove !== '(none)') {

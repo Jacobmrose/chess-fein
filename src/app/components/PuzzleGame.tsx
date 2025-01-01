@@ -168,7 +168,7 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
 
       const expectedMove = puzzleMoves[currentMoveIndex]
       if (!expectedMove) {
-        console.error('No more moves in the puzzle.')
+        // console.error('No more moves in the puzzle.')
         return false
       }
 
@@ -180,15 +180,15 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
       const isMoveLegal = legalMoves.some((m) => m.to === toSquare)
 
       if (!isMoveLegal) {
-        console.error(`Illegal move from ${fromSquare} to ${toSquare}`)
+        // console.error(`Illegal move from ${fromSquare} to ${toSquare}`)
         return false // No invalid highlighting for illegal moves
       }
 
       // Check if the move matches the puzzle's expected move
       if (fromSquare !== expectedFrom || toSquare !== expectedTo) {
-        console.error(
-          `Invalid move. Expected: ${expectedFrom} to ${expectedTo}, got: ${fromSquare} to ${toSquare}`
-        )
+        // console.error(
+        //   `Invalid move. Expected: ${expectedFrom} to ${expectedTo}, got: ${fromSquare} to ${toSquare}`
+        // )
         setInvalidMoveSquares([toSquare]) // Highlight invalid square
         setTimeout(() => setInvalidMoveSquares([]), 500) // Clear after 1 second
         return false

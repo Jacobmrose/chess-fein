@@ -80,7 +80,7 @@ const Learn: React.FC = () => {
 
       {/* Fundamentals Section */}
       <h1 className='text-4xl font-bold mt-16 text-white'>Fundamentals</h1>
-      <div className='mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-6xl'>
+      <div className='mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-6xl mb-24'>
         {[
           {
             name: 'En Passant',
@@ -115,7 +115,7 @@ const Learn: React.FC = () => {
         ].map((fundamental) => (
           <div
             key={fundamental.name}
-            className='bg-purple-900 p-8 rounded-lg shadow-md hover:bg-gray-700 transition cursor-pointer flex flex-col items-center justify-center w-full h-64 mb-16'
+            className='bg-purple-900 p-8 rounded-lg shadow-md hover:bg-gray-700 transition cursor-pointer flex flex-col items-center justify-center w-full h-64'
             onClick={() => handleNavigation(fundamental.name)}
           >
             <div className='w-20 h-20 flex items-center justify-center mb-4'>

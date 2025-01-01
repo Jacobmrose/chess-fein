@@ -260,9 +260,9 @@ const PuzzleInitializer: React.FC<PuzzleInitializerProps> = React.memo(
           const response = await fetch(jsonPath)
           const data: Puzzle[] = await response.json()
           setPuzzles(data)
-          console.log('Puzzles loaded:', data)
+          // console.log('Puzzles loaded:', data)
         } catch (error) {
-          console.error('Error loading puzzles:', error)
+          // console.error('Error loading puzzles:', error)
         } finally {
           setIsFetching(false)
         }
@@ -289,7 +289,7 @@ const PuzzleInitializer: React.FC<PuzzleInitializerProps> = React.memo(
     // Start the game with the first batch of puzzles
     const handleStartGame = () => {
       const currentBatch = filteredPuzzles.slice(0, batchSize)
-      console.log('Starting game with puzzles:', currentBatch)
+      // console.log('Starting game with puzzles:', currentBatch)
       onFetchPuzzles(currentBatch)
       setGameStarted(true)
     }

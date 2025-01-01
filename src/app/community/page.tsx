@@ -54,7 +54,7 @@ const Community: React.FC = () => {
           <button
             className='mt-4 px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-300 hover:text-black transition'
             onClick={() =>
-              window.open('https://discord.gg/your-discord-link', '_blank')
+              window.open('https://discord.gg/JPykzz8J7f', '_blank')
             }
           >
             Join Discord
@@ -74,7 +74,7 @@ const Community: React.FC = () => {
           <button
             className='mt-4 px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-300 hover:text-black transition'
             onClick={() =>
-              window.open('https://discord.gg/your-discord-link', '_blank')
+              window.open('https://discord.gg/JPykzz8J7f', '_blank')
             }
           >
             View Events
@@ -94,7 +94,7 @@ const Community: React.FC = () => {
           <button
             className='mt-4 px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-300 hover:text-black transition'
             onClick={() =>
-              window.open('https://discord.gg/your-discord-link', '_blank')
+              window.open('https://discord.gg/JPykzz8J7f', '_blank')
             }
           >
             Submit Feedback

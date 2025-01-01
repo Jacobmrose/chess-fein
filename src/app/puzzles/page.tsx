@@ -47,7 +47,7 @@ export default function Play() {
   // Callback for when puzzles are fetched and filtered
   const handleFetchPuzzles = (puzzles: Puzzle[]) => {
     if (puzzles.length === 0) {
-      console.warn('No puzzles fetched.')
+      // console.warn('No puzzles fetched.')
       return
     }
 
@@ -55,7 +55,7 @@ export default function Play() {
 
     // Wait for the state to update before calling getRandomPuzzle
     setTimeout(() => {
-      console.log('Filtered puzzles updated. Fetching random puzzle...')
+      // console.log('Filtered puzzles updated. Fetching random puzzle...')
       getRandomPuzzle()
     }, 0)
   }

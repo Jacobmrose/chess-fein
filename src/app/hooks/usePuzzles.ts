@@ -60,7 +60,7 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
   // Load a puzzle by its index
   const loadPuzzleByIndex = (index: number, forceReload = false) => {
     if (index === currentPuzzleIndex && !forceReload) {
-      console.log('Puzzle already loaded:', index)
+      // console.log('Puzzle already loaded:', index)
       return
     }
 
@@ -78,7 +78,7 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
       const startingSide = puzzle.FEN.split(' ')[1]
       setBoardOrientation(startingSide === 'b' ? 'white' : 'black')
 
-      console.log('Loaded Puzzle:', puzzle)
+      // console.log('Loaded Puzzle:', puzzle)
     }
   }
 
@@ -166,7 +166,7 @@ export function usePuzzles(initialPuzzles: Puzzle[]) {
       currentSolutionIndex === solutionHistory.length
     ) {
       setIsSolved(true)
-      console.log('Puzzle solved!')
+      // console.log('Puzzle solved!')
     }
   }, [currentSolutionIndex, solutionHistory])
 

@@ -2,29 +2,26 @@
 
 **Established in 2024**
 
-Chess Fein is an open-source chess project dedicated to enhancing functionality and improving chess analysis using the powerful Stockfish engine. Our mission is to provide players with tools that elevate their game and deepen their understanding of chess.
+Chess Fein is an open-source chess project designed to deliver an engaging chess experience. Featuring player vs. AI matches with Stockfish Elo levels ranging from 1320 to 3190, and a collection of 20,000 unique puzzles across 50+ themes, our mission is to provide players with tools to sharpen their skills and enjoy the game at every level.
 
 ## Features
 
-- **Advanced Chess Analysis**: Utilize Stockfish for in-depth game analysis, helping players identify strengths and weaknesses.
-- **User-Friendly Interface**: A clean and intuitive design for an accessible experience, whether you're a beginner or an advanced player.
-- **Real-Time Gameplay**: Engage in live games and receive instant feedback to sharpen your skills.
+- **12 Learning Modules**: Explore in-depth strategies and tactics to master different pieces and scenarios in chess.
+- **20,000 Puzzles**: Solve an extensive collection of puzzles across 50 unique themes to sharpen your skills.
+- **Player vs AI**: Challenge an AI opponent with customizable Elo ratings ranging from 1320 to 3190, catering to players of all skill levels.
 
 ## Technologies Used
 
 Chess Fein is built using a modern tech stack to ensure performance, scalability, and an excellent user experience:
 
-- **[TypeScript](https://www.typescriptlang.org/docs/)**: For type-safe JavaScript development.
-- **[React](https://react.dev/reference/react)**: A powerful library for building user interfaces.
-- **[Next.js](https://nextjs.org/docs)**: For server-side rendering and seamless routing.
-- **[MongoDB](https://www.mongodb.com/docs/)**: A NoSQL database for flexible data storage.
-- **[OAuth](https://oauth.net/2/)**: For secure user authentication and authorization.
-- **[Tailwind CSS](https://tailwindcss.com/docs)**: A utility-first CSS framework for rapid design.
-- **[Nodemon](https://nodemon.io/)**: Automatically restarts the server on file changes during development.
-- **[Socket.io](https://socket.io/docs/)**: Enables real-time, bidirectional communication between the client and server.
-- **[Chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md)**: A chess library for legal move generation and game validation.
-- **[Stockfish](https://stockfishchess.org/docs/)**: A powerful open-source chess engine for advanced analysis.
-- **[Express](https://expressjs.com/en/starter/installing.html)**: A minimal and flexible Node.js web application framework for building backend services.
+- **[TypeScript](https://www.typescriptlang.org/docs/)**: Enhances JavaScript development with static typing, ensuring code quality and maintainability.
+- **[React](https://react.dev/reference/react)**: A leading library for creating dynamic and interactive user interfaces.
+- **[Next.js](https://nextjs.org/docs)**: Provides server-side rendering, static site generation, and an optimized development experience.
+- **[Tailwind CSS](https://tailwindcss.com/docs)**: Simplifies UI design with a utility-first approach to styling.
+- **[Chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md)**: Handles chess move validation and game mechanics with a robust library.
+- **[Stockfish](https://stockfishchess.org/docs/)**: Integrates a powerful open-source chess engine for in-depth analysis and AI opponent capabilities.
+- **[React-Icons](https://react-icons.github.io/react-icons/)**: Provides a collection of customizable icons for seamless UI enhancements.
+- **[React-Chessboard](https://github.com/Clariity/react-chessboard)**: A highly customizable React component for rendering interactive chessboards.
 
 ## Contributing
 
