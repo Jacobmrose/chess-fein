@@ -149,10 +149,11 @@ const Castling: React.FC = () => {
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
-                Not Considering the Rook's Role:
+                Not Considering the Rook&apos;s Role:
               </span>{' '}
-              Don’t castle just to "move" your rook; ensure castling will help
-              you position your rook for future play, ideally along open files.
+              Don&apos;t castle just to &quot;move&quot; your rook; ensure
+              castling will help you position your rook for future play, ideally
+              along open files.
             </li>
           </ul>
         </section>
@@ -175,10 +176,10 @@ const Castling: React.FC = () => {
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
-                The King's Safety Trap:
+                The King&apos;s Safety Trap:
               </span>{' '}
               Castling can be used to move the king to a safer position while
-              attacking the opponent's weaknesses.
+              attacking the opponent&apos;s weaknesses.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -209,7 +210,7 @@ const Castling: React.FC = () => {
                 Attacking Plans:
               </span>{' '}
               Consider queenside castling for an aggressive play, opening the
-              possibility of an attack on the opponent's kingside.
+              possibility of an attack on the opponent&apos;s kingside.
             </li>
           </ul>
         </section>

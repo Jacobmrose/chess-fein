@@ -160,8 +160,9 @@ const Rook: React.FC = () => {
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Back Rank Mate:</span>{' '}
-              A rook can deliver checkmate on the back rank if the opponent's
-              king is trapped by its own pawns and has no escape squares.
+              A rook can deliver checkmate on the back rank if the
+              opponent&apos;s king is trapped by its own pawns and has no escape
+              squares.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>Rook Fork:</span> Use
@@ -171,8 +172,8 @@ const Rook: React.FC = () => {
             <li>
               <span className='font-bold text-yellow-400'>Rook Sacrifice:</span>{' '}
               Sometimes sacrificing a rook (e.g., on h8 or h1) can expose the
-              opponent's king to a decisive attack, especially when paired with
-              other active pieces.
+              opponent&apos;s king to a decisive attack, especially when paired
+              with other active pieces.
             </li>
           </ul>
         </section>
@@ -191,7 +192,7 @@ const Rook: React.FC = () => {
                 Lucena Position:
               </span>{' '}
               A fundamental rook endgame technique where your rook supports a
-              pawn promotion by creating a "bridge."
+              pawn promotion by creating a &quot;bridge.&quot;
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -226,8 +227,8 @@ const Rook: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Rook Behind Passed Pawns:
               </span>{' '}
-              Place your rook behind your passed pawn (or the opponent's). This
-              maximizes its effectiveness in pushing the pawn forward or
+              Place your rook behind your passed pawn (or the opponent&apos;s).
+              This maximizes its effectiveness in pushing the pawn forward or
               restricting the opponent.
             </li>
             <li>

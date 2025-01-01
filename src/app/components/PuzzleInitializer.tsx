@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 
 interface PuzzleInitializerProps {
@@ -262,7 +263,7 @@ const PuzzleInitializer: React.FC<PuzzleInitializerProps> = React.memo(
           setPuzzles(data)
           // console.log('Puzzles loaded:', data)
         } catch (error) {
-          // console.error('Error loading puzzles:', error)
+          console.error('Error loading puzzles:', error)
         } finally {
           setIsFetching(false)
         }

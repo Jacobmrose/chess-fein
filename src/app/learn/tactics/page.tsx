@@ -67,8 +67,8 @@ const Tactics: React.FC = () => {
             <li>
               <span className='font-bold text-yellow-400'>Pin:</span> A pin
               occurs when a piece is immobilized because moving it would expose
-              a more valuable piece behind it. A piece pinned to the opponent's
-              king cannot move, creating tactical opportunities.
+              a more valuable piece behind it. A piece pinned to the
+              opponent&apos;s king cannot move, creating tactical opportunities.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>Skewer:</span> A
@@ -148,8 +148,8 @@ const Tactics: React.FC = () => {
               <span className='font-bold text-yellow-400'>King Tactics:</span>{' '}
               While not usually involved in tactical attacks, the king can
               become an important piece in endgames. Using the king actively in
-              the endgame, for example, in "king and pawn" tactics, can create
-              threats and avoid stalemate.
+              the endgame, for example, in &quot;king and pawn&quot; tactics,
+              can create threats and avoid stalemate.
             </li>
           </ul>
         </section>
@@ -165,8 +165,8 @@ const Tactics: React.FC = () => {
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Decoy:</span> A decoy
-              involves luring an opponent's piece or king to a specific square
-              to trap them or allow for a greater tactical threat.
+              involves luring an opponent&apos;s piece or king to a specific
+              square to trap them or allow for a greater tactical threat.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>Overloading:</span>{' '}

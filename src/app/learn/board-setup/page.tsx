@@ -105,8 +105,8 @@ const BoardSetup: React.FC = () => {
             <li>
               The correct placement of pieces is crucial because it ensures that
               all pieces can move according to their specific rules. Any
-              misplacement can disrupt a player's ability to execute tactics and
-              strategies effectively.
+              misplacement can disrupt a player&apos;s ability to execute
+              tactics and strategies effectively.
             </li>
             <li>
               The pawns are crucial in controlling the center and preventing the
@@ -140,9 +140,9 @@ const BoardSetup: React.FC = () => {
             </li>
             <li>
               <span className='font-bold text-yellow-400'>King Placement:</span>{' '}
-              The king is always placed next to the queen. It's important to
-              remember the king's relative placement to the queen and the need
-              for castling later in the game.
+              The king is always placed next to the queen. It&apos;s important
+              to remember the king&apos;s relative placement to the queen and
+              the need for castling later in the game.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>Pawns:</span> At the
@@ -166,7 +166,7 @@ const BoardSetup: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Incorrect Queen Placement:
               </span>{' '}
-              Always remember the queen's color. Misplacing the queen can
+              Always remember the queen&apos;s color. Misplacing the queen can
               confuse the player and lead to the wrong strategy or moves.
             </li>
             <li>
@@ -174,8 +174,8 @@ const BoardSetup: React.FC = () => {
                 Confusing King and Queen Placement:
               </span>{' '}
               The king and queen must be placed next to each other on the back
-              rank. The king's relative position to the queen is key for future
-              moves and castling.
+              rank. The king&apos;s relative position to the queen is key for
+              future moves and castling.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>

@@ -156,8 +156,8 @@ const Bishop: React.FC = () => {
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Bishop Pin:</span> Pin
-              an opponent's piece (usually a knight or queen) to a more valuable
-              piece (like a king or rook), making it immobile.
+              an opponent&apos;s piece (usually a knight or queen) to a more
+              valuable piece (like a king or rook), making it immobile.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>

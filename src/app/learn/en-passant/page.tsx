@@ -33,7 +33,7 @@ const EnPassant: React.FC = () => {
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               En Passant is a special pawn capture that occurs when an
-              opponent's pawn moves two squares forward from its starting
+              opponent&apos;s pawn moves two squares forward from its starting
               position, landing beside your pawn.
             </li>
             <li>
@@ -42,8 +42,8 @@ const EnPassant: React.FC = () => {
               two-square advance.
             </li>
             <li>
-              The capture happens diagonally, and the opponent's pawn is removed
-              from the board.
+              The capture happens diagonally, and the opponent&apos;s pawn is
+              removed from the board.
             </li>
           </ul>
         </section>
@@ -132,8 +132,9 @@ const EnPassant: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Using En Passant Hastily:
               </span>{' '}
-              Don’t rush into En Passant just because it's an option; sometimes
-              it’s better to develop other pieces or wait for a better moment.
+              Don&apos;t rush into En Passant just because it&apos;s an option;
+              sometimes it&apos;s better to develop other pieces or wait for a
+              better moment.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -165,8 +166,8 @@ const EnPassant: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Breaking the Pawn Structure:
               </span>{' '}
-              Use En Passant to break your opponent's pawn structure, especially
-              if it opens a file or diagonal for your pieces.
+              Use En Passant to break your opponent&apos;s pawn structure,
+              especially if it opens a file or diagonal for your pieces.
             </li>
           </ul>
         </section>

@@ -110,7 +110,7 @@ const About: React.FC = () => {
           </h3>
           <p className='text-purple-300 text-center'>
             Join a vibrant community of chess enthusiasts always ready to lend a
-            hand, whether you're new to the game or a seasoned player.
+            hand, whether you&apos;re new to the game or a seasoned player.
           </p>
         </div>
       </div>
@@ -121,9 +121,9 @@ const About: React.FC = () => {
       </h2>
       <p className='mt-6 text-lg text-purple-300 text-center max-w-3xl'>
         At Chess Fein, we aim to make chess accessible to players of all levels.
-        Whether you're a beginner looking to learn the basics or an advanced
-        player honing your skills, we provide the tools, challenges, and
-        learning resources to help you improve and enjoy the game.
+        Whether you&apos;re a beginner looking to learn the basics or an
+        advanced player honing your skills, we provide the tools, challenges,
+        and learning resources to help you improve and enjoy the game.
       </p>
 
       {/* Call to Action Section */}

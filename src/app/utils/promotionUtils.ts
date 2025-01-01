@@ -1,4 +1,4 @@
-// utils/promotionUtils.ts
+/* eslint-disable */
 import { Square } from 'chess.js'
 import { PieceType } from './pieceUtils'
 

@@ -198,7 +198,7 @@ const Draws: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Stalemate in Endgames:
               </span>{' '}
-              A common endgame mistake is placing your opponent's king in a
+              A common endgame mistake is placing your opponent&apos;s king in a
               stalemate position. Ensure they always have legal moves to prevent
               this.
             </li>

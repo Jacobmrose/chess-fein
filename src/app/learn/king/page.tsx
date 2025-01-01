@@ -83,7 +83,8 @@ const King: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Avoid unnecessary exposure:
               </span>{' '}
-              Don't move the king into open positions unless it's safe to do so.
+              Don&apos;t move the king into open positions unless it&apos;s safe
+              to do so.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -204,15 +205,15 @@ const King: React.FC = () => {
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>King walking:</span>{' '}
-              In some endgames, the king can "walk" across the board to help
-              support pawns and restrict the opponent's king.
+              In some endgames, the king can &quot;walk&quot; across the board
+              to help support pawns and restrict the opponent&apos;s king.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
                 King and queen coordination:
               </span>{' '}
               In some situations, the king and queen can work together to
-              deliver checkmate or put pressure on the opponent's position.
+              deliver checkmate or put pressure on the opponent&apos;s position.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -242,8 +243,8 @@ const King: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Opposition in pawn endgames:
               </span>{' '}
-              Master the concept of opposition to block your opponent's king and
-              advance your own pawns.
+              Master the concept of opposition to block your opponent&apos;s
+              king and advance your own pawns.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>

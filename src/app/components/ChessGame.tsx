@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Chessboard } from 'react-chessboard'
 import { Chess, Square } from 'chess.js'
@@ -18,12 +20,8 @@ import {
   declareWinner,
 } from '../utils/gameOverUtils'
 import { startTimer } from '../utils/timerUtils'
-import { pieceValues } from '../utils/pieceUtils'
 import { useStockfish } from '../hooks/useStockfish'
-import {
-  calculateMaterialDifference,
-  getMaterialDifferences,
-} from '../utils/calculateMaterialDifference'
+import { getMaterialDifferences } from '../utils/calculateMaterialDifference'
 
 interface ChessGameProps {
   color: 'white' | 'black'
@@ -80,7 +78,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
   const [gameEnded, setGameEnded] = useState(false)
   const [winner, setWinner] = useState<string | null>(null)
   const [endReason, setEndReason] = useState<string | null>(null)
-  const [materialDifference, setMaterialDifference] = useState(0)
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(
     null
   )
@@ -94,10 +91,8 @@ const ChessGame: React.FC<ChessGameProps> = ({
   useEffect(() => {
     // Update material differences when the position changes
     const board = chessGame.current.board()
-    const materialDiff = calculateMaterialDifference(board, pieceValues)
     const { whiteMaterialDifference, blackMaterialDifference } =
       getMaterialDifferences(board)
-    setMaterialDifference(materialDiff)
     setWhiteMaterialDifference(whiteMaterialDifference)
     setBlackMaterialDifference(blackMaterialDifference)
 

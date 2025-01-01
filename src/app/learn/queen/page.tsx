@@ -36,7 +36,7 @@ const Queen: React.FC = () => {
             </li>
             <li>
               It captures pieces by landing on the square occupied by an
-              opponent's piece.
+              opponent&apos;s piece.
             </li>
             <li>
               Combining the movement capabilities of both the rook and the
@@ -61,10 +61,10 @@ const Queen: React.FC = () => {
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
-                Don't bring it out too early:
+                Don&apos;t bring it out too early:
               </span>{' '}
               Avoid exposing the queen in the opening, as it can become a target
-              for your opponent's pieces.
+              for your opponent&apos;s pieces.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -82,8 +82,8 @@ const Queen: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Endgame dominance:
               </span>{' '}
-              Use the queen's mobility to control multiple squares and dominate
-              the endgame.
+              Use the queen&apos;s mobility to control multiple squares and
+              dominate the endgame.
             </li>
           </ul>
         </section>
@@ -100,7 +100,7 @@ const Queen: React.FC = () => {
                 Queen-king attacks:
               </span>{' '}
               Pair the queen with the king for checkmating patterns like the
-              "queen and king mate."
+              &quot;queen and king mate.&quot;
             </li>
             <li>
               <span className='font-bold text-yellow-400'>Pin and fork:</span>{' '}
@@ -112,7 +112,7 @@ const Queen: React.FC = () => {
                 Control open files and diagonals:
               </span>{' '}
               Place the queen on open files or diagonals to apply pressure on
-              the opponent's position.
+              the opponent&apos;s position.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -167,7 +167,7 @@ const Queen: React.FC = () => {
                 Exposing the queen too early:
               </span>{' '}
               Bringing the queen out early makes it vulnerable to attacks from
-              the opponent's pieces.
+              the opponent&apos;s pieces.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -178,7 +178,7 @@ const Queen: React.FC = () => {
             </li>
             <li>
               <span className='font-bold text-yellow-400'>Overextending:</span>{' '}
-              Don't send the queen too far into enemy territory without
+              Don&apos;t send the queen too far into enemy territory without
               sufficient backup, as it can become isolated and trapped.
             </li>
           </ul>
@@ -198,8 +198,8 @@ const Queen: React.FC = () => {
             </li>
             <li>
               <span className='font-bold text-yellow-400'>Queen pins:</span> Pin
-              an opponent's piece to their king or a more valuable piece, making
-              it unable to move without consequences.
+              an opponent&apos;s piece to their king or a more valuable piece,
+              making it unable to move without consequences.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>

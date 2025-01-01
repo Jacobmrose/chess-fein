@@ -135,9 +135,9 @@ const Checkmate: React.FC = () => {
                 Coordinate Pieces:
               </span>{' '}
               Checkmate is usually achieved when your pieces work together.
-              Whether it's a king and rook, queen and king, or knight and queen,
-              ensure your pieces are supporting each other and working towards a
-              common goal.
+              Whether it&apos;s a king and rook, queen and king, or knight and
+              queen, ensure your pieces are supporting each other and working
+              towards a common goal.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>

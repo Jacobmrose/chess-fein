@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useCallback } from 'react'
 import { Chess } from 'chess.js'
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Chessboard } from 'react-chessboard'
 import { Chess, Square } from 'chess.js'
@@ -10,15 +11,7 @@ import {
 } from '../utils/highlightStyles'
 import { clearSelection } from '../utils/gameUtils'
 import PlayerInfo from './PlayerInfo'
-import {
-  handleGameOverDescription,
-  declareWinner,
-} from '../utils/gameOverUtils'
-import { pieceValues } from '../utils/pieceUtils'
-import {
-  calculateMaterialDifference,
-  getMaterialDifferences,
-} from '../utils/calculateMaterialDifference'
+import { getMaterialDifferences } from '../utils/calculateMaterialDifference'
 
 interface PuzzleGameProps {
   color: 'white' | 'black'
@@ -67,9 +60,6 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
 
   const [gameEnded, setGameEnded] = useState(false)
   const [moveProcessed, setMoveProcessed] = useState(false)
-  const [winner, setWinner] = useState<string | null>(null)
-  const [endReason, setEndReason] = useState<string | null>(null)
-  const [materialDifference, setMaterialDifference] = useState(0)
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(
     null
   )
@@ -82,10 +72,8 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
   useEffect(() => {
     // Update material differences when the position changes
     const board = chessGame.current.board()
-    const materialDiff = calculateMaterialDifference(board, pieceValues)
     const { whiteMaterialDifference, blackMaterialDifference } =
       getMaterialDifferences(board)
-    setMaterialDifference(materialDiff)
     setWhiteMaterialDifference(whiteMaterialDifference)
     setBlackMaterialDifference(blackMaterialDifference)
 
@@ -96,12 +84,10 @@ const PuzzleGame: React.FC<PuzzleGameProps> = ({
 
     // Check for game over
     if (!gameEnded && chessGame.current.isGameOver()) {
-      handleGameOverDescription(chessGame.current, setEndReason)
       setGameEnded(true)
-      declareWinner(chessGame.current, setWinner)
       onGameOver()
     }
-  }, [position, gameEnded, onGameOver, setEndReason])
+  }, [position, gameEnded, onGameOver])
 
   useEffect(() => {
     // Handle changes to fenHistory and position

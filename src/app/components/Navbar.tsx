@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
@@ -22,10 +23,12 @@ function Navbar() {
           isActive('/') ? 'text-purple-700 font-bold' : 'text-white'
         } hover:text-purple-500`}
       >
-        <img
+        <Image
           src='/chess-fein.png'
           alt='Chess Fein Logo'
-          className='h-8 filter invert'
+          width={32}
+          height={32}
+          className='filter invert'
         />
       </Link>
 
