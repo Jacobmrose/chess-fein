@@ -33,14 +33,16 @@ const Knight: React.FC = () => {
           </h2>
           <ul className='list-disc list-inside space-y-4 text-lg sm:text-xl leading-relaxed'>
             <li>
-              Knights move in an "L" shape: two squares in one direction and one
-              in a perpendicular direction.
+              Knights move in an &quot;L&quot; shape: two squares in one
+              direction and one in a perpendicular direction.
             </li>
             <li>
-              Knights are the only pieces that can "jump" over other pieces.
+              Knights are the only pieces that can &quot;jump&quot; over other
+              pieces.
             </li>
             <li>
-              Knights attack the eight squares around them in their "L" pattern.
+              Knights attack the eight squares around them in their
+              &quot;L&quot; pattern.
             </li>
           </ul>
         </section>
@@ -190,7 +192,7 @@ const Knight: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Knight and King Endgames:
               </span>{' '}
-              In knight and king endgames, it's important to keep your king
+              In knight and king endgames, it&apos;s important to keep your king
               active while using your knight to control key squares.
             </li>
             <li>
@@ -198,7 +200,8 @@ const Knight: React.FC = () => {
                 Knight vs. Pawns:
               </span>{' '}
               Knights are excellent at blocking pawns, but be careful not to
-              trap your own pieces while trying to stop the opponent's pawns.
+              trap your own pieces while trying to stop the opponent&apos;s
+              pawns.
             </li>
           </ul>
         </section>

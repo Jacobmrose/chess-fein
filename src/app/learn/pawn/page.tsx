@@ -38,8 +38,8 @@ const Pawn: React.FC = () => {
               reach the opposite end of the board.
             </li>
             <li>
-              The special capture "en passant" allows pawns to take an adjacent
-              pawn that has just advanced two squares.
+              The special capture &quot;en passant&quot; allows pawns to take an
+              adjacent pawn that has just advanced two squares.
             </li>
           </ul>
         </section>
@@ -108,7 +108,7 @@ const Pawn: React.FC = () => {
             <li>
               <span className='font-bold text-yellow-400'>Pawn storms:</span> In
               certain positions, pushing pawns aggressively toward the
-              opponent's king can lead to devastating attacks.
+              opponent&apos;s king can lead to devastating attacks.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -132,7 +132,8 @@ const Pawn: React.FC = () => {
             <li>
               <span className='font-bold text-yellow-400'>Pawn breaks:</span> A
               pawn break is a strategic pawn push to open up the position,
-              typically used to break through the opponent's pawn structure.
+              typically used to break through the opponent&apos;s pawn
+              structure.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>Pawn structure:</span>{' '}
@@ -232,8 +233,8 @@ const Pawn: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Blocking passed pawns:
               </span>{' '}
-              Using your pawns to block the advance of your opponent's passed
-              pawns is an important defensive strategy.
+              Using your pawns to block the advance of your opponent&apos;s
+              passed pawns is an important defensive strategy.
             </li>
           </ul>
         </section>
