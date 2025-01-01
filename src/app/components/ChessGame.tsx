@@ -246,18 +246,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
 
   const handleSquareClickCallback = useCallback(
     (square: Square) => {
-      if (!isAtCurrentMove) return
-
-      // Check if there's a piece at the square and if it's an opponent's piece
-      const pieceAtSquare = chessGame.current.get(square)
-      if (
-        pieceAtSquare &&
-        !isPlaygroundMode &&
-        pieceColor(pieceAtSquare.color) !== color
-      ) {
-        return
-      }
-
       handleSquareClick(
         square,
         chessGame,
