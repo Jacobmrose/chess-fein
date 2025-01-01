@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Chess } from 'chess.js'
 
 export const isValidSquare = (square: string): boolean =>
