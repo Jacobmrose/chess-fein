@@ -13,23 +13,25 @@ import { FaChessBoard } from 'react-icons/fa'
 
 const Checkmate: React.FC = () => {
   return (
-    <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-6 pt-10 pb-10'>
+    <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-4 pt-6 pb-6 sm:px-6 sm:pt-10 sm:pb-10'>
       {/* Checkmate Icon */}
-      <GiChessKing className='text-6xl mb-4' />
+      <GiChessKing className='text-6xl mb-4 sm:text-5xl md:text-6xl' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>
+      <h1 className='text-4xl font-bold text-white mt-4 text-center sm:text-3xl md:text-4xl'>
         Understanding Checkmate in Chess
       </h1>
 
       {/* Content Wrapper */}
-      <div className='mt-12 max-w-5xl text-white space-y-16'>
+      <div className='mt-6 sm:mt-12 max-w-full text-white space-y-12 px-4 sm:max-w-5xl sm:px-6'>
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>What is Checkmate?</h2>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
+            What is Checkmate?
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               Checkmate is the ultimate goal in chess: to place your opponent’s
@@ -53,8 +55,10 @@ const Checkmate: React.FC = () => {
 
         {/* Types of Checkmate Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Types of Checkmate</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
+            Types of Checkmate
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Back Rank Checkmate:
@@ -117,10 +121,10 @@ const Checkmate: React.FC = () => {
 
         {/* Strategies for Achieving Checkmate Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Strategies for Achieving Checkmate
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Control the Center:
@@ -171,10 +175,10 @@ const Checkmate: React.FC = () => {
 
         {/* Common Mistakes Leading to Checkmate Failure Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Common Mistakes in Checkmate
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Overlooking Escape Routes:
@@ -215,10 +219,10 @@ const Checkmate: React.FC = () => {
 
         {/* Famous Checkmate Patterns Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Famous Checkmate Patterns
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 The Back Rank Mate:
@@ -248,50 +252,50 @@ const Checkmate: React.FC = () => {
 
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
+
         {/* Learn About Other Fundamentals Section */}
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-xl sm:text-2xl font-semibold text-white mb-6 text-center'>
             Learn About Other Fundamentals
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex flex-wrap justify-center gap-8 sm:gap-16'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/en-passant')}
               title='En Passant'
             >
-              <GiPerspectiveDiceSixFacesRandom className='text-4xl text-white hover:text-yellow-400' />
-            </div>
-            <div
-              className='cursor-pointer'
-              onClick={() => (window.location.href = '/learn/board-setup')}
-              title='Board Setup'
-            >
-              <FaChessBoard className='text-4xl text-white hover:text-yellow-400' />
+              <GiPerspectiveDiceSixFacesRandom className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/castling')}
               title='Castling'
             >
-              <GiCastle className='text-4xl text-white hover:text-yellow-400' />
+              <GiCastle className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
+            </div>
+            <div
+              className='cursor-pointer'
+              onClick={() => (window.location.href = '/learn/board-setup')}
+              title='Board Setup'
+            >
+              <FaChessBoard className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/draws')}
               title='Draws'
             >
-              <GiCheckMark className='text-4xl text-white hover:text-yellow-400' />
+              <GiCheckMark className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/tactics')}
               title='Tactics'
             >
-              <GiCrossedSwords className='text-4xl text-white hover:text-yellow-400' />
+              <GiCrossedSwords className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
           </div>
         </section>
-
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
       </div>

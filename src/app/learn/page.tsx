@@ -28,7 +28,7 @@ const Learn: React.FC = () => {
   return (
     <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-4 pt-8'>
       {/* Chess Pieces Section */}
-      <h1 className='text-4xl font-bold mt-16 text-white'>The Chess Pieces</h1>
+      <h1 className='text-4xl font-bold mt-16 text-white'>Chess Pieces</h1>
       <div className='mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-6xl'>
         {[
           {

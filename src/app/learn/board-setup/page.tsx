@@ -18,7 +18,7 @@ const BoardSetup: React.FC = () => {
       <FaChessBoard className='text-6xl mb-4' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>
+      <h1 className='text-4xl sm:text-5xl font-bold text-white mt-4'>
         Understanding the Initial Board Setup
       </h1>
 
@@ -29,8 +29,10 @@ const BoardSetup: React.FC = () => {
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Core Functionalities</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Core Functionalities
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               The game begins with a specific arrangement of pieces on the
               chessboard. Each player controls 16 pieces: 1 king, 1 queen, 2
@@ -60,8 +62,10 @@ const BoardSetup: React.FC = () => {
 
         {/* Detailed Piece Setup Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Detailed Piece Setup</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Detailed Piece Setup
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>White Pieces:</span>
               <ul className='list-disc list-inside pl-6'>
@@ -98,10 +102,10 @@ const BoardSetup: React.FC = () => {
 
         {/* Importance of Piece Placement Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
             Why Proper Piece Placement Matters
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               The correct placement of pieces is crucial because it ensures that
               all pieces can move according to their specific rules. Any
@@ -126,10 +130,10 @@ const BoardSetup: React.FC = () => {
 
         {/* Important Notes Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
             Important Notes on Board Setup
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Queen Placement:
@@ -158,10 +162,10 @@ const BoardSetup: React.FC = () => {
 
         {/* Board Setup Common Mistakes Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
             Common Mistakes to Avoid in Board Setup
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Incorrect Queen Placement:
@@ -193,10 +197,10 @@ const BoardSetup: React.FC = () => {
 
         {/* Board Setup Tips Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
             Tips for Effective Board Setup
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Position Your Rooks:
@@ -232,46 +236,47 @@ const BoardSetup: React.FC = () => {
 
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
+
         {/* Learn About Other Fundamentals Section */}
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-xl sm:text-2xl font-semibold text-white mb-6 text-center'>
             Learn About Other Fundamentals
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex flex-wrap justify-center gap-8 sm:gap-16'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/en-passant')}
               title='En Passant'
             >
-              <GiPerspectiveDiceSixFacesRandom className='text-4xl text-white hover:text-yellow-400' />
+              <GiPerspectiveDiceSixFacesRandom className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/castling')}
               title='Castling'
             >
-              <GiCastle className='text-4xl text-white hover:text-yellow-400' />
+              <GiCastle className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/draws')}
               title='Draws'
             >
-              <GiCheckMark className='text-4xl text-white hover:text-yellow-400' />
+              <GiCheckMark className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/checkmate')}
               title='Checkmate'
             >
-              <GiChessKing className='text-4xl text-white hover:text-yellow-400' />
+              <GiChessKing className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/tactics')}
               title='Tactics'
             >
-              <GiCrossedSwords className='text-4xl text-white hover:text-yellow-400' />
+              <GiCrossedSwords className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
           </div>
         </section>

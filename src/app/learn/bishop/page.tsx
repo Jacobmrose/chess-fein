@@ -17,19 +17,21 @@ const Bishop: React.FC = () => {
       <FaChessBishop className='text-6xl mb-4' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>
+      <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-4'>
         Mastering the Bishop
       </h1>
 
       {/* Content Wrapper */}
-      <div className='mt-12 max-w-5xl text-white space-y-16'>
+      <div className='mt-12 max-w-4xl sm:max-w-5xl text-white space-y-8'>
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Core Functionalities</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Core Functionalities
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               Bishops move diagonally across the board for any number of
               squares.
@@ -50,8 +52,10 @@ const Bishop: React.FC = () => {
 
         {/* Tips and Tricks Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Tips and Tricks</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Tips and Tricks
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Control open diagonals:
@@ -81,8 +85,10 @@ const Bishop: React.FC = () => {
 
         {/* Common Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Common Strategies</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Common Strategies
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Fianchetto:</span>{' '}
               Develop a bishop to b2 or g2 (for white) or b7 or g7 (for black)
@@ -101,8 +107,10 @@ const Bishop: React.FC = () => {
 
         {/* Advanced Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Advanced Strategies</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Advanced Strategies
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Bishop Pair:</span>{' '}
               Keeping both bishops in the game often provides a huge advantage,
@@ -126,10 +134,10 @@ const Bishop: React.FC = () => {
 
         {/* Common Mistakes to Avoid Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
             Common Mistakes to Avoid
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Neglecting the Bishop Pair:
@@ -152,8 +160,10 @@ const Bishop: React.FC = () => {
 
         {/* Famous Bishop Tactics Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Famous Bishop Tactics</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Famous Bishop Tactics
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Bishop Pin:</span> Pin
               an opponent&apos;s piece (usually a knight or queen) to a more
@@ -174,10 +184,10 @@ const Bishop: React.FC = () => {
 
         {/* Bishop and Pawn Endgames Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
             Bishop and Pawn Endgames
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Bishop and Passed Pawns:
@@ -200,8 +210,10 @@ const Bishop: React.FC = () => {
 
         {/* Positional Play Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Positional Play</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Positional Play
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Bishop Activity:
@@ -221,46 +233,47 @@ const Bishop: React.FC = () => {
 
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
+
         {/* Learn About Other Pieces Section */}
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-2xl sm:text-3xl font-semibold text-white mb-6 text-center'>
             Learn About Other Pieces
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex flex-wrap justify-center gap-8 sm:gap-16'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/pawn')}
               title='Pawn'
             >
-              <FaChessPawn className='text-4xl text-white hover:text-yellow-400' />
+              <FaChessPawn className='text-4xl sm:text-5xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/knight')}
               title='Knight'
             >
-              <FaChessKnight className='text-4xl text-white hover:text-yellow-400' />
+              <FaChessKnight className='text-4xl sm:text-5xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/rook')}
               title='Rook'
             >
-              <FaChessRook className='text-4xl text-white hover:text-yellow-400' />
+              <FaChessRook className='text-4xl sm:text-5xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
-              onClick={() => (window.location.href = '/learn/Queen')}
+              onClick={() => (window.location.href = '/learn/queen')}
               title='Queen'
             >
-              <FaChessQueen className='text-4xl text-white hover:text-yellow-400' />
+              <FaChessQueen className='text-4xl sm:text-5xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/king')}
               title='King'
             >
-              <FaChessKing className='text-4xl text-white hover:text-yellow-400' />
+              <FaChessKing className='text-4xl sm:text-5xl text-white hover:text-yellow-400' />
             </div>
           </div>
         </section>

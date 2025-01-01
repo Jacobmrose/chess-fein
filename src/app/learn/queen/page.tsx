@@ -17,7 +17,7 @@ const Queen: React.FC = () => {
       <FaChessQueen className='text-6xl mb-4' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>
+      <h1 className='text-5xl font-bold text-white mt-4 sm:text-3xl'>
         Mastering the Queen
       </h1>
 
@@ -28,7 +28,9 @@ const Queen: React.FC = () => {
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Core Functionalities</h2>
+          <h2 className='text-3xl font-semibold mb-6 sm:text-2xl'>
+            Core Functionalities
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               The queen is the most powerful piece, able to move any number of
@@ -50,7 +52,9 @@ const Queen: React.FC = () => {
 
         {/* Tips and Tricks Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Tips and Tricks</h2>
+          <h2 className='text-3xl font-semibold mb-6 sm:text-2xl'>
+            Tips and Tricks
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -93,7 +97,9 @@ const Queen: React.FC = () => {
 
         {/* Common Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Common Strategies</h2>
+          <h2 className='text-3xl font-semibold mb-6 sm:text-2xl'>
+            Common Strategies
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -129,7 +135,9 @@ const Queen: React.FC = () => {
 
         {/* Advanced Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Advanced Strategies</h2>
+          <h2 className='text-3xl font-semibold mb-6 sm:text-2xl'>
+            Advanced Strategies
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -158,7 +166,7 @@ const Queen: React.FC = () => {
 
         {/* Common Mistakes to Avoid Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-3xl font-semibold mb-6 sm:text-2xl'>
             Common Mistakes to Avoid
           </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
@@ -189,7 +197,9 @@ const Queen: React.FC = () => {
 
         {/* Famous Queen Tactics Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Famous Queen Tactics</h2>
+          <h2 className='text-3xl font-semibold mb-6 sm:text-2xl'>
+            Famous Queen Tactics
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Queen forks:</span>{' '}
@@ -216,7 +226,9 @@ const Queen: React.FC = () => {
 
         {/* Endgame Queen Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Queen Endgames</h2>
+          <h2 className='text-3xl font-semibold mb-6 sm:text-2xl'>
+            Queen Endgames
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -244,12 +256,13 @@ const Queen: React.FC = () => {
 
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
+
         {/* Learn About Other Pieces Section */}
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-2xl font-semibold text-white mb-6 text-center sm:text-xl'>
             Learn About Other Pieces
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex justify-center gap-12 sm:gap-8 flex-wrap'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/pawn')}

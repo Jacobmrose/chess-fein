@@ -13,26 +13,26 @@ import { FaChessBoard } from 'react-icons/fa'
 
 const Tactics: React.FC = () => {
   return (
-    <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-6 pt-10 pb-10'>
+    <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-4 pt-6 pb-6 sm:px-6 sm:pt-10 sm:pb-10'>
       {/* Tactics Icon */}
-      <GiCrossedSwords className='text-6xl mb-4' />
+      <GiCrossedSwords className='text-6xl mb-4 sm:text-5xl md:text-6xl' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>
+      <h1 className='text-4xl font-bold text-white mt-4 text-center sm:text-3xl md:text-4xl'>
         Mastering Chess Tactics
       </h1>
 
       {/* Content Wrapper */}
-      <div className='mt-12 max-w-5xl text-white space-y-16'>
+      <div className='mt-6 sm:mt-12 max-w-full text-white space-y-12 px-4 sm:max-w-5xl sm:px-6'>
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             What Are Chess Tactics?
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               Chess tactics are short-term calculations and strategies used to
               gain an advantage over your opponent. Unlike chess strategy, which
@@ -56,7 +56,7 @@ const Tactics: React.FC = () => {
         {/* Common Chess Tactics Section */}
         <section>
           <h2 className='text-3xl font-semibold mb-6'>Common Chess Tactics</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>Fork:</span> A fork is
               a tactic where a single piece attacks two or more of the
@@ -118,8 +118,10 @@ const Tactics: React.FC = () => {
 
         {/* Tactics by Piece Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Tactics by Piece</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
+            Tactics by Piece
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>Knight Tactics:</span>{' '}
               The knight is an excellent piece for forks and can jump over other
@@ -159,10 +161,10 @@ const Tactics: React.FC = () => {
 
         {/* Tactical Motifs Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Tactical Motifs in Chess
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>Decoy:</span> A decoy
               involves luring an opponent&apos;s piece or king to a specific
@@ -200,10 +202,10 @@ const Tactics: React.FC = () => {
 
         {/* Creating Combinations Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Creating Tactical Combinations
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Look for Weaknesses:
@@ -242,44 +244,44 @@ const Tactics: React.FC = () => {
         <div className='border-t border-gray-600 w-full'></div>
         {/* Learn About Other Fundamentals Section */}
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-xl sm:text-2xl font-semibold text-white mb-6 text-center'>
             Learn About Other Fundamentals
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex flex-wrap justify-center gap-8 sm:gap-16'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/en-passant')}
               title='En Passant'
             >
-              <GiPerspectiveDiceSixFacesRandom className='text-4xl text-white hover:text-yellow-400' />
+              <GiPerspectiveDiceSixFacesRandom className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/castling')}
               title='Castling'
             >
-              <GiCastle className='text-4xl text-white hover:text-yellow-400' />
+              <GiCastle className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/board-setup')}
               title='Board Setup'
             >
-              <FaChessBoard className='text-4xl text-white hover:text-yellow-400' />
+              <FaChessBoard className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/draws')}
               title='Draws'
             >
-              <GiCheckMark className='text-4xl text-white hover:text-yellow-400' />
+              <GiCheckMark className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/checkmate')}
               title='Checkmate'
             >
-              <GiChessKing className='text-4xl text-white hover:text-yellow-400' />
+              <GiChessKing className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
           </div>
         </section>

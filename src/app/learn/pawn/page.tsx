@@ -1,5 +1,4 @@
 'use client'
-
 import React from 'react'
 import {
   FaChessPawn,
@@ -17,17 +16,21 @@ const Pawn: React.FC = () => {
       <FaChessPawn className='text-6xl mb-4' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>Mastering the Pawn</h1>
+      <h1 className='text-3xl sm:text-5xl font-bold text-white mt-4 text-center'>
+        Mastering the Pawn
+      </h1>
 
       {/* Content Wrapper */}
-      <div className='mt-12 max-w-5xl text-white space-y-16'>
+      <div className='mt-12 max-w-3xl sm:max-w-5xl text-white space-y-16'>
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Core Functionalities</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Core Functionalities
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>Pawns move forward one square but capture diagonally.</li>
             <li>On their first move, pawns can advance two squares.</li>
             <li>
@@ -35,8 +38,8 @@ const Pawn: React.FC = () => {
               reach the opposite end of the board.
             </li>
             <li>
-              The special capture &quot;en passant&quot; allows pawns to take an
-              adjacent pawn that has just advanced two squares.
+              The special capture "en passant" allows pawns to take an adjacent
+              pawn that has just advanced two squares.
             </li>
           </ul>
         </section>
@@ -46,8 +49,10 @@ const Pawn: React.FC = () => {
 
         {/* Tips and Tricks Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Tips and Tricks</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Tips and Tricks
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Control the center:
@@ -96,12 +101,14 @@ const Pawn: React.FC = () => {
 
         {/* Common Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Common Strategies</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Common Strategies
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Pawn storms:</span> In
               certain positions, pushing pawns aggressively toward the
-              opponent&apos;s king can lead to devastating attacks.
+              opponent's king can lead to devastating attacks.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -118,13 +125,14 @@ const Pawn: React.FC = () => {
 
         {/* Advanced Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Advanced Strategies</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Advanced Strategies
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Pawn breaks:</span> A
               pawn break is a strategic pawn push to open up the position,
-              typically used to break through the opponent&apos;s pawn
-              structure.
+              typically used to break through the opponent's pawn structure.
             </li>
             <li>
               <span className='font-bold text-yellow-400'>Pawn structure:</span>{' '}
@@ -140,10 +148,10 @@ const Pawn: React.FC = () => {
 
         {/* Common Mistakes to Avoid Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
             Common Mistakes to Avoid
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Overextending pawns:
@@ -166,8 +174,10 @@ const Pawn: React.FC = () => {
 
         {/* Famous Pawn Tactics Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Famous Pawn Tactics</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Famous Pawn Tactics
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Pawn forks:</span>{' '}
               Pawns can create forks, attacking two enemy pieces simultaneously.
@@ -187,8 +197,10 @@ const Pawn: React.FC = () => {
 
         {/* Pawn Endgames Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Pawn Endgames</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Pawn Endgames
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Passed pawns:</span> A
               passed pawn, one with no opposing pawns blocking its advance, is a
@@ -207,8 +219,10 @@ const Pawn: React.FC = () => {
 
         {/* Positional Play Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Positional Play</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Positional Play
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Pawn structure:</span>{' '}
               The pawn structure determines the dynamics of the game, so
@@ -218,20 +232,23 @@ const Pawn: React.FC = () => {
               <span className='font-bold text-yellow-400'>
                 Blocking passed pawns:
               </span>{' '}
-              Using your pawns to block the advance of your opponent&apos;s
-              passed pawns is an important defensive strategy.
+              Using your pawns to block the advance of your opponent's passed
+              pawns is an important defensive strategy.
             </li>
           </ul>
         </section>
 
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
+
         {/* Learn About Other Pieces Section */}
+        <div className='border-t border-gray-600 w-full'></div>
+
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-2xl font-semibold text-white mb-6 text-center sm:text-xl'>
             Learn About Other Pieces
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex justify-center gap-12 flex-wrap sm:gap-8'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/knight')}

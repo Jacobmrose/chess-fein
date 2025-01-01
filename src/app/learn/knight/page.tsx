@@ -17,7 +17,7 @@ const Knight: React.FC = () => {
       <FaChessKnight className='text-6xl mb-4' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>
+      <h1 className='text-4xl sm:text-5xl font-bold text-white mt-4'>
         Mastering the Knight
       </h1>
 
@@ -28,19 +28,19 @@ const Knight: React.FC = () => {
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Core Functionalities</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-3xl sm:text-4xl font-semibold mb-6'>
+            Core Functionalities
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg sm:text-xl leading-relaxed'>
             <li>
-              Knights move in an &quot;L&quot; shape: two squares in one
-              direction and one in a perpendicular direction.
+              Knights move in an "L" shape: two squares in one direction and one
+              in a perpendicular direction.
             </li>
             <li>
-              Knights are the only pieces that can &quot;jump&quot; over other
-              pieces.
+              Knights are the only pieces that can "jump" over other pieces.
             </li>
             <li>
-              Knights attack the eight squares around them in their
-              &quot;L&quot; pattern.
+              Knights attack the eight squares around them in their "L" pattern.
             </li>
           </ul>
         </section>
@@ -50,8 +50,10 @@ const Knight: React.FC = () => {
 
         {/* Tips and Tricks Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Tips and Tricks</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-3xl sm:text-4xl font-semibold mb-6'>
+            Tips and Tricks
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg sm:text-xl leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Centralize your knights:
@@ -81,8 +83,10 @@ const Knight: React.FC = () => {
 
         {/* Common Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Common Strategies</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-3xl sm:text-4xl font-semibold mb-6'>
+            Common Strategies
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg sm:text-xl leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Forks:</span> Knights
               can attack two or more pieces simultaneously, creating tactical
@@ -103,8 +107,10 @@ const Knight: React.FC = () => {
 
         {/* Advanced Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Advanced Strategies</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-3xl sm:text-4xl font-semibold mb-6'>
+            Advanced Strategies
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg sm:text-xl leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Knight Maneuvers:
@@ -126,10 +132,10 @@ const Knight: React.FC = () => {
 
         {/* Common Mistakes to Avoid Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-3xl sm:text-4xl font-semibold mb-6'>
             Common Mistakes to Avoid
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg sm:text-xl leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Misplacing Knights:
@@ -152,8 +158,10 @@ const Knight: React.FC = () => {
 
         {/* Famous Knight Tactics Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Famous Knight Tactics</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-3xl sm:text-4xl font-semibold mb-6'>
+            Famous Knight Tactics
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg sm:text-xl leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Knight Fork:</span> A
               powerful tactic where the knight attacks two or more pieces at
@@ -162,7 +170,7 @@ const Knight: React.FC = () => {
             <li>
               <span className='font-bold text-yellow-400'>
                 Knight Checkmate:
-              </span>
+              </span>{' '}
               In endgames, knights can deliver checkmate, particularly in
               coordination with other pieces.
             </li>
@@ -174,13 +182,15 @@ const Knight: React.FC = () => {
 
         {/* Knight Endgames Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Knight Endgames</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-3xl sm:text-4xl font-semibold mb-6'>
+            Knight Endgames
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg sm:text-xl leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Knight and King Endgames:
               </span>{' '}
-              In knight and king endgames, it&apos;s important to keep your king
+              In knight and king endgames, it's important to keep your king
               active while using your knight to control key squares.
             </li>
             <li>
@@ -188,8 +198,7 @@ const Knight: React.FC = () => {
                 Knight vs. Pawns:
               </span>{' '}
               Knights are excellent at blocking pawns, but be careful not to
-              trap your own pieces while trying to stop the opponent&apos;s
-              pawns.
+              trap your own pieces while trying to stop the opponent's pawns.
             </li>
           </ul>
         </section>
@@ -199,8 +208,10 @@ const Knight: React.FC = () => {
 
         {/* Positional Play Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Positional Play</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-3xl sm:text-4xl font-semibold mb-6'>
+            Positional Play
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg sm:text-xl leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Centralize Your Knights:
@@ -218,12 +229,15 @@ const Knight: React.FC = () => {
 
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
+
         {/* Learn About Other Pieces Section */}
+        <div className='border-t border-gray-600 w-full'></div>
+
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-2xl font-semibold text-white mb-6 text-center sm:text-xl'>
             Learn About Other Pieces
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex justify-center gap-12 flex-wrap sm:gap-8'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/pawn')}
@@ -261,6 +275,7 @@ const Knight: React.FC = () => {
             </div>
           </div>
         </section>
+
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
       </div>

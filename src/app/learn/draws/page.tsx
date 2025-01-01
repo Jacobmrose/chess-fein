@@ -13,24 +13,26 @@ import { FaChessBoard } from 'react-icons/fa'
 
 const Draws: React.FC = () => {
   return (
-    <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-6 pt-10 pb-10'>
+    <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-4 pt-6 pb-6 sm:px-6 sm:pt-10 sm:pb-10'>
       {/* Draws Icon */}
-      <GiCheckMark className='text-6xl mb-4' />
+      <GiCheckMark className='text-6xl mb-4 sm:text-5xl md:text-6xl' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>
+      <h1 className='text-4xl font-bold text-white mt-4 text-center sm:text-3xl md:text-4xl'>
         Understanding Draws in Chess
       </h1>
 
       {/* Content Wrapper */}
-      <div className='mt-12 max-w-5xl text-white space-y-16'>
+      <div className='mt-6 sm:mt-12 max-w-full text-white space-y-12 px-4 sm:max-w-5xl sm:px-6'>
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>What is a Draw?</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
+            What is a Draw?
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               A draw in chess occurs when the game ends in a tie. This can
               happen in a variety of ways, and no player wins.
@@ -52,8 +54,10 @@ const Draws: React.FC = () => {
 
         {/* Types of Draws Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Types of Draws</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
+            Types of Draws
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>Stalemate:</span> A
               stalemate occurs when one player is not in check, but they have no
@@ -97,8 +101,10 @@ const Draws: React.FC = () => {
 
         {/* How to Avoid Draws Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>How to Avoid Draws</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
+            How to Avoid Draws
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Aggressive Play:
@@ -146,10 +152,10 @@ const Draws: React.FC = () => {
 
         {/* Common Mistakes Leading to Draws Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Common Mistakes Leading to Draws
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Overestimating a Draw:
@@ -190,10 +196,10 @@ const Draws: React.FC = () => {
 
         {/* Draw Scenarios to Watch Out For Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Draw Scenarios to Watch Out For
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Stalemate in Endgames:
@@ -226,10 +232,10 @@ const Draws: React.FC = () => {
 
         {/* Famous Draws Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Famous Draws in Chess History
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Fischer vs. Petrosian (1971):
@@ -251,44 +257,44 @@ const Draws: React.FC = () => {
         <div className='border-t border-gray-600 w-full'></div>
         {/* Learn About Other Fundamentals Section */}
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-xl sm:text-2xl font-semibold text-white mb-6 text-center'>
             Learn About Other Fundamentals
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex flex-wrap justify-center gap-8 sm:gap-16'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/en-passant')}
               title='En Passant'
             >
-              <GiPerspectiveDiceSixFacesRandom className='text-4xl text-white hover:text-yellow-400' />
+              <GiPerspectiveDiceSixFacesRandom className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/castling')}
               title='Castling'
             >
-              <GiCastle className='text-4xl text-white hover:text-yellow-400' />
+              <GiCastle className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/board-setup')}
               title='Board Setup'
             >
-              <FaChessBoard className='text-4xl text-white hover:text-yellow-400' />
+              <FaChessBoard className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/checkmate')}
               title='Checkmate'
             >
-              <GiChessKing className='text-4xl text-white hover:text-yellow-400' />
+              <GiChessKing className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/tactics')}
               title='Tactics'
             >
-              <GiCrossedSwords className='text-4xl text-white hover:text-yellow-400' />
+              <GiCrossedSwords className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
           </div>
         </section>

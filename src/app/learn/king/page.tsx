@@ -1,4 +1,5 @@
 'use client'
+
 import React from 'react'
 import {
   FaChessPawn,
@@ -11,12 +12,14 @@ import {
 
 const King: React.FC = () => {
   return (
-    <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-6 pt-10'>
+    <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-6 pt-10 pb-10'>
       {/* Chess King Icon */}
       <FaChessKing className='text-6xl mb-4' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>Mastering the King</h1>
+      <h1 className='text-5xl font-bold text-white mt-4 text-center sm:text-4xl md:text-5xl'>
+        Mastering the King
+      </h1>
 
       {/* Content Wrapper */}
       <div className='mt-12 max-w-5xl text-white space-y-16'>
@@ -25,7 +28,9 @@ const King: React.FC = () => {
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Core Functionalities</h2>
+          <h2 className='text-3xl font-semibold mb-6 text-center sm:text-2xl'>
+            Core Functionalities
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               The king can move one square in any direction: vertically,
@@ -63,7 +68,9 @@ const King: React.FC = () => {
 
         {/* Tips and Tricks Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Tips and Tricks</h2>
+          <h2 className='text-3xl font-semibold mb-6 text-center sm:text-2xl'>
+            Tips and Tricks
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -106,7 +113,9 @@ const King: React.FC = () => {
 
         {/* Common Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Common Strategies</h2>
+          <h2 className='text-3xl font-semibold mb-6 text-center sm:text-2xl'>
+            Common Strategies
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>King safety:</span>{' '}
@@ -139,7 +148,9 @@ const King: React.FC = () => {
 
         {/* Advanced Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Advanced Strategies</h2>
+          <h2 className='text-3xl font-semibold mb-6 text-center sm:text-2xl'>
+            Advanced Strategies
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -168,7 +179,7 @@ const King: React.FC = () => {
 
         {/* Common Mistakes to Avoid Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-3xl font-semibold mb-6 text-center sm:text-2xl'>
             Common Mistakes to Avoid
           </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
@@ -201,7 +212,9 @@ const King: React.FC = () => {
 
         {/* Famous King Tactics Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Famous King Tactics</h2>
+          <h2 className='text-3xl font-semibold mb-6 text-center sm:text-2xl'>
+            Famous King Tactics
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>King walking:</span>{' '}
@@ -230,7 +243,9 @@ const King: React.FC = () => {
 
         {/* Endgame King Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Endgame King Use</h2>
+          <h2 className='text-3xl font-semibold mb-6 text-center sm:text-2xl'>
+            Endgame King Use
+          </h2>
           <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
@@ -256,14 +271,15 @@ const King: React.FC = () => {
             </li>
           </ul>
         </section>
-        <div className='border-t border-gray-600 w-full'></div>
 
         {/* Learn About Other Pieces Section */}
+        <div className='border-t border-gray-600 w-full'></div>
+
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-2xl font-semibold text-white mb-6 text-center sm:text-xl'>
             Learn About Other Pieces
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex justify-center gap-12 flex-wrap sm:gap-8'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/pawn')}
@@ -301,9 +317,6 @@ const King: React.FC = () => {
             </div>
           </div>
         </section>
-
-        {/* Decorative Divider */}
-        <div className='border-t border-gray-600 w-full'></div>
       </div>
     </div>
   )

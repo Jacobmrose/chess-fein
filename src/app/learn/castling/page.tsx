@@ -13,22 +13,26 @@ import { FaChessBoard } from 'react-icons/fa'
 
 const Castling: React.FC = () => {
   return (
-    <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-6 pt-10 pb-10'>
+    <div className='min-h-screen w-full bg-gradient-to-br from-purple-900 to-black flex flex-col items-center px-4 pt-6 pb-6 sm:px-6 sm:pt-10 sm:pb-10'>
       {/* Castling Icon */}
-      <GiCastle className='text-6xl mb-4' />
+      <GiCastle className='text-6xl mb-4 sm:text-5xl md:text-6xl' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>Mastering Castling</h1>
+      <h1 className='text-4xl font-bold text-white mt-4 text-center sm:text-3xl md:text-4xl'>
+        Mastering Castling
+      </h1>
 
       {/* Content Wrapper */}
-      <div className='mt-12 max-w-5xl text-white space-y-16'>
+      <div className='mt-6 sm:mt-12 max-w-full text-white space-y-12 px-4 sm:max-w-5xl sm:px-6'>
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Core Functionalities</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
+            Core Functionalities
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               Castling is a special move in chess where the king and a rook move
               simultaneously.
@@ -44,7 +48,7 @@ const Castling: React.FC = () => {
             <li>
               To perform castling, the king and rook must meet specific
               conditions:
-              <ul className='list-disc list-inside pl-6'>
+              <ul className='list-disc list-inside pl-6 sm:text-base'>
                 <li>
                   The king and rook involved must not have moved previously.
                 </li>
@@ -63,8 +67,10 @@ const Castling: React.FC = () => {
 
         {/* Tips and Tricks Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Tips and Tricks</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
+            Tips and Tricks
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>Castle Early:</span>{' '}
               Castling early in the game can help protect your king and connect
@@ -97,8 +103,10 @@ const Castling: React.FC = () => {
 
         {/* Common Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Common Strategies</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
+            Common Strategies
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>King Safety:</span>{' '}
               Always consider the safety of your king when castling. Avoid
@@ -129,10 +137,10 @@ const Castling: React.FC = () => {
 
         {/* Common Mistakes to Avoid Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Common Mistakes to Avoid
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Delayed Castling:
@@ -163,10 +171,10 @@ const Castling: React.FC = () => {
 
         {/* Famous Castling Tactics Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Famous Castling Tactics
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Castling to Avoid Attack:
@@ -196,10 +204,10 @@ const Castling: React.FC = () => {
 
         {/* Positional Play Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl font-semibold mb-6 text-center sm:text-2xl'>
             Positional Play with Castling
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed sm:text-base'>
             <li>
               <span className='font-bold text-yellow-400'>Defensive Play:</span>{' '}
               Castling early allows for better defense as it moves the king out
@@ -217,46 +225,47 @@ const Castling: React.FC = () => {
 
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
+
         {/* Learn About Other Fundamentals Section */}
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-xl sm:text-2xl font-semibold text-white mb-6 text-center'>
             Learn About Other Fundamentals
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex flex-wrap justify-center gap-8 sm:gap-16'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/en-passant')}
               title='En Passant'
             >
-              <GiPerspectiveDiceSixFacesRandom className='text-4xl text-white hover:text-yellow-400' />
+              <GiPerspectiveDiceSixFacesRandom className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/board-setup')}
               title='Board Setup'
             >
-              <FaChessBoard className='text-4xl text-white hover:text-yellow-400' />
+              <FaChessBoard className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/draws')}
               title='Draws'
             >
-              <GiCheckMark className='text-4xl text-white hover:text-yellow-400' />
+              <GiCheckMark className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/checkmate')}
               title='Checkmate'
             >
-              <GiChessKing className='text-4xl text-white hover:text-yellow-400' />
+              <GiChessKing className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/tactics')}
               title='Tactics'
             >
-              <GiCrossedSwords className='text-4xl text-white hover:text-yellow-400' />
+              <GiCrossedSwords className='text-3xl sm:text-4xl text-white hover:text-yellow-400' />
             </div>
           </div>
         </section>

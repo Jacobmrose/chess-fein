@@ -17,7 +17,9 @@ const Rook: React.FC = () => {
       <FaChessRook className='text-6xl mb-4' />
 
       {/* Page Title */}
-      <h1 className='text-5xl font-bold text-white mt-4'>Mastering the Rook</h1>
+      <h1 className='text-3xl sm:text-5xl font-bold text-white mt-4'>
+        Mastering the Rook
+      </h1>
 
       {/* Content Wrapper */}
       <div className='mt-12 max-w-5xl text-white space-y-16'>
@@ -26,8 +28,10 @@ const Rook: React.FC = () => {
 
         {/* Core Functionalities Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Core Functionalities</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Core Functionalities
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               Rooks move horizontally or vertically across any number of
               squares.
@@ -45,8 +49,10 @@ const Rook: React.FC = () => {
 
         {/* Tips and Tricks Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Tips and Tricks</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Tips and Tricks
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Control open files:
@@ -74,8 +80,10 @@ const Rook: React.FC = () => {
 
         {/* Common Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Common Strategies</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Common Strategies
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Rook on the 7th rank:
@@ -98,8 +106,10 @@ const Rook: React.FC = () => {
 
         {/* Advanced Strategies Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Advanced Strategies</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Advanced Strategies
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Rook Lift:</span> A
               rook lift involves moving a rook up to a rank where it can swing
@@ -129,10 +139,10 @@ const Rook: React.FC = () => {
 
         {/* Common Mistakes to Avoid Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
             Common Mistakes to Avoid
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Premature Rook Activity:
@@ -156,8 +166,10 @@ const Rook: React.FC = () => {
 
         {/* Famous Rook Tactics Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Famous Rook Tactics</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Famous Rook Tactics
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>Back Rank Mate:</span>{' '}
               A rook can deliver checkmate on the back rank if the
@@ -183,10 +195,10 @@ const Rook: React.FC = () => {
 
         {/* Rook and Pawn Endgames Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
             Rook and Pawn Endgames
           </h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Lucena Position:
@@ -214,8 +226,10 @@ const Rook: React.FC = () => {
 
         {/* Positional Play Section */}
         <section>
-          <h2 className='text-3xl font-semibold mb-6'>Positional Play</h2>
-          <ul className='list-disc list-inside space-y-4 text-lg leading-relaxed'>
+          <h2 className='text-2xl sm:text-3xl font-semibold mb-6'>
+            Positional Play
+          </h2>
+          <ul className='list-disc list-inside space-y-4 text-base sm:text-lg leading-relaxed'>
             <li>
               <span className='font-bold text-yellow-400'>
                 Rook on an Open File:
@@ -242,12 +256,15 @@ const Rook: React.FC = () => {
 
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
+
         {/* Learn About Other Pieces Section */}
+        <div className='border-t border-gray-600 w-full'></div>
+
         <section className='mt-16'>
-          <h2 className='text-2xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-2xl font-semibold text-white mb-6 text-center sm:text-xl'>
             Learn About Other Pieces
           </h2>
-          <div className='flex justify-center gap-16'>
+          <div className='flex justify-center gap-12 flex-wrap sm:gap-8'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/pawn')}
@@ -285,6 +302,7 @@ const Rook: React.FC = () => {
             </div>
           </div>
         </section>
+
         {/* Decorative Divider */}
         <div className='border-t border-gray-600 w-full'></div>
       </div>
