@@ -9,6 +9,9 @@ export interface UseStockfishOptions {
   enabled: boolean
 }
 
+// Detect if the user is on iOS
+const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+
 export function useStockfish({
   position,
   onMove,
@@ -28,8 +31,18 @@ export function useStockfish({
     stockfishWorker.current = new Worker('/stockfish.js')
     stockfishWorker.current.postMessage('uci') // Set Stockfish to UCI mode
 
-    // Disable multithreading explicitly
-    stockfishWorker.current.postMessage('setoption name Threads value 1')
+    // iOS-specific configurations
+    if (isIOS) {
+      console.log(
+        'iOS detected: Setting single-thread mode and low memory usage'
+      )
+      stockfishWorker.current.postMessage('setoption name Threads value 1')
+      stockfishWorker.current.postMessage('setoption name Hash value 16') // Limit memory to 16MB on iOS
+    } else {
+      console.log('Non-iOS detected: Using default settings')
+      stockfishWorker.current.postMessage('setoption name Threads value 2')
+      stockfishWorker.current.postMessage('setoption name Hash value 128') // Use higher memory for non-iOS
+    }
 
     return () => {
       stockfishWorker.current?.terminate()
@@ -43,9 +56,10 @@ export function useStockfish({
     const elo = Math.min(3190, Math.max(1320, difficulty))
     const skill = Math.round(((difficulty - 1320) / (3190 - 1320)) * 20) // Skill: 0–20
     const depth = Math.min(
-      20,
+      20, // No depth restriction on iOS, allowing full depth calculation
       Math.max(8, Math.round(((elo - 1320) / (3190 - 1320)) * 12) + 8)
-    ) // Dynamic depth scaling
+    )
+
     const limitStrength = elo < 2700 // Limit Stockfish strength for lower ELOs
 
     // Set Stockfish options
