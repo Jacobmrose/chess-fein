@@ -28,8 +28,11 @@ export function useStockfish({
     stockfishWorker.current = new Worker('/stockfish.js')
     stockfishWorker.current.postMessage('uci') // Set Stockfish to UCI mode
 
+    // Disable multithreading explicitly
+    stockfishWorker.current.postMessage('setoption name Threads value 1')
+
     return () => {
-      stockfishWorker.current?.terminate() // Terminate the worker when disabled or unmounted
+      stockfishWorker.current?.terminate()
     }
   }, [enabled])
 
@@ -57,17 +60,15 @@ export function useStockfish({
     stockfishWorker.current.postMessage(`go depth ${depth}`)
 
     const handleStockfishMessage = (event: MessageEvent) => {
-      // console.log('Stockfish message:', event.data) // Log all messages for debugging
       if (event.data.startsWith('bestmove')) {
         const [_, bestMove] = event.data.split(' ')
         if (bestMove && bestMove !== '(none)') {
           const from = bestMove.slice(0, 2) as Square
           const to = bestMove.slice(2, 4) as Square
-          onMove(from, to) // Trigger the provided onMove callback
+          onMove(from, to)
         } else {
           console.error('No valid move received from Stockfish')
         }
-        // Clean up the event listener after processing the move
         stockfishWorker.current?.removeEventListener(
           'message',
           handleStockfishMessage
@@ -75,9 +76,8 @@ export function useStockfish({
       }
     }
 
-    // Add an event listener to handle Stockfish's response
     stockfishWorker.current.addEventListener('message', handleStockfishMessage)
   }, [position, difficulty, onMove, enabled])
 
-  return { getBestMove } // Return getBestMove for usage in components
+  return { getBestMove }
 }

@@ -246,6 +246,29 @@ const ChessGame: React.FC<ChessGameProps> = ({
 
   const handleSquareClickCallback = useCallback(
     (square: Square) => {
+      const game = chessGame.current
+      const piece = game.get(square) // Get the piece on the clicked square
+
+      // If no piece is selected yet
+      if (!selectedSquare) {
+        if (!piece) {
+          // console.warn('No piece on this square to select!')
+          return
+        }
+
+        // Check if the piece belongs to the active player unless it's playground mode
+        if (!isPlaygroundMode && pieceColor(piece.color) !== color) {
+          // console.warn('You can only select your own pieces!')
+          return
+        }
+
+        // Select the square and show possible moves
+        setSelectedSquare(square)
+        getPossibleMoves(square)
+        return
+      }
+
+      // If a piece is already selected, proceed with the original handleSquareClick logic
       handleSquareClick(
         square,
         chessGame,
