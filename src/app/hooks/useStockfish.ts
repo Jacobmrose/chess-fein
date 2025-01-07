@@ -79,7 +79,7 @@ export function useStockfish({
         ? 1 // Explicitly allow depth to be 1 when difficulty is 100
         : Math.min(
             20, // No depth restriction on iOS, allowing full depth calculation
-            Math.max(0, Math.round(((elo - 1320) / (3190 - 1320)) * 12) + 8)
+            Math.max(1, Math.round(((elo - 1320) / (3190 - 1320)) * 12) + 8)
           )
 
     const limitStrength = elo < 2700 // Limit Stockfish strength for lower ELOs
