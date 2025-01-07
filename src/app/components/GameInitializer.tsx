@@ -72,11 +72,11 @@ const GameInitializer: React.FC<GameInitializerProps> = ({ onStartGame }) => {
         {/* Difficulty Slider */}
         <div className='flex flex-col items-center space-y-2'>
           <label className='text-white text-base lg:text-lg'>
-            Elo (1320-3190): {difficulty}
+            Elo (100-3190): {difficulty}
           </label>
           <input
             type='range'
-            min='1320'
+            min='100'
             max='3190'
             value={difficulty}
             onChange={(e) => setDifficulty(Number(e.target.value))}

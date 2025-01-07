@@ -252,13 +252,12 @@ const ChessGame: React.FC<ChessGameProps> = ({
       // If no piece is selected yet
       if (!selectedSquare) {
         if (!piece) {
-          // console.warn('No piece on this square to select!')
+          // No piece on the clicked square
           return
         }
 
-        // Check if the piece belongs to the active player unless it's playground mode
+        // Ensure the piece belongs to the active player unless in playground mode
         if (!isPlaygroundMode && pieceColor(piece.color) !== color) {
-          // console.warn('You can only select your own pieces!')
           return
         }
 
@@ -268,7 +267,27 @@ const ChessGame: React.FC<ChessGameProps> = ({
         return
       }
 
-      // If a piece is already selected, proceed with the original handleSquareClick logic
+      // Validate the selected piece belongs to the player before proceeding
+      const selectedPiece = game.get(selectedSquare)
+      if (
+        !isPlaygroundMode &&
+        selectedPiece &&
+        pieceColor(selectedPiece.color) !== color
+      ) {
+        handleClearSelection()
+        return
+      }
+
+      // Validate the move legality
+      const validMoves = game.moves({ square: selectedSquare, verbose: true })
+      const isValidMove = validMoves.some((move) => move.to === square)
+
+      if (!isValidMove) {
+        handleClearSelection()
+        return
+      }
+
+      // Proceed with the original handleSquareClick logic
       handleSquareClick(
         square,
         chessGame,
@@ -301,6 +320,10 @@ const ChessGame: React.FC<ChessGameProps> = ({
       color,
     ]
   )
+
+  // current bug where i need to fix the way when i click on one piece and another piece it needs to be in one click and not two clicks
+
+  // ! you have to click a piece twice to deselect/
 
   const handlePieceClick = useCallback(
     (piece: Piece, square: Square) => handleSquareClickCallback(square),
