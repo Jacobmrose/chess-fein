@@ -249,63 +249,66 @@ const ChessGame: React.FC<ChessGameProps> = ({
       const game = chessGame.current
       const piece = game.get(square) // Get the piece on the clicked square
 
-      // If no piece is selected yet
+      // Case 1: No piece is selected yet
       if (!selectedSquare) {
         if (!piece) {
           // No piece on the clicked square
           return
         }
 
-        // Ensure the piece belongs to the active player unless in playground mode
-        if (!isPlaygroundMode && pieceColor(piece.color) !== color) {
-          return
+        // In Playground Mode, allow selecting any piece (regardless of color)
+        if (isPlaygroundMode || pieceColor(piece.color) === color) {
+          setSelectedSquare(square)
+          getPossibleMoves(square)
         }
-
-        // Select the square and show possible moves
-        setSelectedSquare(square)
-        getPossibleMoves(square)
         return
       }
 
-      // Validate the selected piece belongs to the player before proceeding
+      // Case 2: A piece is already selected
       const selectedPiece = game.get(selectedSquare)
-      if (
-        !isPlaygroundMode &&
-        selectedPiece &&
-        pieceColor(selectedPiece.color) !== color
-      ) {
-        handleClearSelection()
-        return
-      }
 
-      // Validate the move legality
+      // If clicking on another piece, attempt a move if it's a valid capture or switch selection
       const validMoves = game.moves({ square: selectedSquare, verbose: true })
       const isValidMove = validMoves.some((move) => move.to === square)
 
-      if (!isValidMove) {
-        handleClearSelection()
+      if (isValidMove) {
+        // Valid move (includes captures)
+        handleSquareClick(
+          square,
+          chessGame,
+          selectedSquare,
+          setSelectedSquare,
+          (newFen) => {
+            setPosition(newFen)
+            setFenHistory((prevHistory: any) => [...prevHistory, newFen])
+            setHighlightedSquares([])
+          },
+          getPossibleMoves,
+          (game) => handleGameOverDescription(game, setEndReason),
+          (
+            move: string,
+            fen: string,
+            lastMove: { from: string; to: string }
+          ) => {
+            onMove(move, fen)
+            setLastMove(lastMove)
+          },
+          handleClearSelection
+        )
         return
       }
 
-      // Proceed with the original handleSquareClick logic
-      handleSquareClick(
-        square,
-        chessGame,
-        selectedSquare,
-        setSelectedSquare,
-        (newFen) => {
-          setPosition(newFen)
-          setFenHistory((prevHistory: any) => [...prevHistory, newFen])
-          setHighlightedSquares([])
-        },
-        getPossibleMoves,
-        (game) => handleGameOverDescription(game, setEndReason),
-        (move: string, fen: string, lastMove: { from: string; to: string }) => {
-          onMove(move, fen)
-          setLastMove(lastMove)
-        },
-        handleClearSelection
-      )
+      // If not a valid move, allow switching selection if clicking a piece
+      if (piece) {
+        if (isPlaygroundMode || pieceColor(piece.color) === color) {
+          setSelectedSquare(square)
+          getPossibleMoves(square)
+          return
+        }
+      }
+
+      // If none of the above cases match, clear selection
+      handleClearSelection()
     },
     [
       chessGame,

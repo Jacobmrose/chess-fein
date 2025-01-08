@@ -38,23 +38,11 @@ export const makeMove = (
 
   // Handle pawn promotion
   if (isPawn && isBackRank) {
-    let promotionPiece = prompt(
-      'Promote to (q: Queen, r: Rook, b: Bishop, n: Knight):',
-      'q'
-    )
-    while (
-      promotionPiece &&
-      !['q', 'r', 'b', 'n'].includes(promotionPiece.toLowerCase())
-    ) {
-      promotionPiece = prompt(
-        'Invalid input. Please enter one of q, r, b, n:',
-        'q'
-      )
-    }
+    // Auto-promote to Queen
     move = game.move({
       from: fromSquare,
       to: toSquare,
-      promotion: promotionPiece?.toLowerCase() as 'q' | 'r' | 'b' | 'n',
+      promotion: 'q', // Always promote to Queen
     })
   } else {
     move = game.move({ from: fromSquare, to: toSquare })
