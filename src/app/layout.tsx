@@ -2,7 +2,6 @@ import Footer from './components/Footer'
 import './styles/globals.css'
 import { ReactNode } from 'react'
 import { Inconsolata } from 'next/font/google'
-// import { UserProvider } from '@auth0/nextjs-auth0/client'
 import Navbar from './components/Navbar'
 
 interface LayoutProps {
@@ -29,11 +28,9 @@ export const generateViewport = () => ({
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <html lang='en'>
-      {/* <UserProvider> */}
       <body
         className={`${inconsolata.className} flex flex-col min-h-screen bg-gradient-to-br from-purple-900 to-black text-white`}
       >
-        {/* Use the NavbarWrapper component here if you are wanted to use the auth0 user authentication. */}
         <nav className='bg-gray-900 text-white p-4'>
           <Navbar />
         </nav>
@@ -44,7 +41,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <Footer />
         </footer>
       </body>
-      {/* </UserProvider> */}
     </html>
   )
 }
