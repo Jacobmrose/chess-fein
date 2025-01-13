@@ -236,44 +236,44 @@ const Bishop: React.FC = () => {
 
         {/* Learn About Other Pieces Section */}
         <section className='mt-16'>
-          <h2 className='text-2xl sm:text-3xl font-semibold text-white mb-6 text-center'>
+          <h2 className='text-2xl font-semibold text-white mb-6 text-center sm:text-xl'>
             Learn About Other Pieces
           </h2>
-          <div className='flex flex-wrap justify-center gap-8 sm:gap-16'>
+          <div className='flex justify-center gap-12 flex-wrap sm:gap-8'>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/pawn')}
               title='Pawn'
             >
-              <FaChessPawn className='text-4xl sm:text-5xl text-white hover:text-yellow-400' />
+              <FaChessPawn className='text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/knight')}
               title='Knight'
             >
-              <FaChessKnight className='text-4xl sm:text-5xl text-white hover:text-yellow-400' />
+              <FaChessKnight className='text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/rook')}
               title='Rook'
             >
-              <FaChessRook className='text-4xl sm:text-5xl text-white hover:text-yellow-400' />
+              <FaChessRook className='text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/queen')}
               title='Queen'
             >
-              <FaChessQueen className='text-4xl sm:text-5xl text-white hover:text-yellow-400' />
+              <FaChessQueen className='text-4xl text-white hover:text-yellow-400' />
             </div>
             <div
               className='cursor-pointer'
               onClick={() => (window.location.href = '/learn/king')}
               title='King'
             >
-              <FaChessKing className='text-4xl sm:text-5xl text-white hover:text-yellow-400' />
+              <FaChessKing className='text-4xl text-white hover:text-yellow-400' />
             </div>
           </div>
         </section>
