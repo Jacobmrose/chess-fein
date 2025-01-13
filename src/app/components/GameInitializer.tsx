@@ -11,9 +11,9 @@ interface GameInitializerProps {
 
 const GameInitializer: React.FC<GameInitializerProps> = ({ onStartGame }) => {
   const [selectedColor, setSelectedColor] = useState<'white' | 'black' | null>(
-    null
+    'white'
   )
-  const [timeLimit, setTimeLimit] = useState<number>(5) // In minutes
+  const [timeLimit, setTimeLimit] = useState<number>(10) // In minutes
   const [difficulty, setDifficulty] = useState<number>(1320)
   const [isPlaygroundMode, setIsPlaygroundMode] = useState<boolean>(false) // Playground mode state
 
@@ -72,11 +72,11 @@ const GameInitializer: React.FC<GameInitializerProps> = ({ onStartGame }) => {
         {/* Difficulty Slider */}
         <div className='flex flex-col items-center space-y-2'>
           <label className='text-white text-base lg:text-lg'>
-            Elo (100-3190): {difficulty}
+            Elo (1320-3190): {difficulty}
           </label>
           <input
             type='range'
-            min='100'
+            min='1320'
             max='3190'
             value={difficulty}
             onChange={(e) => setDifficulty(Number(e.target.value))}

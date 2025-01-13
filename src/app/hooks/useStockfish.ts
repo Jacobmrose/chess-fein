@@ -30,10 +30,8 @@ export function useStockfish({
 
     // Use the iOS-specific stockfish worker
     if (isIOS) {
-      // console.log('iOS detected: Using stockfish-16.1-lite-single.js')
       stockfishWorker.current = new Worker('/stockfish-16.1-lite-single.js')
     } else {
-      // console.log('Non-iOS detected: Using standard stockfish.js')
       stockfishWorker.current = new Worker('/stockfish.js')
     }
 
@@ -41,13 +39,9 @@ export function useStockfish({
 
     // Configure options specifically for iOS (e.g., single-threaded mode and lower memory usage)
     if (isIOS) {
-      // console.log(
-      //   'iOS detected: Setting single-thread mode and low memory usage'
-      // )
       stockfishWorker.current.postMessage('setoption name Threads value 1')
       stockfishWorker.current.postMessage('setoption name Hash value 16') // Limit memory to 16MB on iOS
     } else {
-      // console.log('Non-iOS detected: Using default settings')
       stockfishWorker.current.postMessage('setoption name Threads value 2')
       stockfishWorker.current.postMessage('setoption name Hash value 128') // Use higher memory for non-iOS
     }
@@ -60,38 +54,16 @@ export function useStockfish({
   const getBestMove = useCallback(() => {
     if (!enabled || !stockfishWorker.current) return
 
-    // // Calculate Elo and related parameters
-    // const elo = Math.min(3190, Math.max(1320, difficulty))
-    // const skill = Math.round(((difficulty - 1320) / (3190 - 1320)) * 20) // Skill: 0–20
-    // const depth = Math.min(
-    //   20, // No depth restriction on iOS, allowing full depth calculation
-    //   Math.max(8, Math.round(((elo - 1320) / (3190 - 1320)) * 12) + 8)
-    // )
+    // Clamp difficulty within the valid range (1320–3190)
+    const requestedElo = Math.min(3190, Math.max(1320, difficulty))
 
-    // const limitStrength = elo < 2700 // Limit Stockfish strength for lower ELOs
+    // Map requested Elo (1320–3190) to skill level (1–20)
+    const skill = Math.round(((requestedElo - 1320) / (3190 - 1320)) * 19) + 1
 
-    // Clamp difficulty within the valid range (100–3190)
-    const requestedElo = Math.min(3190, Math.max(100, difficulty))
-
-    // Map requested Elo (100–3190) to UCI_Elo (1320–3190)
-    const elo = Math.round(
-      ((requestedElo - 100) / (3190 - 100)) * (3190 - 1320) + 1320
-    )
-
-    // Map requested Elo (100–3190) to skill level (0–20)
-    const skill = Math.round(((requestedElo - 100) / (3190 - 100)) * 20)
-
-    // Map requested Elo (100–3190) to depth (1–20)
-    const depth = Math.round(((requestedElo - 100) / (3190 - 100)) * 19) + 1
-
-    // Limit Stockfish strength if Elo is below 2700
-    const limitStrength = elo < 2700
+    // Map requested Elo (1320–3190) to depth (1–20)
+    const depth = Math.round(((requestedElo - 1320) / (3190 - 1320)) * 19) + 1
 
     // Set Stockfish options dynamically
-    stockfishWorker.current.postMessage(
-      `setoption name UCI_LimitStrength value ${limitStrength}`
-    )
-    stockfishWorker.current.postMessage(`setoption name UCI_Elo value ${elo}`)
     stockfishWorker.current.postMessage(
       `setoption name Skill Level value ${skill}`
     )
