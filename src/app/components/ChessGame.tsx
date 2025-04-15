@@ -324,10 +324,6 @@ const ChessGame: React.FC<ChessGameProps> = ({
     ]
   )
 
-  // current bug where i need to fix the way when i click on one piece and another piece it needs to be in one click and not two clicks
-
-  // ! you have to click a piece twice to deselect/
-
   const handlePieceClick = useCallback(
     (piece: Piece, square: Square) => handleSquareClickCallback(square),
     [handleSquareClickCallback]
